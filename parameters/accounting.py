@@ -48,12 +48,11 @@ class Accounting(Document):
             elif KEMU.match(line):
                 kemu = KEMU.match(line).groupdict()
                 description = []
-                data[kemu['_id']] = [kemu['_id'],kemu['name'],description]
+                data[kemu['_id']] = [kemu['_id'], kemu['name'], description]
             else:
                 if kemu:
                     description.append(line)
         return list(data.values())
-
 
     @classmethod
     def search(cls, query=None, category=None, items=None):
@@ -88,6 +87,7 @@ class Accounting(Document):
         if category or items:
             for i in cls.search(category=category, items=items):
                 print(i.id, i.name, sep='\t')
+
 
 if __name__ == '__main__':
     Accounting.run()

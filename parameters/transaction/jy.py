@@ -5,7 +5,7 @@
 # @Link    : http://www.jianshu.com/u/3bf5919e38a7
 # @Version : $Id$
 
-from orange import classproperty, arg
+from orange import classproperty, arg, Path, now, R
 from glemon import Document, P
 from .gangwei import JyGangwei
 
