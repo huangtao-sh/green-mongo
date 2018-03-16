@@ -10,12 +10,12 @@ import datetime as dt
 from orange import *
 from mongo.document import *
 from collections import OrderedDict
-from orange.xlsxreport import *
+from orange.xlsx import *
 from orange.parseargs import *
 
 WEEKDAY={5:'星期六',6:'星期日'}
 Year=re.compile(r'(\d{4})年')
-Holiday=re.compile(r'、(.*?)：')
+Holiday=re.compile(r'[一二三四五六七八九]、(.*?)：')
 Num=re.compile(r'\d{1,2}')
 Arrange=re.compile(r'(\d{1,2}月\d{1,2}日(?:至(?:\d{1,2}月)?(?:\d{1,2}日))?'\
                    r'.*?(放假调休|补休|放假|上班))')
@@ -101,6 +101,8 @@ class ArrangeData(EmbeddedDocument):
                 b=dt.date(year,*numbers[:2])
                 if len(numbers)==3:
                     numbers.pop(1)
+                elif len(numbers)==4:
+                    numbers=numbers[-2:]
                 e=dt.date(year,*numbers)
                 while b<=e:
                     dates.append(b)
@@ -111,6 +113,11 @@ class Vacation(Document):
     year=IntField()
     base=ListField(StringField())
     arrangement=ListField(EmbeddedDocumentField(ArrangeData))
+
+    @classmethod
+    def fetch(cls):
+        import canshu.fetchjq
+        data=canshu.fetchjq.fetch()
 
     def iter(self):
         if self.arrangement:
@@ -187,14 +194,15 @@ class Vacation(Document):
             if d>=basedate:
                 data.append([d,*v])
         fn=fn or '假期参数表%s.xlsx'%(basedate)
-        with XlsxReport(fn) as rpt:
-            rpt.add_table('A1','假期参数表',columns=HEADERS,autofilter=False,
-                          data=data)
+        with Book(fn) as rpt:
+            rpt.add_table('A1',sheet='假期参数表',columns=HEADERS,
+                          autofilter=False,data=data)
         if not fn:
             print('导出参数表成功!')
         
     @classmethod
     def parse(cls,filename=None,content=None):
+        lines=[]
         if filename:
             lines=Path(filename).lines
         elif content:
@@ -221,13 +229,15 @@ class Vacation(Document):
         return True
 
     @classmethod
-    def proc(cls,filename=None,basedate="NOSET",syear="NOSET"):
+    def proc(cls,filename=None,basedate="NOSET",syear="NOSET",fetch=False):
         if filename:
             cls.parse(filename=filename)
         if basedate!='NOSET':
             cls.export(basedate)
         if syear!='NOSET':
             cls.show(syear)
+        if fetch:
+            cls.fetch()
 
 main=Parser(Arg('-p','--parse',nargs='?',metavar='filename',
                 dest='filename',help='分析假期通知文件'),
@@ -235,4 +245,6 @@ main=Parser(Arg('-p','--parse',nargs='?',metavar='filename',
                 metavar='basedate',nargs='?',help='导出参数文件'),
             Arg('-s','--show',nargs='?',default='NOSET',dest='syear',
                 metavar='yaer',help='展示假期安排'),
+            Arg('-f','--fetch',action='store_true',
+                help='从官方网站上获取数据'),
             proc=Vacation.proc)
