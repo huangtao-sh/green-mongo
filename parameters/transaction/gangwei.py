@@ -5,8 +5,8 @@
 # @Link    : http://www.jianshu.com/u/3bf5919e38a7
 # @Version : $Id$
 
-from orange import *
-from glemon import *
+from orange import classproperty
+from glemon import Document, P
 
 
 class JyGangwei(Document):
@@ -16,7 +16,8 @@ class JyGangwei(Document):
 
     @classmethod
     def _proc_sheet(cls, index, name, data, **kw):
-        _conv = lambda x: '%02d' % (x) if isinstance(x, (int, float)) else '%s' % (x)
+        def _conv(x): return '%02d' % (x) if isinstance(
+            x, (int, float)) else '%s' % (x)
         if data:
             da = []
             gangwei = ['%s-%s' % (_conv(row[1]), row[2]) for row in
@@ -40,13 +41,3 @@ class JyGangwei(Document):
     def jyzs(cls):
         ''' 获取交易组清单'''
         return {obj._id: obj.name for obj in cls.objects if obj._id}
-
-if __name__ == "__main__":
-    from orange.coroutine import run
-    root = Path(r'C:\Users\huangtao\OneDrive\工作\参数备份\岗位与交易组')
-    filename = max(root.glob('*.xls'))
-    print(filename)
-
-    run(JyGangwei.amport_file(filename, drop=True))
-    print(JyGangwei.gangweis)
-    print(JyGangwei.jyzs)

@@ -5,9 +5,9 @@
 # @Link    : http://www.jianshu.com/u/3bf5919e38a7
 # @Version : $Id$
 
-from orange import *
-from glemon import *
-from .gangwei import *
+from orange import classproperty, arg
+from glemon import Document, P
+from .gangwei import JyGangwei
 
 
 class JyShbs(Document):
@@ -69,6 +69,7 @@ class JyMenu(Document):
             await cls.abjects.insert(datas)
             dupcheck and cls._importsave(fn)
             print('文件 %s 导入完成' % (fn))
+
 
 SHAMA = (('jymc', '交易名称'),
          ('_id', '交易码'),
@@ -159,6 +160,7 @@ class JyJiaoyi(Document):
     @classmethod
     def get_item(cls, jym):
         obj = cls.objects(_id=jym).first()
+
         def trans(a):
             v = getattr(obj, a)
             if a in TRANSFER:
@@ -191,7 +193,8 @@ class JyJiaoyi(Document):
         from orange.xlsx import Book
         with Book(fn) as book:
             book.add_table('A1', columns=FORMAT, data=data, sheet='交易码表')
-            book.add_table("A1", columns=FORMAT[:-2], data=data2, sheet='交易码参数')
+            book.add_table(
+                "A1", columns=FORMAT[:-2], data=data2, sheet='交易码参数')
 
     @classmethod
     def _proc_csv(cls, data, **kw):
@@ -233,4 +236,3 @@ class JyJiaoyi(Document):
             else:
                 for jy in cls.objects(P.jymc.contains(query)):
                     print(jy._text)
-
