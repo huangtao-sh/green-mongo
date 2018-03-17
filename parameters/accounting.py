@@ -6,8 +6,8 @@
 # 创建：2015-09-24 11:26
 # 修订：2017-10-17 使用 glemon 定义的模型
 
-from glemon import *
-from orange import *
+from glemon import Document, P
+from orange import R, arg
 
 KEMU = R / r'(?P<_id>\d{4,6})\s*(?P<name>\w*)'
 BLANKS = R / r'第.章。*', R / r'本科目为一级科目.*'

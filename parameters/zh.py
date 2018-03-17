@@ -6,8 +6,8 @@
 # 创建：2017-10-14 11:28
 # 修订：2017-12-18 修正导入文件的算法，以提高导入速度
 
-from glemon import *
-from orange import *
+from glemon import Document, P
+from orange import R, arg, Path
 
 
 class ZhangHu(Document):
@@ -53,11 +53,12 @@ class ZhangHu(Document):
 def main(ac=None):
     if ac:
         if R / '\d{6}' == ac:
-            from gmongo.parameters.accounting import Accounting
+            from parameters.accounting import Accounting
             q = Accounting.search(query=ac).first()
             if q:
                 print('科目信息：%s\n' % (q))
             ZhangHu.show(ac)
+
 
 if __name__ == '__main__':
     file = max(Path('~/OneDrive/工作/参数备份').rglob('fhnbhzz.del'))

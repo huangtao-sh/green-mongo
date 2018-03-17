@@ -5,20 +5,21 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-01-19 15:01
 
-from orange import *
-from glemon import *
+from orange import arg, R
+from glemon import Document, P
+
 
 class GgJgm(Document):
-    _projects='_id','jgmc','dz','dh','zfhh','lx','kbrq','hzjgm'  
-    _load_mapper={'_id':0,
-                      'jgmc':1,
-                      'dz':4,
-                      'dh':5,
-                      'zfhh':7,
-                      'lx':15,
-                      'kbrq':16,
-                      'hzjgm':17}
-    _textfmt='''
+    _projects = '_id', 'jgmc', 'dz', 'dh', 'zfhh', 'lx', 'kbrq', 'hzjgm'
+    _load_mapper = {'_id': 0,
+                    'jgmc': 1,
+                    'dz': 4,
+                    'dh': 5,
+                    'zfhh': 7,
+                    'lx': 15,
+                    'kbrq': 16,
+                    'hzjgm': 17}
+    _textfmt = '''
 机构号：    {self._id}
 机构名称：  {self.jgmc}
 地址：      {self.dz}
@@ -29,18 +30,16 @@ class GgJgm(Document):
 汇总机构：  {self.hzjgm}'''
 
     @classmethod
-    @arg('query',help='查询条件')
-    def main(cls,query=None):
-        filter=None
-        if R/'\d{9}'==query:
-            filter=P._id==query
-        elif R/'\d{12}'==query:
-            filter=P.zfhh==query
-        elif R/'\d{2}'==query:
-            filter=P.lx==query
+    @arg('query', help='查询条件')
+    def main(cls, query=None):
+        filter = None
+        if R/'\d{9}' == query:
+            filter = P._id == query
+        elif R/'\d{12}' == query:
+            filter = P.zfhh == query
+        elif R/'\d{2}' == query:
+            filter = P.lx == query
         else:
-            filter=P.jgmc.contains(query)
+            filter = P.jgmc.contains(query)
         for obj in cls.objects(filter):
             print(obj)
-            
-        

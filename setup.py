@@ -8,6 +8,8 @@ from orange import get_ver
 
 consoles = [
     'jym=parameters.transaction:JyJiaoyi.main',
+    'sjdr=parameters.sjdr:sjdr',
+    'jgm=parameters.jgm:GgJgm.main'
 ]
 guis = []
 
