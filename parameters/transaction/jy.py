@@ -115,7 +115,7 @@ TRANSFER = {
              "CashOut": "CashOut-现金付",
              "TransIn": "TransIn-转账收",
              "TransOut": "TransOut-转账付",
-             "SelfCashIn": "SefCashIn-自助现金收",
+             "SelfCashIn": "SelfCashIn-自助现金收",
              "SelfCashOut": "SelfCashOut-自助现金付",
              "SelfTransIn": "SelfTransIn-自助转账收",
              "SelfTransOut": "SelfTransOut-自助转账付", }
