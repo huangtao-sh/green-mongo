@@ -52,7 +52,7 @@ class ZhangHu(Document):
 @arg('ac', nargs='?', help='账户，格式应为：999999')
 def main(ac=None):
     if ac:
-        if R / '\d{6}' == ac:
+        if R / r'\d{6}' == ac:
             from parameters.accounting import Accounting
             q = Accounting.search(query=ac).first()
             if q:

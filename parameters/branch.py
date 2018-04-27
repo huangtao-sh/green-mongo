@@ -16,9 +16,9 @@ class Branch(Document):
     # tp 00-总行 10-分行 12-支行
 
     @classproperty
-    def branchs(cls):
+    def branchs(self):
         '''返回分行字典，其值为： 分行名称：顺序'''
-        return {obj.br: obj.order for obj in cls.objects(P.tp == '10')}
+        return {obj.br: obj.order for obj in self.objects(P.tp == '10')}
 
     @classmethod
     async def amport_file(cls, filename, drop=True, **kw):
@@ -96,11 +96,11 @@ class Contacts(Document):
     def search(cls, query=None):
         if query is None:
             filter = None
-        if R / '1[3578]\d{1,9}' == query:
+        if R / r'1[3578]\d{1,9}' == query:
             filter = P.mobile.startswith(query)
-        elif R / '9\d{3}' == query:
+        elif R / r'9\d{3}' == query:
             filter = P.tel.endswith('8765' + query)
-        elif R / '\d{1,}' == query:
+        elif R / r'\d{1,}' == query:
             filter = P.tel.contains(query)
         else:
             filter = P.name.contains(query)

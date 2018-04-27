@@ -20,7 +20,7 @@ class GgBzb(Document):
         if codes:
             filter_ = []
             for d in codes:
-                if R/'\d{2}' == d:
+                if R / r'\d{2}' == d:
                     s = {'bz': d}
                 elif R/'[a-zA-Z]{3}' == d:
                     s = {'ywsx': d}
