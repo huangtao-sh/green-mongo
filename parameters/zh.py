@@ -58,6 +58,9 @@ def main(ac=None):
             if q:
                 print('科目信息：%s\n' % (q))
             ZhangHu.show(ac)
+        elif R/r'\d{6}\-\d{1,3}':
+            a, b = ac.split('-')
+            print(a, b)
 
 
 if __name__ == '__main__':

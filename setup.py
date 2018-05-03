@@ -9,7 +9,9 @@ from orange import get_ver
 consoles = [
     'jym=parameters.transaction:JyJiaoyi.main',
     'sjdr=parameters.sjdr:sjdr',
-    'jgm=parameters.jgm:GgJgm.main'
+    'jgm=parameters.jgm:GgJgm.main',
+    'ac=parameters.zh:main',
+    'km=parameters.accounting:Accounting.run',
 ]
 guis = []
 
