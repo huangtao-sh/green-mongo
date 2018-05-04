@@ -9,8 +9,10 @@
 from glemon import Document, P
 from orange import R, arg
 
+
 KEMU = R / r'(?P<_id>\d{4,6})\s*(?P<name>\w*)'
 BLANKS = R / r'第.章。*', R / r'本科目为一级科目.*'
+AcPattern = R / r'\d{1,6}'
 
 
 class Accounting(Document):
@@ -57,16 +59,16 @@ class Accounting(Document):
     @classmethod
     def search(cls, query=None, category=None, items=None):
         if query:
-            if R / '\d{1,6}' == query:
+            if AcPattern.match(query):
                 q = P.id.startswith(query)
             else:
                 q = P.name.regex(query)
         elif category:
-            q = P.id.regex('^%s\d{3}$' % (category))
+            q = P.id.regex(r'^%s\d{3}$' % (category))
         elif items:
-            q = P.id.regex('^%s\d{2}$' % (items))
+            q = P.id.regex(r'^%s\d{2}$' % (items))
         else:
-            q = P.id.regex('\d{4}$')
+            q = P.id.regex(r'\d{4}$')
         return cls.objects(q).order_by(P.id)
 
     @classmethod

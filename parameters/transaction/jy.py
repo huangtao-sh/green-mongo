@@ -47,11 +47,11 @@ class JyMenu(Document):
             return d.menu, d.submenu
 
     @classmethod
-    async def amport_file(cls, fn, dupcheck=False, **kw):
+    async def amport_file(cls, filename, dupcheck=False, **kw):
         # 从科技提供的文件中导入
-        dupcheck and cls._dupcheck(fn)          # 防重复文件检查
+        dupcheck and cls._dupcheck(filename)          # 防重复文件检查
         datas = []
-        for child in Path(fn).xmlroot:
+        for child in Path(filename).xmlroot:
             menu = child.attrib['DisplayName']
             trans = []
             for node in child:
@@ -67,8 +67,8 @@ class JyMenu(Document):
         if datas:
             cls.drop()
             await cls.abjects.insert(datas)
-            dupcheck and cls._importsave(fn)
-            print('文件 %s 导入完成' % (fn))
+            dupcheck and cls._importsave(filename)
+            print('文件 %s 导入完成' % (filename))
 
 
 SHAMA = (('jymc', '交易名称'),
