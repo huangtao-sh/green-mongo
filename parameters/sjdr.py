@@ -17,20 +17,7 @@ from .branch import Branch
 ROOT = Path('~/Documents/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
-'''
-AioList = ((ZhangHu, Files.get('fhnbhzz')),
-           (JyJiaoyi, Files.get('transactions_output')),
-           (JyMenu, max((ROOT / '交易菜单').glob('menu*.xml'))),
-           (JyShbs, Files.get('是否需要事后补扫')),
-           (JyCdjy, Files.get('是否校验磁道信息')),
-           (JyGangwei, max((ROOT / '岗位与交易组').glob('*.xls'))),
-           (Accounting, max((ROOT / '科目说明').glob('*.txt'))),
-           (Branch, max((ROOT / '全行通讯录').glob('全行通讯录*.xls*'))),
-           (GgJgm, Files.get('ggjgm')),
-           (GgBzb, Files.get('ggbzb')),
-           (GgQzb, Files.get('ggqbz')),
-           )
-'''
+
 Coros = (
     (AcTemplate, {'filename': Files.get('ggnbzhmb'),
                   'dupcheck': True, 'drop': True, 'encoding': 'gbk'}),
@@ -59,18 +46,10 @@ Coros = (
 async def _import(coro):
     cls, kw = coro
     try:
-        print('处理数据：%s'%(cls.__name__))
+        print('处理数据：%s' % (cls.__name__))
         await cls.amport_file(**kw)
     except Exception as e:
         print(e)
-
-'''
-async def load(coro):
-    try:
-        await coro
-    except Exception as e:
-        print(e)
-'''
 
 
 def sjdr():
@@ -78,11 +57,6 @@ def sjdr():
     print('导入数据目录：%s' % (ROOT))
     print('导入参数目录：%s' % (CANSHU))
     run(*list(map(_import, Coros)))
-    '''
-    aiolist = [load(cls.amport_file(fn, drop=True, dupcheck=True))
-               for cls, fn in AioList]
-    run(*aiolist)
-    '''
 
 
 if __name__ == "__main__":
