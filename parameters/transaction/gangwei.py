@@ -32,12 +32,12 @@ class JyGangwei(Document):
             return cls, da
 
     @classproperty
-    def gangweis(cls):
+    def gangweis(self):
         ''' 获取岗位清单'''
-        obj = cls.objects(_id='').first()
+        obj = self.objects(_id='').first()
         return obj and obj.gangwei
 
     @classproperty
-    def jyzs(cls):
+    def jyzs(self):
         ''' 获取交易组清单'''
-        return {obj._id: obj.name for obj in cls.objects if obj._id}
+        return {obj._id: obj.name for obj in self.objects if obj._id}

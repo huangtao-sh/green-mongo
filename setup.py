@@ -10,7 +10,8 @@ consoles = [
     'jym=parameters.transaction:JyJiaoyi.main',
     'sjdr=parameters.sjdr:sjdr',
     'jgm=parameters.jgm:GgJgm.main',
-    'kemu=parameters.accounting:Accounting.run'
+    'ac=parameters.zh:main',
+    'km=parameters.accounting:Accounting.run',
 ]
 guis = []
 

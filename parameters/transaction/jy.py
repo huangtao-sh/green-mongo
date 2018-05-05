@@ -24,9 +24,9 @@ class JyMenu(Document):
     _projects = 'menu', 'submenu', 'trans'
 
     @classproperty
-    def menus(cls):
+    def menus(self):
         # 一级菜单列表
-        return cls.objects.distinct('menu')
+        return self.objects.distinct('menu')
 
     @classmethod
     def submenus(cls, menu):
@@ -47,11 +47,11 @@ class JyMenu(Document):
             return d.menu, d.submenu
 
     @classmethod
-    async def amport_file(cls, fn, dupcheck=False, **kw):
+    async def amport_file(cls, filename, dupcheck=False, **kw):
         # 从科技提供的文件中导入
-        dupcheck and cls._dupcheck(fn)          # 防重复文件检查
+        dupcheck and cls._dupcheck(filename)          # 防重复文件检查
         datas = []
-        for child in Path(fn).xmlroot:
+        for child in Path(filename).xmlroot:
             menu = child.attrib['DisplayName']
             trans = []
             for node in child:
@@ -67,8 +67,8 @@ class JyMenu(Document):
         if datas:
             cls.drop()
             await cls.abjects.insert(datas)
-            dupcheck and cls._importsave(fn)
-            print('文件 %s 导入完成' % (fn))
+            dupcheck and cls._importsave(filename)
+            print('文件 %s 导入完成' % (filename))
 
 
 SHAMA = (('jymc', '交易名称'),
@@ -109,7 +109,6 @@ TRANSFER = {
     'sc': {'0': '0-不需要', '1': '1-需要'},
     'wb': {'2': '2-需要', '1': '1-不需要'},
     'mz': {'0': '0-不允许', '1': '1-允许'},
-    'wdsqjb': {'1': '1-主办授权', '2': '2-主管授权'},
     'jdfs': {'0': '0-不扫描', '1': '1-实时扫描', '2': '2-补扫'},
     'xzbz': {"CashIn": "CashIn-现金收",
              "CashOut": "CashOut-现金付",
@@ -228,7 +227,7 @@ class JyJiaoyi(Document):
             cls.export()
             print('导出交易码表成功！')
         if query:
-            if R / '\d{4}' == query:
+            if R / r'\d{4}' == query:
                 obj = cls.get_item(query)
                 if obj:
                     for n, v in obj:
