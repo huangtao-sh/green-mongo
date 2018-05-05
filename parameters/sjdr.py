@@ -44,7 +44,7 @@ Coros = (
               'dupcheck': True, 'drop': True}),
     (GgJgm, {'filename': Files.get('ggjgm'), 'dupcheck': True, 'drop': True}),
     (GgBzb, {'filename': Files.get('ggbzb'), 'dupcheck': True, 'drop': True}),
-    (GgQzb, {'filename': Files.get('ggqbz'), 'dupcheck': True, 'drop': True}),
+    (GgQzb, {'filename': Files.get('ggqzb'), 'dupcheck': True, 'drop': True}),
     (JyMenu, {'filename': max((ROOT / '交易菜单').glob('menu*.xml')),
               'dupcheck': True, 'drop': True}),
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
@@ -59,6 +59,7 @@ Coros = (
 async def _import(coro):
     cls, kw = coro
     try:
+        print('处理数据：%s'%(cls.__name__))
         await cls.amport_file(**kw)
     except Exception as e:
         print(e)
