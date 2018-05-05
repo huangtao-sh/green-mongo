@@ -10,6 +10,10 @@ from glemon import Document, P
 from orange import R, arg, Path
 
 
+class AcTemplate(Document):
+    _projects = 'jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'
+
+
 class ZhangHu(Document):
     _projects = '_id', 'name'
 
@@ -52,17 +56,21 @@ class ZhangHu(Document):
 @arg('ac', nargs='?', help='账户，格式应为：999999')
 def main(ac=None):
     if ac:
-        if R / '\d{6}' == ac:
+        if R / r'\d{6}' == ac:
             from parameters.accounting import Accounting
             q = Accounting.search(query=ac).first()
             if q:
                 print('科目信息：%s\n' % (q))
             ZhangHu.show(ac)
+        elif R/r'\d{6}\-\d{1,3}':
+            km, xh = ac.split('-')
+            for obj in AcTemplate.objects((P.km == km) & (P.xh == int(xh))):
+                print(obj.jglx, obj.km, obj.xh, obj.bz, obj.sxrq, obj.hm)
 
 
 if __name__ == '__main__':
-    file = max(Path('~/OneDrive/工作/参数备份').rglob('fhnbhzz.del'))
+    file = max(Path('d:/工作/参数备份').rglob('ggnbzhmb.del'))
     print(file)
     from orange.coroutine import run
-    # run(ZhangHu.amport_file(file,drop=True))
-    ZhangHu.show('223099')
+    run(AcTemplate.amport_file(file,drop=True,encoding='gbk'))
+    obj=AcTemplate.objects.first()
