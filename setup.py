@@ -12,6 +12,9 @@ consoles = [
     'jgm=parameters.jgm:GgJgm.main',
     'ac=parameters.zh:main',
     'km=parameters.accounting:Accounting.run',
+    'fhlz=lvzhi.fhlz:main',
+    'lz=lvzhi:lvzhi',
+    'lzwt=lvzhi:lvzhiwenti',
 ]
 guis = []
 
