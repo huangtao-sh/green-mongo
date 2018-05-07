@@ -18,7 +18,7 @@ values = {'searchfield': 'title',  # 搜索标题
           'timetype': 'timeqb',
           'title': '部分节假日安排'}
 
-YearParser = R/'国务院办公厅关于(\d{4})年'
+YearParser = R/r'国务院办公厅关于(\d{4})年'
 JiaqiParser = R/'.*?、.*?：.*?。'
 
 
@@ -32,12 +32,12 @@ class PmVacation(Document):
         for lineno, line in enumerate(lines):
             r = YearParser.match(line)
             if r:
-                year=r.groups()[0]
-                print('分析 %s 年假期安排'%(year))
+                year = r.groups()[0]
+                print('分析 %s 年假期安排' % (year))
                 break
 
         for line in lines[lineno:]:
-            if JiaqiParser==line:
+            if JiaqiParser == line:
                 print(line)
 
     @classmethod
