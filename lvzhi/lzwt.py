@@ -20,7 +20,7 @@ class LzWenTi(Document):
         # 从文件中读取收集到的问题
         from .model import LvZhi
         qc = LvZhi.cur_qc
-        path = Path(r'~\OneDrive\工作\工作档案\会计履职报告') / qc
+        path = Path('~/OneDrive/工作/工作档案/会计履职报告') / qc
         fn = path/('营业主管履职报告一览表（%s）.xlsx' % (qc))
         print('导入文件 %s' % (fn))
         data = fn.sheets('明细表')
