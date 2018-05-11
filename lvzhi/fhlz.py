@@ -192,14 +192,14 @@ class FhLvzhi(Document):
             print(e)
 
 
-WIDTHS = {
+WIDTHS2 = {
     'A:A': 9.13,
     'B:B': 75.4,
     'C:C': 9.13,
     'D:D': 13,
     'E:E': 53.53
 }
-FORMATS = {
+FORMATS2 = {
     'title': {'font_name': '黑体', 'font_size': 16, 'align': 'center', 'bold': True},
     'h2': {'font_name': '仿宋_GB2312', 'font_size': 12, 'align': 'center', 'bold': True,
            'bg_color': 'black', 'font_color': 'white'},
@@ -239,8 +239,8 @@ class FhWenTi(Document):
             print(filename)
             with filename.write_xlsx()as book:
                 book.worksheet = '分行履职报告问题表'
-                book.set_widths(WIDTHS)
-                book.add_formats(FORMATS)
+                book.set_widths(WIDTHS2)
+                book.add_formats(FORMATS2)
                 book.A1_E1 = title, 'title'
                 book.A2 = ['分行名称', '问题描述', '提出人', '答复部门', '答复意见'], "h2"
                 fh_start, tcr_start = 3, 3
