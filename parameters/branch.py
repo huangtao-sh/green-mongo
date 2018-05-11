@@ -93,22 +93,42 @@ class Contacts(Document):
 手机：    {self.mobile}'''
 
     @classmethod
-    def search(cls, query=None):
+    def search(cls, query=None, yunying=False):
         if query is None:
             filter = None
-        if R / r'1[3578]\d{1,9}' == query:
-            filter = P.mobile.startswith(query)
-        elif R / r'9\d{3}' == query:
-            filter = P.tel.endswith('8765' + query)
-        elif R / r'\d{1,}' == query:
-            filter = P.tel.contains(query)
+        elif yunying:
+            filter = P.sub_dept.startswith('运营')
+            filter = filter & P.br.startswith(query)
+            filter = filter & (
+                (P.title.endswith('总经理') | (P.title == '主要负责人')))
+            return ['{name:10}{title:10}{tel:20}{mobile}' .format(**obj) for obj in cls.objects(filter)]
         else:
-            filter = P.name.contains(query)
-        return cls.objects(filter)
+            if R / r'1[3578]\d{1,9}' == query:
+                filter = P.mobile.startswith(query)
+            elif R / r'9\d{3}' == query:
+                filter = P.tel.endswith('8765' + query)
+            elif R / r'\d{1,}' == query:
+                filter = P.tel.contains(query)
+            else:
+                filter = P.name.contains(query)
+            return cls.objects(filter)
 
     @classmethod
-    @arg('query', help='请输入查找条件')
-    def run(cls, query):
+    @arg('query', nargs="?", help='请输入查找条件')
+    @arg('-l', '--list', dest='list_', action='store_true', help='列出分行')
+    @arg('-y', '--yunying', action='store_true', help='运营部')
+    def main(cls, query, list_=False, yunying=False):
         if query:
-            for obj in cls.search(query):
+            for obj in cls.search(query, yunying):
                 print(obj)
+        if list_:
+            d = Branch.branchs
+            for obj in sorted(d.items(), key=lambda x: x[1]):
+                print('%s\t%s' % (obj[1], obj[0]))
+            print('%d branchs listed.' % (len(d)))
+
+
+if __name__ == '__main__':
+    # from parameters.sjdr import sjdr
+    # sjdr()
+    print(Branch.branchs)

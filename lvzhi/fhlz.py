@@ -10,34 +10,14 @@ from glemon import Document, P
 from glemon.loadcheck import LoadFile
 from collections import namedtuple
 from orange.coroutine import run, wait
+from parameters.branch import Branch, Contacts
 
 WenTi = namedtuple('WenTi', ('fh', 'tcr', 'ms'))
 
-SAVEPATH = Path('~/OneDrive/工作/工作档案/分行履职报告')
+SAVEPATH = Path('~/Documents/工作/工作档案/分行履职报告')
 ROOT = SAVEPATH / "分行上报"
-BRANCHS = set("""北京分行
-天津分行
-沈阳分行
-上海分行
-南京分行
-苏州分行
-济南分行
-郑州分行
-武汉分行
-广州分行
-深圳分行
-重庆分行
-成都分行
-西安分行
-兰州分行
-合肥分行
-杭州分行
-宁波分行
-温州分行
-绍兴分行
-金华分行
-舟山分行
-台州分行""".split('\n'))   # 分行清单
+BRANCHS = Branch.branchs
+BRANCHS.pop('香港分行')
 
 
 def transbr(name):
@@ -65,7 +45,7 @@ FORMATS = {
     'bt': {'font_name': '黑体', 'font_size': 18,
            'align': 'center', 'valign': 'vcenter'},
     'normal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
-               'valign': 'vcenter'},
+               'valign': 'center'},
     'vnormal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
                 'align': 'center', 'valign': 'vcenter'}, }
 
@@ -74,7 +54,7 @@ WIDTHS = {'A:A': 13,
 
 
 class FhLvzhi(Document):
-    _projects = 'qc', 'lb', 'jg', 'bgr', 'headers', 'data'
+    _projects = 'qc', 'lb', 'jg', 'bgr', 'headers', 'data', 'br_order'
     '期次、类别：运营主管，分行管长、报告机构，报告人，表头，报送内容'
 
     @classproperty
@@ -85,18 +65,17 @@ class FhLvzhi(Document):
     def report(cls, qc=None):
         # 报告当前各分行上报情况
         qc = qc or cls.curqc
-        fhs = BRANCHS
         print('分行未上报情况统计')
         print('报告期次：%s' % (qc))
         fghz = set(cls.objects(qc=qc, lb='分管行长').distinct('jg'))
         kjzg = set(cls.objects(qc=qc, lb='运营主管').distinct('jg'))
         print('  分行    分管行长     运营主管')
-        for x in sorted(fhs):
+        for x in sorted(BRANCHS):
             def test(a): return "    " if x in a else "未报"
             if ((x not in fghz)or(x not in kjzg)):
                 print('%s    %s         %s' % (x, test(fghz), test(kjzg)))
-        print(' 合计        %d           %d' % ((len(fhs) - len(fghz)),
-                                              (len(fhs) - len(kjzg))))
+        print(' 合计        %d           %d' % ((len(BRANCHS) - len(fghz)),
+                                              (len(BRANCHS) - len(kjzg))))
 
     @classmethod
     def export(cls, qc=None):
@@ -105,11 +84,11 @@ class FhLvzhi(Document):
         wentis = []
         for lb in ('分管行长', '运营主管'):
             query = (P.qc == qc) & (P.lb == lb)
-            with (SAVEPATH / ('%s履职报告（%s）.xlsx' % (lb, qc))).write_xlsx()\
+            with (SAVEPATH / '报告' / ('%s履职报告（%s）.xlsx' % (lb, qc))).write_xlsx()\
                     as book:
                 book.add_formats(FORMATS)
                 count = 0
-                for bg in cls.objects(query).order_by('jg'):
+                for bg in cls.objects(query).order_by('br_order'):
                     print("%-10s%s" % (bg.jg, bg.bgr))
                     book.worksheet = bg.jg
                     book.set_widths(WIDTHS)
@@ -133,7 +112,12 @@ class FhLvzhi(Document):
                                                         n.strip()))
                     count += 1
                 print('%s，共 %d 条记录' % (lb, count))
-        with (SAVEPATH / ('分行运营主管履职报告问题%s.xlsx' % (qc))).write_xlsx()\
+        filename = SAVEPATH / '问题' / ('分行运营主管履职报告问题%s.xlsx' % (qc))
+        if filename.exists():
+            s = input('文件已存在，是否覆盖，Y or N')
+            if s.upper() != 'Y':
+                return
+        with filename.write_xlsx()\
                 as book:
             book.add_formats(FORMATS)
             book.worksheet = '分行履职报告问题表'
@@ -208,23 +192,81 @@ class FhLvzhi(Document):
             print(e)
 
 
+WIDTHS = {
+    'A:A': 9.13,
+    'B:B': 75.4,
+    'C:C': 9.13,
+    'D:D': 13,
+    'E:E': 53.53
+}
+FORMATS = {
+    'title': {'font_name': '黑体', 'font_size': 16, 'align': 'center', 'bold': True},
+    'h2': {'font_name': '仿宋_GB2312', 'font_size': 12, 'align': 'center', 'bold': True,
+           'bg_color': 'black', 'font_color': 'white'},
+    'cnormal': {'font_name': '仿宋_GB2312', 'font_size': 12, 'align': 'center',
+                'valign': 'vcenter', 'text_wrap': True, },
+    'normal': {'font_name': '仿宋_GB2312', 'font_size': 12,  'valign': 'vcenter', 'text_wrap': True, },
+}
+
+
 class FhWenTi(Document):
-    _projects = 'qc', 'fh', 'tcr', 'wtms', 'dfbm', 'dfr', 'dfyj'
-    _load_mapper = {'fh': '分行',
-                    'tcr': '提出人',
-                    'wtms': '问题描述',
-                    'dfbm': '答复部门',
-                    'dfr': '答复人',
-                    'dfyj': '答复意见',
-                    'qc': '期次'}
+    _projects = 'qc', 'fh', 'tcr', 'wtms', 'dfbm', 'dfr', 'dfyj', 'order'
 
     @classmethod
-    def _proc_sheet(cls, index, name, data, qc=None, **kw):
+    def import_file(cls, filename):
+        qc = filename.pname[-6:]
+        hz = set(FhLvzhi.objects((P.qc == qc) &
+                                 (P.lb == '分管行长')).distinct('bgr'))
+        data = filename.sheets('分行履职报告问题表')
         if data:
-            data[0].append('期次')
+            cls.objects(P.qc == qc).delete()
             for d in data[1:]:
-                d.append(qc)
-        return cls, data
+                d = d[:6]
+                if not d[3].strip():
+                    d[3] = '运营管理部'
+                order = BRANCHS.get(d[0], 150)*10
+                if d[1] not in hz:
+                    order += 1
+                d.append(order)
+                d.insert(0, qc)
+                obj = cls(zip(cls._projects, d))
+                obj.save()
+            data = [x for x in cls.objects(P.qc == qc).order_by(P.order).scalar(
+                'fh', 'wtms', 'tcr', 'dfbm', 'dfyj'
+            )]
+            title = "%s年%s季度分管行领导及部门负责人履职报告问题的答复意见" % tuple(qc.split('-'))
+            filename = SAVEPATH / '正式答复意见' / ('关于%s.xlsx' % (title))
+            print(filename)
+            with filename.write_xlsx()as book:
+                book.worksheet = '分行履职报告问题表'
+                book.set_widths(WIDTHS)
+                book.add_formats(FORMATS)
+                book.A1_E1 = title, 'title'
+                book.A2 = ['分行名称', '问题描述', '提出人', '答复部门', '答复意见'], "h2"
+                fh_start, tcr_start = 3, 3
+                tcr, fh = None, None
+                for line, row in enumerate(data, 3):
+                    book.row = line
+                    book.B = row[1], 'normal'
+                    book.D = row[3], 'cnormal'
+                    book.E = row[4], 'normal'
+                    if fh != row[0]:
+                        if fh:
+                            book['A%d:A%d' %
+                                 (fh_start, line-1)] = fh, 'cnormal'
+                        fh_start = line
+                        fh = row[0]
+                    if tcr != row[2]:
+                        if tcr:
+                            book['C%d:C%d' %
+                                 (tcr_start, line-1)] = tcr, 'cnormal'
+                        tcr_start = line
+                        tcr = row[2]
+                if fh:
+                    book['A%d:A%d' % (fh_start, line)] = fh, 'cnormal'
+                if tcr:
+                    book['C%d:C%d' % (tcr_start, line)] = tcr, 'cnormal'
+                book.set_border('A2:E%d' % (line))
 
 
 @arg('-i', '--import', dest='imp', action='store_true', help='导入分行履职报告')
@@ -245,11 +287,7 @@ def main(imp=False, export=False, report=False, clear=False, qc=None, convert=Fa
         FhLvzhi.drop_collection()
         print('清理完成')
     if convert:
-        ROOT = Path('~/OneDrive/工作/工作档案/分行履职报告')
-        files = ROOT.glob('分行分管行长及运营主管履职报告问题*.xlsx')
-        for filename in files:
-            qc = list(R / r'(\d{4}).*?(\d)' / filename.pname)
-            if qc:
-                qc = '%s-%s' % qc[0]
-                print(qc)
-                run(FhWenTi.amport_file(filename, dupcheck=True, qc=qc))
+        ROOT = Path('~/Documents/工作/工作档案/分行履职报告/答复意见')
+        filename = max(ROOT.glob('分行运营主管履职报告问题*.xlsx'))
+        print('开始处理文件%s' % (filename))
+        FhWenTi.import_file(filename)

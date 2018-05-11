@@ -12,7 +12,7 @@ from lzwt import LzWenTi
 
 def import_wenti():
     # 从档案数据中导入问题
-    ROOT = Path(r"~\OneDrive\工作\工作档案\会计履职报告\履职报告梳理")
+    ROOT = Path(r"~/OneDrive/工作/工作档案/会计履职报告/履职报告梳理")
     fields = LzWenTi._fields_without_id
     fields.remove('dfr')
     LzWenTi.objects(status='发布').delete()

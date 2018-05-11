@@ -15,6 +15,7 @@ consoles = [
     'fhlz=lvzhi.fhlz:main',
     'lz=lvzhi:lvzhi',
     'lzwt=lvzhi:lvzhiwenti',
+    'br=parameters.branch:Contacts.main'
 ]
 guis = []
 
