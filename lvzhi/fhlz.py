@@ -4,6 +4,7 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2017-07-06 11:34
+# 修订：2018-5-14 增加分行履职报告格式转换功能
 
 from orange import Path, R, classproperty, arg, ensure, extract
 from glemon import Document, P
