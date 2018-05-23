@@ -13,6 +13,7 @@ from .transaction import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
 from .accounting import Accounting
 from .jgm import GgJgm
 from .branch import Branch
+from .dzzz import GgDzzz
 
 ROOT = Path('~/Documents/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
@@ -40,6 +41,7 @@ Coros = (
                   'dupcheck': True, 'drop': True}),
     (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
               'dupcheck': True, 'drop': True}),
+    (GgDzzz, {'filename': Files.get('DZZZCSB'), 'dupcheck': True, 'drop': True})
 )
 
 

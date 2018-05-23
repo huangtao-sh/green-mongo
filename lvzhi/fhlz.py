@@ -4,8 +4,9 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2017-07-06 11:34
+# 修订：2018-5-14 增加分行履职报告格式转换功能
 
-from orange import Path, R, classproperty, arg, ensure
+from orange import Path, R, classproperty, arg, ensure, extract
 from glemon import Document, P
 from glemon.loadcheck import LoadFile
 from collections import namedtuple
@@ -214,7 +215,7 @@ class FhWenTi(Document):
 
     @classmethod
     def import_file(cls, filename):
-        qc = filename.pname[-6:]
+        qc = extract(filename.pname, r'\d{4}\-\d')
         hz = set(FhLvzhi.objects((P.qc == qc) &
                                  (P.lb == '分管行长')).distinct('bgr'))
         data = filename.sheets('分行履职报告问题表')
