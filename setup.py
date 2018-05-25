@@ -2,6 +2,8 @@
 #  项目：生产管理平台
 #  作者：黄涛
 #  创建：2018-3-15
+# 修改：2018-05-25 20:50 删除lzwt
+
 
 from setuptools import setup, find_packages
 from orange import get_ver
@@ -13,8 +15,8 @@ consoles = [
     'ac=parameters.zh:main',
     'km=parameters.accounting:Accounting.run',
     'fhlz=lvzhi.fhlz:main',
-    'lz=lvzhi:lvzhi',
-    'lzwt=lvzhi:lvzhiwenti',
+    'lz=lvzhi:main',
+    #   'lzwt=lvzhi:lvzhiwenti',
     'br=parameters.branch:Contacts.main'
 ]
 guis = []

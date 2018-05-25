@@ -24,7 +24,7 @@ class GgDzzz(Document):
     _projects = 'bh', 'xh', 'mc', 'czjg', 'czjglx', 'czjgfh', 'czjglw', 'bz', 'jdbz', 'zhjglx', 'zhjgfh', 'zhjglw', 'km', 'zhxh', 'kjg', 'yxhz'
 
     @classmethod
-    @arg('-e', '--export', action='store_true', help('导出参数表')
+    @arg('-e', '--export', action='store_true', help='导出参数表')
     def main(cls, export=False):
         for obj in cls.objects:
             print(*obj.values('bh', 'xh'))
