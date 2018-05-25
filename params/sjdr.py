@@ -41,17 +41,16 @@ Coros = (
                   'dupcheck': True, 'drop': True}),
     (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
               'dupcheck': True, 'drop': True}),
-    (GgDzzz, {'filename': Files.get('DZZZCSB'), 'dupcheck': True, 'drop': True})
+    #(GgDzzz, {'filename': Files.get('DZZZCSB'), 'dupcheck': True, 'drop': True})
 )
 
 
 async def _import(coro):
     cls, kw = coro
     try:
-        print('处理数据：%s' % (cls.__name__))
         await cls.amport_file(**kw)
     except Exception as e:
-        print(e)
+        print('%s 导入失败，错误：%s' % (cls.__name__, e))
 
 
 def sjdr():

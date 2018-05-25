@@ -9,15 +9,15 @@ from setuptools import setup, find_packages
 from orange import get_ver
 
 consoles = [
-    'jym=parameters.transaction:JyJiaoyi.main',
-    'sjdr=parameters.sjdr:sjdr',
-    'jgm=parameters.jgm:GgJgm.main',
-    'ac=parameters.zh:main',
-    'km=parameters.accounting:Accounting.run',
+    'jym=params.transaction:JyJiaoyi.main',
+    'sjdr=params.sjdr:sjdr',
+    'jgm=params.jgm:GgJgm.main',
+    'ac=params.zh:main',
+    'km=params.accounting:Accounting.run',
     'fhlz=lvzhi.fhlz:main',
     'lz=lvzhi:main',
     #   'lzwt=lvzhi:lvzhiwenti',
-    'br=parameters.branch:Contacts.main'
+    'br=params.branch:Contacts.main'
 ]
 guis = []
 
