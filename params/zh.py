@@ -57,7 +57,7 @@ class ZhangHu(Document):
 def main(ac=None):
     if ac:
         if R / r'\d{6}' == ac:
-            from parameters.accounting import Accounting
+            from .accounting import Accounting
             q = Accounting.search(query=ac).first()
             if q:
                 print('科目信息：%s\n' % (q))
