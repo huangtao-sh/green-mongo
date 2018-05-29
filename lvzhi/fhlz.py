@@ -11,7 +11,7 @@ from glemon import Document, P
 from glemon.loadcheck import LoadFile
 from collections import namedtuple
 from orange.coroutine import run, wait
-from parameters.branch import Branch, Contacts
+from params.branch import Branch, Contacts
 
 WenTi = namedtuple('WenTi', ('fh', 'tcr', 'ms'))
 

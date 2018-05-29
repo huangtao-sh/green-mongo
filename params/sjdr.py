@@ -9,7 +9,7 @@ from orange import Path
 from .bz import GgBzb, GgQzb
 from .zh import ZhangHu, AcTemplate
 from orange.coroutine import run
-from .transaction import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
+from trans import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
 from .accounting import Accounting
 from .jgm import GgJgm
 from .branch import Branch
