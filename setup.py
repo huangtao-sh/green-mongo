@@ -16,6 +16,7 @@ consoles = [
     'km=params.accounting:Accounting.run',
     'fhlz=lvzhi.fhlz:main',
     'lz=lvzhi:main',
+    'jqb=vacation:Vacation.main'
     #   'lzwt=lvzhi:lvzhiwenti',
     'br=params.branch:Contacts.main',
 ]
