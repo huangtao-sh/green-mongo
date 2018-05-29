@@ -5,7 +5,8 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2017-10-14 22:41
 
-from glemon import *
+from glemon import Document, P
+
 
 class Pzzl(Document):
     '''凭证种类表
@@ -72,12 +73,14 @@ mbzs int N.N 每本张数 不按本为1
 hyhs int N.N 换页行数 无为0 
 hbhs int N.N 换本行数 无为0 
 '''
-    _projects='pzzl','kmkzz','pymc','qyrq','zyrq','bzh','djje','sybz','kzbz',\
-         'mbzs','hyhs','hbhs'
+    _projects = 'pzzl', 'kmkzz', 'pymc', 'qyrq', 'zyrq', 'bzh', 'djje', 'sybz', 'kzbz',\
+        'mbzs', 'hyhs', 'hbhs'
 
-if __name__=='__main__':
-    from orange import *
+
+if __name__ == '__main__':
+    from orange import Path
     from orange.coroutine import run
-    run(Pzzl.load_files(Path(r'C:\Users\huangtao\OneDrive\工作\参数备份\运营管理2017-09\shendawei\凭证种类表ggpzzl.del')))
+    run(Pzzl.load_files(Path(
+        r'C:\Users\huangtao\OneDrive\工作\参数备份\运营管理2017-09\shendawei\凭证种类表ggpzzl.del')))
     for obj in Pzzl.objects.limit(10):
-        print(obj.pzzl,obj.kmkzz,obj.pymc)
+        print(obj.pzzl, obj.kmkzz, obj.pymc)

@@ -1,10 +1,9 @@
-# 项目：假期表参数
+# 项目：工作平台
 # 模块：假期表参数
 # 作者：黄涛
 # License:GPL
 # Email:huangtao.sh@icloud.com
-# 创建：2016-08-17 10:51
-
+# 创建：2018-05-29 08:41
 
 from orange import R, Path, arg
 from glemon import Document, P
@@ -69,7 +68,3 @@ class FetchVacation(Crawler):
         s = "\n".join(s)
         s = R/r'　+?'/s % '\n'
         PmVacation.parse(content=s)     # 添加假期表
-
-
-if __name__ == '__main__':
-    PmVacation.main()
