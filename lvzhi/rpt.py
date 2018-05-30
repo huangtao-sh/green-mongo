@@ -17,6 +17,7 @@ FORMATS = {       # 预定义格式
               'valign': 'vcenter'},  # 换行并居中
     'normal': {'font_name': '微软雅黑'}}  # 正常
 
+
 YLBFORMAT = [
     {'header': '机构', "width": 20, 'format': 'cwrap'},
     {'header': '报告人', 'width': 9, 'format': 'cwrap'},
@@ -83,3 +84,13 @@ def export_wt(yyb=True, fn=None):
         book.A1_F1 = '营业主管履职报告重点问题（%s）' % (yf), "h1"
         book.add_table("A2", columns=WTFORMAT, data=data)
         print('共导出%d条数据' % (len(data)))
+
+
+PUBLISH_FORMAT = {
+    'title': {'font_name': '仿宋', 'font_size': 18, 'bold': True, 'align': 'center'},
+    'header': {'font_name': '黑体', 'font_size': 14, 'align': 'center'},
+    'center': {'font_name': '微软雅黑', 'font_size': 11, 'valign': 'vcenter', 'align': 'center',
+               'text_wrap': True},
+    'nr': {'font_name': '微软雅黑', 'font_size': 11, 'valign': 'vcenter',
+           'text_wrap': True},
+}

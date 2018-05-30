@@ -151,6 +151,17 @@ def _get_date(rq):
         return '%s%02d' % (result[0], int(result[1]))
 
 
+WIDTH1 = {
+    'A:B': 13.75,
+    'C:C': 21,
+    'D:D': 46.63,
+    'E:E': 8.63,
+    'F:F': 11.25,
+    "G:G": 37.63,
+    "H:H": 15.5
+}
+
+
 class LzDafu(Document):
     # 月份，重要性，问题分类，机构，具体内容，报告人，部门，答复人，答复意见，后续跟踪
     _projects = 'yf', 'zyx', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfr', 'dfyj', 'hxgz'
@@ -195,5 +206,37 @@ class LzDafu(Document):
                     objs.append(obj)
         cls.drop()
         cls.objects.insert(objs)
-        print(years)
-        print(curyf)
+        from .rpt import PUBLISH_FORMAT
+
+        def mk_date(x): return '%s年%s月' % (x[:4], x[4:])
+        print('当前月份：%s' % (curyf))
+        with Path('~/abc.xlsx').write_xlsx(formats=PUBLISH_FORMAT)as book:
+            book.worksheet = '重点问题'
+            book.set_widths(WIDTH1)
+            book.A1_H1 = '营业主管履职报告重点问题与答复意见（%s）' % (mk_date(curyf)), 'title'
+            book.A2 = ['提出时间', '问题分类', '机构', '具体内容',
+                       '报告人', '反馈部门', '答复意见', '后续跟踪'], 'header'
+            book += 1
+            for row in cls.objects((P.yf == curyf) & (P.zyx == '重点问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
+                book.row += 1
+                book.A = [mk_date(row[0]), row[1], row[2]], 'center'
+                book.D = row[3], 'nr'
+                book.E = row[4:6], 'center'
+                book.G = row[6], 'nr'
+                book.H = row[7], 'center'
+            book.set_border('A2:H%s' % book.row)
+
+            book.worksheet = '一般问题'
+            book.set_widths(WIDTH1)
+            book.A1_H1 = '营业主管履职报告重点问题与答复意见（%s）' % (mk_date(curyf)), 'title'
+            book.A2 = ['提出时间', '问题分类', '机构', '具体内容',
+                       '报告人', '反馈部门', '答复意见', '后续跟踪'], 'header'
+            book += 1
+            for row in cls.objects((P.yf == curyf) & (P.zyx == '一般问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
+                book += 1
+                book.A = [mk_date(row[0]), row[1], row[2]], 'center'
+                book.D = row[3], 'nr'
+                book.E = row[4:6], 'center'
+                book.G = row[6], 'nr'
+                book.H = row[7], 'center'
+            book.set_border('A2:H%s' % book.row)
