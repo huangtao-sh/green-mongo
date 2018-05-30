@@ -7,7 +7,7 @@
 # 修改：2018-05-25 20:49 使用新版命令行
 
 
-from .docs import LzBaogao, LzBranchs, LzWenTi
+from .docs import LzBaogao, LzBranchs, LzWenTi, LzDafu
 from .rpt import export_wt, export_ylb
 from orange import arg
 
@@ -18,8 +18,9 @@ from orange import arg
 @arg('-e', '--export', action='store_true', help='导出报告')
 @arg('-c', '--collection', action='store_true', help='收集问题')
 @arg('-w', '--wenti', action='store_true', help='导出问题')
+@arg('-p', '--publish', action='store_true', help='正式发布履职报告')
 def main(report=False, import_=False, branchs=None, export=False,
-         collection=False, wenti=False):
+         collection=False, wenti=False, publish=False):
     if import_:
         LzBaogao.import_file()
     if report:
@@ -32,4 +33,5 @@ def main(report=False, import_=False, branchs=None, export=False,
         LzWenTi.load_files()
     if wenti:
         export_wt()
-
+    if publish:
+        LzDafu.publish()

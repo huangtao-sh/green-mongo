@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-25 20:48
 
-from .docs import LzBaogao, LzWenTi
+from .docs import LzBaogao, LzWenTi, ROOTPATH
 from orange import Path
 from glemon import P
 
@@ -34,9 +34,7 @@ SBFORMAT = [
 
 def export_ylb(fn=None):
     qc = LzBaogao.cur_qc()
-    path = Path('~/Documents/工作/工作档案/会计履职报告') / qc
-    path.ensure()
-    fn = fn or path/('营业主管履职报告一览表（%s）.xlsx' % (qc))
+    fn = ROOTPATH / '2报告一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
 
     if fn.exists():
         s = input('%s 已存在，是否覆盖，Y or N?\n' % (fn.name))
@@ -77,8 +75,7 @@ WTFORMAT = [
 def export_wt(yyb=True, fn=None):
     yf = LzBaogao.cur_qc()
     print('当前月份：%s' % (yf))
-    path = Path('~/Documents/工作/工作档案/会计履职报告') / yf
-    fn = fn or path / ('营业主管履职报告（%s）.xlsx' % (yf))
+    fn = ROOTPATH / '3处理问题' / ('营业主管履职报告（%s）·.xlsx' % (yf))
     data = list(LzWenTi.objects(yf=yf).order_by('bm', 'wtfl', 'dfr').scalar(
         'wtfl', 'jg', 'jtnr', 'bgr', 'dfr', 'dfyj'))
     with fn.write_xlsx(formats=FORMATS) as book:

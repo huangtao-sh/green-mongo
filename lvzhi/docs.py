@@ -4,10 +4,13 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-25 20:47
+# 修订：2018-05-30 增加答复意见
 
 from orange import Path, R, datetime, wlen
 from glemon import Document, P
 from collections import defaultdict
+
+ROOTPATH = Path('~/Documents/工作/工作档案/分行履职报告')
 
 
 def wprint(s, width=20):
@@ -86,7 +89,7 @@ class LzBaogao(Document):
 
     @classmethod
     def import_file(cls):
-        path = Path(r'~/Documents/工作/工作档案/会计履职报告/会计履职报告/会计履职报告.xls')
+        path = max((ROOTPATH / '1下载报告').glob('会计履职报告*.xls'))
         rows = path.sheets('会计履职报告')[1:]
         mapper = 0, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17
         print('处理文件：%s' % (path))
@@ -125,8 +128,7 @@ class LzWenTi(Document):
     def load_files(cls):
         # 从文件中读取收集到的问题
         qc = LzBaogao.cur_qc()
-        path = Path('~/Documents/工作/工作档案/会计履职报告') / qc
-        fn = path/('营业主管履职报告一览表（%s）.xlsx' % (qc))
+        fn = ROOTPATH / '2报告一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
         print('导入文件 %s' % (fn))
         data = fn.sheets(0)[1:]
         data.extend(fn.sheets(1)[1:])
@@ -135,6 +137,63 @@ class LzWenTi(Document):
         for row in data:
             if row[3]:
                 for jtnr in row[3].split('\n\n'):
-                    LzWenTi(yf=qc, jg=row[0], bgr=row[1], jtnr=jtnr).save()
+                    LzWenTi(yf=qc, jg=row[0],
+                            bgr=row[1], jtnr=jtnr).save()
                     count += 1
         print('共导入 %d 条数据' % (count))
+
+
+def _get_date(rq):
+    Pattern = R / r'(\d{4}).*?(\d{1,2}).*?'
+    result = Pattern.match(rq)
+    if result:
+        result = result.groups()
+        return '%s%02d' % (result[0], int(result[1]))
+
+
+class LzDafu(Document):
+    # 月份，重要性，问题分类，机构，具体内容，报告人，部门，答复人，答复意见，后续跟踪
+    _projects = 'yf', 'zyx', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfr', 'dfyj', 'hxgz'
+
+    @classmethod
+    def publish(cls):
+        path = max((ROOTPATH/'4正式答复意见').glob('营业主管履职报告重点问题与答复意见*.xlsx'))
+        print('处理文件： %s' % (path.name))
+        mapper = {
+            '提出时间': 'yf',
+            '重要性': 'zyx',
+            '问题分类': 'wtfl',
+            '机构': 'jg',
+            '具体内容': 'jtnr',
+            '报告人': 'bgr',
+            '反馈部门': 'bm',
+            '答复人': 'dfr',
+            '答复意见': 'dfyj',
+            '后续跟踪': 'hxgz',
+            '状态': 'hxgz',
+        }
+        curyf = None
+        years = set()
+        objs = []
+        for idx, name, data in path.iter_sheets():
+            if (len(data)) > 3:
+                header = data[1]
+                mapper1 = {}
+                for k, v in mapper.items():
+                    if k in header:
+                        mapper1[v] = header.index(k)
+                for row in data[2:]:
+                    obj = {k: row[v]for k, v in mapper1.items()}
+                    obj['yf'] = _get_date(obj['yf'])
+                    years.add(obj['yf'][:4])
+                    if name in ('重点问题', '一般问题'):
+                        obj['zyx'] = name
+                        curyf = obj['yf']
+                    else:
+                        if obj['yf'] == curyf:
+                            continue
+                    objs.append(obj)
+        cls.drop()
+        cls.objects.insert(objs)
+        print(years)
+        print(curyf)
