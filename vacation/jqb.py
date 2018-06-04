@@ -8,13 +8,11 @@
 
 import re
 import datetime as dt
-import ONEDAY
-from orange import arg, now, ensure, Path
+from orange import arg, now, ensure, Path, ONEDAY
 from imongo import Document, EmbeddedDocument, StringField, IntField, ListField, \
     EmbeddedDocumentField, P
 from collections import OrderedDict
 from orange.xlsx import Book
-from glemon import Document
 
 
 WEEKDAY = {5: '星期六', 6: '星期日'}
