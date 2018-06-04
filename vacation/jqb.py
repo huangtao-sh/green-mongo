@@ -8,11 +8,14 @@
 
 import re
 import datetime as dt
+import ONEDAY
 from orange import arg, now, ensure, Path
-from mongo.document import Document, EmbeddedDocument, StringField, IntField, ListField, \
+from imongo import Document, EmbeddedDocument, StringField, IntField, ListField, \
     EmbeddedDocumentField, P
 from collections import OrderedDict
 from orange.xlsx import Book
+from glemon import Document
+
 
 WEEKDAY = {5: '星期六', 6: '星期日'}
 Year = re.compile(r'(\d{4})年')
@@ -20,7 +23,7 @@ Holiday = re.compile(r'[一二三四五六七八九]、(.*?)：')
 Num = re.compile(r'\d{1,2}')
 Arrange = re.compile(r'(\d{1,2}月\d{1,2}日(?:至(?:\d{1,2}月)?(?:\d{1,2}日))?'
                      r'.*?(放假调休|补休|放假|上班))')
-ONEDAY = dt.timedelta(days=1)
+
 TYPES = {'放假调休': 'fjtx',
          '补休': 'bx',
          '放假': 'fj',
