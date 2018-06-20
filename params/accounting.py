@@ -78,7 +78,7 @@ class Accounting(Document):
     @arg('-t', '--items', help='查找科目的子目')
     def run(cls, filename=None, query=None, category=None, items=None):
         if filename:
-            cls.load_file(filename)
+            cls.import_file(filename, dupcheck=True, clear=True)
         for _query in query:
             q = cls.search(_query)
             if q.count() > 1:
