@@ -46,7 +46,7 @@ FORMATS = {
     'bt': {'font_name': '黑体', 'font_size': 18,
            'align': 'center', 'valign': 'vcenter'},
     'normal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
-               'valign': 'center'},
+               'valign': 'center', 'align': 'left'},
     'vnormal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
                 'align': 'center', 'valign': 'vcenter'}, }
 
