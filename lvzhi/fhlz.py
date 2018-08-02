@@ -114,12 +114,8 @@ class FhLvzhi(Document):
                     count += 1
                 print('%s，共 %d 条记录' % (lb, count))
         filename = SAVEPATH / '问题' / ('分行运营主管履职报告问题%s.xlsx' % (qc))
-        if filename.exists():
-            s = input('文件已存在，是否覆盖，Y or N')
-            if s.upper() != 'Y':
-                return
-        with filename.write_xlsx()\
-                as book:
+
+        with filename.write_xlsx() as book:
             book.add_formats(FORMATS)
             book.worksheet = '分行履职报告问题表'
             book.set_widths({'A:B': 9, 'C:C': 80, 'D:E': 15, 'F:F': 80})
