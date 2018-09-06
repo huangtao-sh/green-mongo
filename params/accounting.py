@@ -54,7 +54,6 @@ class Accounting(Document):
             else:
                 if kemu:
                     description.append(line)
-        print(data)
         return list(data.values())
 
     @classmethod
