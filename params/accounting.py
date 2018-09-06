@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2015-09-24 11:26
 # 修订：2017-10-17 使用 glemon 定义的模型
+# 修订：2018-09-06 修正数据导入错误
 
 from glemon import Document, P
 from orange import R, arg
