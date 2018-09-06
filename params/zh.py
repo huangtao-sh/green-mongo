@@ -39,10 +39,9 @@ class ZhangHu(Document):
         dupcheck and cls._dupcheck(filename)
         import aiofiles
         async with aiofiles.open(str(filename), 'rb')as f:
-            data = await f.read()
             cls.drop()
             datas = set()
-            for row in data.splitlines():
+            async for row in f:
                 s = row.split(b',')
                 ac = s[0].decode()[13:22]
                 if ac not in datas:
