@@ -42,7 +42,8 @@ class ZhangHu(Document):
         async with aiofiles.open(str(filename), 'rb')as f:
             cls.drop()
             datas = set()
-            async for row in f:
+            rows = await f.read()
+            for row in rows.splitlines():
                 s = row.split(b',')
                 ac = s[0].decode()[13:22]
                 if ac not in datas:
