@@ -5,8 +5,7 @@
 # 修改：2018-05-25 20:50 删除lzwt
 
 
-from setuptools import setup, find_packages
-from orange import get_ver
+from orange import setup
 
 consoles = [
     'jym=trans:JyJiaoyi.main',
@@ -24,7 +23,6 @@ guis = []
 
 setup(
     name='green-mongo',
-    version=get_ver(),
     author='huangtao',
     author_email='hunto@163.com',
     platforms='any',
@@ -33,7 +31,6 @@ setup(
     entry_points={
         'gui_scripts': guis,
         'console_scripts': consoles},
-    packages=find_packages(exclude=['testing']),
     url='https://github.com/huangtao-sh/mongo.git',
     license='GPL',
 )
