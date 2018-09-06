@@ -4,6 +4,7 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2017-05-05 14:31
+# 修订：2018-09-06 忽略已导入文件的异常
 
 from orange import Path
 from .bz import GgBzb, GgQzb

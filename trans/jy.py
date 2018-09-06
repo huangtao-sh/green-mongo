@@ -187,13 +187,14 @@ class JyJiaoyi(Document):
             menus = JyMenu.get_path(obj._id) or [None, None]
             d.extend(menus)
             data.append(d)
+            data2.append(d)
         d = now().add(months=-1) % ('%Y-%m')
         fn = fn or str(Path('~/Documents/交易码表（%s）.xlsx' % (d)))
         from orange.xlsx import Book
         with Book(fn) as book:
             book.add_table('A1', columns=FORMAT, data=data, sheet='交易码表')
             book.add_table(
-                "A1", columns=FORMAT[:-2], data=data2, sheet='交易码参数')
+                "A1", columns=FORMAT, data=data2, sheet='交易码参数')
 
     @classmethod
     def _proc_csv(cls, data, **kw):
