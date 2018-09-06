@@ -40,10 +40,10 @@ class Accounting(Document):
             return self.id[:4]
 
     @classmethod
-    def _proc_txt(cls, data, **kw):
+    def _proc_txt(cls, lines, **kw):
         data = {}
         kemu = None
-        for line in data:
+        for line in lines:
             line = line.strip()
             if any([blank.match(line) for blank in BLANKS]):
                 continue
@@ -54,6 +54,7 @@ class Accounting(Document):
             else:
                 if kemu:
                     description.append(line)
+        print(data)
         return list(data.values())
 
     @classmethod
