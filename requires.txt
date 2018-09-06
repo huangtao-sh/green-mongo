@@ -1,0 +1,5 @@
+pymongo>=3.7.1
+lxml
+xlsxwriter
+motor>=2.0
+aiofiles>=0.4.0

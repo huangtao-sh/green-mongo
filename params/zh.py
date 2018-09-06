@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2017-10-14 11:28
 # 修订：2017-12-18 修正导入文件的算法，以提高导入速度
+# 修订：2018-09-06 修正内部账户导入问题
 
 from glemon import Document, P
 from orange import R, arg, Path
@@ -39,10 +40,9 @@ class ZhangHu(Document):
         dupcheck and cls._dupcheck(filename)
         import aiofiles
         async with aiofiles.open(str(filename), 'rb')as f:
-            data = await f.read()
             cls.drop()
             datas = set()
-            for row in data.splitlines():
+            async for row in f:
                 s = row.split(b',')
                 ac = s[0].decode()[13:22]
                 if ac not in datas:

@@ -12,9 +12,9 @@ from trans.jy import JyJiaoyi, FORMAT
 path = Path('~/Documents/工作/工作档案/运营参数维护/交易码表/交易码参数表.xlsx')
 LEIBIE = {'新增': 0, '修订': 1, '删除': 2}
 JYFORMAT = FORMAT.copy()
-JYFORMAT.extend([{'header': '创建日期', width=8.43},
-                 {'header': '投产时间', width=8.43},
-                 {'header': '备注', width=60}
+JYFORMAT.extend([{'header': '创建日期', 'width': 8.43},
+                 {'header': '投产时间', 'width': 8.43},
+                 {'header': '备注', 'width': 60}
                  ])
 
 

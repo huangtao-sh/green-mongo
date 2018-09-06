@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2015-09-24 11:26
 # 修订：2017-10-17 使用 glemon 定义的模型
+# 修订：2018-09-06 修正数据导入错误
 
 from glemon import Document, P
 from orange import R, arg
@@ -40,10 +41,10 @@ class Accounting(Document):
             return self.id[:4]
 
     @classmethod
-    def _proc_txt(cls, data, **kw):
+    def _proc_txt(cls, lines, **kw):
         data = {}
         kemu = None
-        for line in data:
+        for line in lines:
             line = line.strip()
             if any([blank.match(line) for blank in BLANKS]):
                 continue
@@ -78,7 +79,7 @@ class Accounting(Document):
     @arg('-t', '--items', help='查找科目的子目')
     def run(cls, filename=None, query=None, category=None, items=None):
         if filename:
-            cls.import_file(filename, dupcheck=True, clear=True)
+            cls.import_file(filename)
         for _query in query:
             q = cls.search(_query)
             if q.count() > 1:
