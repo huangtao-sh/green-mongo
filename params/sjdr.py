@@ -14,6 +14,8 @@ from .accounting import Accounting
 from .jgm import GgJgm
 from .branch import Branch
 from .dzzz import GgDzzz
+from glemon import FileImported
+from contextlib import suppress
 
 ROOT = Path('~/Documents/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
@@ -48,7 +50,8 @@ Coros = (
 async def _import(coro):
     cls, kw = coro
     try:
-        await cls.amport_file(**kw)
+        with suppress(FileImported):
+            await cls.amport_file(**kw)
     except Exception as e:
         print('%s 导入失败，错误：%s' % (cls.__name__, e))
 
