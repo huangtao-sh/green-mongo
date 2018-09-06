@@ -30,7 +30,6 @@ setup(
     platforms='any',
     description='work platform',
     long_description='work platform',
-    install_requires=None,
     entry_points={
         'gui_scripts': guis,
         'console_scripts': consoles},
