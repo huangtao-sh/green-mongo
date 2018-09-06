@@ -4,6 +4,7 @@
 # @Author  : 黄涛 (huang.t@live.cn)
 # @Link    : http://www.jianshu.com/u/3bf5919e38a7
 # @Version : $Id$
+# 修订：2018-09-06 调整导出文件格式，增加菜单
 
 from orange import classproperty, arg, Path, now, R, wlen
 from glemon import Document, P
@@ -182,12 +183,13 @@ class JyJiaoyi(Document):
         data = []
         data2 = []
         for obj in cls.objects.order_by(P._id):
-            d = [trans(obj, a[0]) for a in SHAMA]
-            data2.append([getattr(obj, a[0]) for a in SHAMA])
+            d1 = [trans(obj, a[0]) for a in SHAMA]
+            d2 = [getattr(obj, a[0]) for a in SHAMA]
             menus = JyMenu.get_path(obj._id) or [None, None]
-            d.extend(menus)
-            data.append(d)
-            data2.append(d)
+            d2.extend(menus)
+            d1.extend(menus)
+            data.append(d1)
+            data2.append(d2)
         d = now().add(months=-1) % ('%Y-%m')
         fn = fn or str(Path('~/Documents/交易码表（%s）.xlsx' % (d)))
         from orange.xlsx import Book
