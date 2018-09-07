@@ -21,13 +21,13 @@ class Branch(Document):
         return {obj.br: obj.order for obj in self.objects(P.tp == '10')}
 
     @classmethod
-    async def amport_file(cls, filename, drop=True, **kw):
-        cls._dupcheck(filename)
+    async def amport_file(cls, filename, drop=True, dupcheck=True, **kw):
+        dupcheck and cls._dupcheck(filename)
         if drop:
             cls.drop()
             Contacts.drop()
         await super().amport_file(filename, **kw)
-        cls._importsave(filename)
+        dupcheck and cls._importsave(filename)
         print('导入文件 %s 成功' % (filename))
 
     @classmethod
