@@ -42,7 +42,7 @@ class ZhangHu(Document):
         with open(str(filename), 'rb')as f:
             cls.drop()
             datas = set()
-            for row in f.readlines():
+            for row in f:
                 s = row.split(b',')
                 ac = s[0].decode()[13:22]
                 if ac not in datas:
