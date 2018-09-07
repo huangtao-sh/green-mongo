@@ -100,13 +100,15 @@ class ZhangHu(Document):
         with open(str(filename), 'rb')as f:
             cls.drop()
             datas = set()
+            data = []
             for row in f:
                 s = row.split(b',')
                 ac = s[0].decode()[13:22]
                 if ac not in datas:
                     datas.add(ac)
                     name = s[3].decode('gbk', 'ignore')[1:-1].strip()
-                    await cls(_id=ac, name=name).asave()
+                    data.append((ac, name))
+            await cls._aload_data(data=data, drop=True)
             dupcheck and cls._importsave(filename)
             print('文件 %s 已导入' % (filename))
 

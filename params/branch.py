@@ -25,7 +25,9 @@ class Branch(Document):
         if drop:
             cls.drop()
             Contacts.drop()
+        cls._dupcheck(filename)
         await super().amport_file(filename, **kw)
+        cls._importsave(filename)
         print('导入文件 %s 成功' % (filename))
 
     @classmethod
