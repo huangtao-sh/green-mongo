@@ -22,10 +22,10 @@ class Branch(Document):
 
     @classmethod
     async def amport_file(cls, filename, drop=True, **kw):
+        cls._dupcheck(filename)
         if drop:
             cls.drop()
             Contacts.drop()
-        cls._dupcheck(filename)
         await super().amport_file(filename, **kw)
         cls._importsave(filename)
         print('导入文件 %s 成功' % (filename))
