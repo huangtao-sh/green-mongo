@@ -8,7 +8,7 @@
 
 from orange import Path
 from .bz import GgBzb, GgQzb
-from .zh import ZhangHu, AcTemplate
+from .zh import ZhangHu, AcTemplate, GgKmzd
 from orange.coroutine import run
 from trans import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
 from .accounting import Accounting
@@ -35,6 +35,7 @@ Coros = (
               'dupcheck': True, 'drop': True}),
     (GgJgm, {'filename': Files.get('ggjgm'), 'dupcheck': True, 'drop': True}),
     (GgBzb, {'filename': Files.get('ggbzb'), 'dupcheck': True, 'drop': True}),
+    (GgKmzd, {'filename': Files.get('ggkmzd'), 'dupcheck': True, 'drop': True}),
     (GgQzb, {'filename': Files.get('ggqzb'), 'dupcheck': True, 'drop': True}),
     (JyMenu, {'filename': max((ROOT / '交易菜单').glob('menu*.xml')),
               'dupcheck': True, 'drop': True}),
