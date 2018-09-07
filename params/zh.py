@@ -27,7 +27,7 @@ class AcTemplate(Document):
 
     @classmethod
     def search(cls, km):
-        objs = cls.objects(P.km == km).order_by(P.xh, P.jglx)
+        objs = cls.objects(P.km == km).order_by(P.xh, P.jglx, P.bz)
         if objs.count():
             print('机构类型  生效日期  科目  币种  序号  户名规则   户名   透支额度  初始状态   计息标志')
             for obj in objs.scalar('jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'):
