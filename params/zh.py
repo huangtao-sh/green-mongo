@@ -6,7 +6,7 @@
 # 创建：2017-10-14 11:28
 # 修订：2017-12-18 修正导入文件的算法，以提高导入速度
 # 修订：2018-09-06 修正内部账户导入问题
-# 修订：2018-09007 由于性能问题，不再支持 aiofiles 
+# 修订：2018-09007 由于性能问题，不再支持 aiofiles
 
 from glemon import Document, P
 from orange import R, arg, Path
