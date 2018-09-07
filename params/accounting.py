@@ -91,10 +91,10 @@ class Accounting(Document):
             if R/r'\d{6}' == _query:
                 print('\n科目属性')
                 print('-'*20)
-                GgKmzd.search(ac)
+                GgKmzd.search(_query)
                 print('\n内部账户开立模板')
                 print('-'*20)
-                AcTemplate.search(ac)
+                AcTemplate.search(_query)
         if category or items:
             for i in cls.search(category=category, items=items):
                 print(i.id, i.name, sep='\t')
