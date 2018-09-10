@@ -9,7 +9,7 @@
 # 修订：2018-09007 由于性能问题，不再支持 aiofiles
 
 from glemon import Document, P
-from orange import R, arg, Path
+from orange import R, arg, Path, tprint
 
 
 class AcTemplate(Document):
@@ -30,8 +30,9 @@ class AcTemplate(Document):
         objs = cls.objects(P.km == km).order_by(P.xh, P.jglx, P.bz)
         if objs.count():
             print('机构类型  生效日期  科目  币种  序号  户名规则   户名   透支额度  初始状态   计息标志')
-            for obj in objs.scalar('jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'):
-                print(*obj)
+            data = objs.scalar('jglx', 'sxrq', 'km', 'bz',
+                               'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz')
+            tprint(data, 'c4,c10,c8,c6,r4,c4,40,r19,c8,c4')
 
 
 class GgKmzd(Document):
