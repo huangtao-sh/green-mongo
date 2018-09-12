@@ -27,12 +27,12 @@ class AcTemplate(Document):
 
     @classmethod
     def search(cls, km):
-        objs = cls.objects(P.km == km).order_by(P.xh, P.jglx, P.bz)
-        if objs.count():
+        objs = cls.objects(km=km).order_by(P.xh, P.jglx, P.bz)
+        if objs:
             print('机构类型  生效日期  科目  币种  序号  户名规则   户名   透支额度  初始状态   计息标志')
-            data = objs.scalar('jglx', 'sxrq', 'km', 'bz',
-                               'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz')
-            tprint(data, 'c4,c10,c8,c6,r4,c4,40,r19,c8,c4')
+            objs.show('jglx', 'sxrq', 'km', 'bz',
+                      'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz',
+                      format_spec='^4,^10,^8,^6,>4,^4,40,19.2f,^8,^4'.split(','))
 
 
 class GgKmzd(Document):
