@@ -7,6 +7,8 @@
 # 修订：2017-12-18 修正导入文件的算法，以提高导入速度
 # 修订：2018-09-06 修正内部账户导入问题
 # 修订：2018-09007 由于性能问题，不再支持 aiofiles
+# 修改：2018-09-12 15:13 调整打印格式
+
 
 from glemon import Document, P
 from orange import R, arg, Path, tprint
@@ -132,14 +134,6 @@ def main(ac=None):
 
         elif R/r'\d{6}\-\d{1,3}':
             km, xh = ac.split('-')
-            for obj in AcTemplate.objects((P.km == km) & (P.xh == int(xh))):
-                print(obj.jglx, obj.km, obj.xh, obj.bz,
-                      obj.sxrq, obj.hm, obj.tzed)
-
-
-if __name__ == '__main__':
-    file = max(Path('d:/工作/参数备份').rglob('ggnbzhmb.del'))
-    print(file)
-    from orange.coroutine import run
-    run(AcTemplate.amport_file(file, drop=True, encoding='gbk'))
-    obj = AcTemplate.objects.first()
+            objects = AcTemplate.objects(km=km, xh=int(xh))
+            objects.show('jglx', 'km', 'xh', 'bz', 'sxrq', 'tzed', 'hm',
+                         format_spec={5: '17.2f'})
