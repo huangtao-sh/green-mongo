@@ -18,7 +18,7 @@ from .dzzz import GgDzzz
 from glemon import FileImported
 from contextlib import suppress
 
-ROOT = Path('~/Documents/工作/参数备份')
+ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 
@@ -62,7 +62,11 @@ def sjdr():
     print('开始数据导入')
     print('导入数据目录：%s' % (ROOT))
     print('导入参数目录：%s' % (CANSHU))
-    run(*list(map(_import, Coros)))
+    for cls, kw in Coros:
+        with suppress(FileImported):
+            print(f'开始处理 {cls}')
+            cls.import_file(**kw)
+            print(f'{cls} 处理成功')
 
 
 if __name__ == "__main__":

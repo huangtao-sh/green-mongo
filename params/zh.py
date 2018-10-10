@@ -98,7 +98,7 @@ class ZhangHu(Document):
             print('尚未开立账户')
 
     @classmethod
-    async def amport_file(cls, filename, drop=True, dupcheck=True):
+    def import_file(cls, filename, drop=True, dupcheck=True):
         dupcheck and cls._dupcheck(filename)
         with open(str(filename), 'rb')as f:
             cls.drop()
@@ -111,7 +111,7 @@ class ZhangHu(Document):
                     datas.add(ac)
                     name = s[3].decode('gbk', 'ignore')[1:-1].strip()
                     data.append((ac, name))
-            await cls._aload_data(data=data, drop=True)
+            cls._load_data(data=data, drop=True)
             dupcheck and cls._importsave(filename)
             print('文件 %s 已导入' % (filename))
 

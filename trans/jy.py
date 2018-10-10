@@ -15,6 +15,11 @@ class JyShbs(Document):
     '''不需要事后补扫交易清单'''
     _projects = ('_id',)
 
+    @classmethod
+    def _load_data(cls, *args, **kw):
+        print(*args, sep='\n')
+        return super()._load_data(*args, **kw)
+
 
 class JyCdjy(JyShbs):
     '''需要校验磁道信息的交易'''
@@ -48,7 +53,7 @@ class JyMenu(Document):
             return d.menu, d.submenu
 
     @classmethod
-    async def amport_file(cls, filename, dupcheck=False, **kw):
+    def import_file(cls, filename, dupcheck=False, **kw):
         # 从科技提供的文件中导入
         dupcheck and cls._dupcheck(filename)          # 防重复文件检查
         datas = []
@@ -67,7 +72,7 @@ class JyMenu(Document):
                 datas.append({'menu': menu, 'trans': trans})
         if datas:
             cls.drop()
-            await cls.abjects.insert(datas)
+            cls.objects.insert(datas)
             dupcheck and cls._importsave(filename)
             print('文件 %s 导入完成' % (filename))
 
