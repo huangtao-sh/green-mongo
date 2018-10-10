@@ -15,11 +15,6 @@ class JyShbs(Document):
     '''不需要事后补扫交易清单'''
     _projects = ('_id',)
 
-    @classmethod
-    def _load_data(cls, *args, **kw):
-        print(*args, sep='\n')
-        return super()._load_data(*args, **kw)
-
 
 class JyCdjy(JyShbs):
     '''需要校验磁道信息的交易'''
