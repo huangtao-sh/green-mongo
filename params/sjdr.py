@@ -18,20 +18,18 @@ from .dzzz import GgDzzz
 from glemon import FileImported
 from contextlib import suppress
 from .user import Teller
+from .pzzl import Pzzl
+from .jszh import GgJszh
 
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 
 Coros = (
-    (AcTemplate, {'filename': Files.get('ggnbzhmb'),
-                  'dupcheck': True, 'drop': True, 'encoding': 'gbk'}),
     (ZhangHu, {'filename': Files.get('fhnbhzz'),
                'dupcheck': True, 'drop': True}),
     (JyJiaoyi, {'filename': Files.get('transactions_output'),
                 'dupcheck': True, 'drop': True}),
-    (GgJgm, {'filename': Files.get('ggjgm'), 'dupcheck': True, 'drop': True}),
-    (GgKmzd, {'filename': Files.get('ggkmzd'), 'dupcheck': True, 'drop': True}),
     (JyMenu, {'filename': max((ROOT / '交易菜单').glob('menu*.xml')),
               'dupcheck': True, 'drop': True}),
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
@@ -40,25 +38,21 @@ Coros = (
                   'dupcheck': True, 'drop': True}),
     (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
               'dupcheck': True, 'drop': True}),
-    #(GgDzzz, {'filename': Files.get('DZZZCSB'), 'dupcheck': True, 'drop': True})
 )
 
 LoadFiles = (
-    (JyShbs, Files.get('是否需要事后补扫')),
-    (JyCdjy, Files.get('是否校验磁道信息')),
-    (GgBzb,  Files.get('ggbzb')),
-    (GgQzb,  Files.get('ggqzb')),
-    (Teller, Files.get('users_output')),
+    (JyShbs,        Files.get('是否需要事后补扫')),
+    (JyCdjy,        Files.get('是否校验磁道信息')),
+    (GgBzb,         Files.get('ggbzb')),
+    (GgQzb,         Files.get('ggqzb')),
+    (Teller,        Files.get('users_output')),
+    (GgJgm,         Files.get('ggjgm')),
+    (GgDzzz,        Files.get('DZZZCSB')),
+    (AcTemplate,    Files.get('ggnbzhmb')),
+    (GgKmzd,        Files.get('ggkmzd')),
+    (Pzzl,          Files.get('ggpzzl')),
+    (GgJszh,        Files.get('ggjszh')),
 )
-
-
-async def _import(coro):
-    cls, kw = coro
-    try:
-        with suppress(FileImported):
-            await cls.amport_file(**kw)
-    except Exception as e:
-        print('%s 导入失败，错误：%s' % (cls.__name__, e))
 
 
 def sjdr():

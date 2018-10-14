@@ -18,6 +18,7 @@ consoles = [
     'jqb=vacation:Vacation.main',
     #   'lzwt=lvzhi:lvzhiwenti',
     'br=params.branch:Contacts.main',
+    'teller=params.user:Teller.main',
 ]
 guis = []
 

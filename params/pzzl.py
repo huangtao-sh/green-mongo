@@ -80,7 +80,7 @@ hbhs int N.N 换本行数 无为0
 if __name__ == '__main__':
     from orange import Path
     from orange.coroutine import run
-    run(Pzzl.load_files(Path(
-        r'C:\Users\huangtao\OneDrive\工作\参数备份\运营管理2017-09\shendawei\凭证种类表ggpzzl.del')))
+    #Pzzl.loadfile(Path(
+    #    r'C:\Users\huangtao\OneDrive\工作\参数备份\运营管理2018-09\ggpzzl.del'))
     for obj in Pzzl.objects.limit(10):
         print(obj.pzzl, obj.kmkzz, obj.pymc)

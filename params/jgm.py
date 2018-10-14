@@ -11,14 +11,18 @@ from glemon import Document, P
 
 class GgJgm(Document):
     _projects = '_id', 'jgmc', 'dz', 'dh', 'zfhh', 'lx', 'kbrq', 'hzjgm'
-    _load_mapper = {'_id': 0,
-                    'jgmc': 1,
-                    'dz': 4,
-                    'dh': 5,
-                    'zfhh': 7,
-                    'lx': 15,
-                    'kbrq': 16,
-                    'hzjgm': 17}
+    load_options = {
+        'mapper': {
+            '_id': 0,
+            'jgmc': 1,
+            'dz': 4,
+            'dh': 5,
+            'zfhh': 7,
+            'lx': 15,
+            'kbrq': 16,
+            'hzjgm': 17
+        },
+    }
     _textfmt = '''
 机构号：    {self._id}
 机构名称：  {self.jgmc}

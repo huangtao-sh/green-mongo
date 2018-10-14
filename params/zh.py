@@ -16,6 +16,10 @@ from orange import R, arg, Path, tprint
 
 class AcTemplate(Document):
     _projects = 'jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'
+    load_options = {
+        'encoding': 'gbk',
+        'errors': 'ignore',
+    }
     _textfmt = '''机构类型：  {self.jglx}
 生效日期：  {self.sxrq} 
 科目：      {self.km}
@@ -29,7 +33,7 @@ class AcTemplate(Document):
 
     @classmethod
     def search(cls, km):
-        objs = cls.objects(km=km).order_by(P.xh, P.jglx, P.bz)
+        objs = cls.objects.filter(km=km).order_by(P.xh, P.jglx, P.bz)
         if objs:
             print('机构类型  生效日期  科目  币种  序号  户名规则   户名   透支额度  初始状态   计息标志')
             objs.show('jglx', 'sxrq', 'km', 'bz',
@@ -72,7 +76,7 @@ class GgKmzd(Document):
 
     @classmethod
     def search(cls, item):
-        obj = cls.objects(P.kmh == item).first()
+        obj = cls.objects.filter(kmh=item).first()
         if obj:
             print(obj)
 
@@ -82,7 +86,7 @@ class ZhangHu(Document):
 
     @classmethod
     def show(cls, ac):
-        objects = cls.objects(P._id.startswith(ac)).order_by(P._id)
+        objects = cls.objects.filter(P._id.startswith(ac)).order_by(P._id)
         if objects.count() > 0:
             print('已开账户情况：')
             wy = None
@@ -134,6 +138,6 @@ def main(ac=None):
 
         elif R/r'\d{6}\-\d{1,3}':
             km, xh = ac.split('-')
-            objects = AcTemplate.objects(km=km, xh=int(xh))
+            objects = AcTemplate.objects.filter(km=km, xh=int(xh))
             objects.show('jglx', 'km', 'xh', 'bz', 'sxrq', 'tzed', 'hm',
                          format_spec={5: '17.2f'})
