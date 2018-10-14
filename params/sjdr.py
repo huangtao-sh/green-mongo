@@ -29,10 +29,6 @@ Coros = (
                'dupcheck': True, 'drop': True}),
     (JyJiaoyi, {'filename': Files.get('transactions_output'),
                 'dupcheck': True, 'drop': True}),
-    (JyShbs, {'filename': Files.get('是否需要事后补扫'),
-              'dupcheck': True, 'drop': True}),
-    (JyCdjy, {'filename': Files.get('是否校验磁道信息'),
-              'dupcheck': True, 'drop': True}),
     (GgJgm, {'filename': Files.get('ggjgm'), 'dupcheck': True, 'drop': True}),
     (GgBzb, {'filename': Files.get('ggbzb'), 'dupcheck': True, 'drop': True}),
     (GgKmzd, {'filename': Files.get('ggkmzd'), 'dupcheck': True, 'drop': True}),
@@ -46,6 +42,11 @@ Coros = (
     (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
               'dupcheck': True, 'drop': True}),
     #(GgDzzz, {'filename': Files.get('DZZZCSB'), 'dupcheck': True, 'drop': True})
+)
+
+LoadFiles = (
+    (JyShbs, Files.get('是否需要事后补扫')),
+    (JyCdjy, Files.get('是否校验磁道信息')),
 )
 
 
@@ -64,9 +65,14 @@ def sjdr():
     print('导入参数目录：%s' % (CANSHU))
     for cls, kw in Coros:
         with suppress(FileImported):
-            print(f'开始处理 {cls>__name__}')
-            cls.import_file(**kw)
+            print(f'开始处理 {cls.__name__}')
             print(f'{cls.__name__} 处理成功')
+
+    for cls, filename in LoadFiles:
+        with suppress(FileImported):
+            print(f'开始处理 {cls.__name__}')
+            result = cls.loadfile(filename)
+            print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
 
 
 if __name__ == "__main__":
