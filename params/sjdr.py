@@ -64,9 +64,9 @@ def sjdr():
     print('导入参数目录：%s' % (CANSHU))
     for cls, kw in Coros:
         with suppress(FileImported):
-            print(f'开始处理 {cls}')
+            print(f'开始处理 {cls>__name__}')
             cls.import_file(**kw)
-            print(f'{cls} 处理成功')
+            print(f'{cls.__name__} 处理成功')
 
 
 if __name__ == "__main__":
