@@ -8,6 +8,7 @@
 import unittest
 from glemon import P, Document, FileImported
 from orange import Path, HOME
+from params.user import Teller
 
 text = (HOME/'OneDrive/工作/参数备份').find('是否校验磁道信息.*').text
 
@@ -40,3 +41,11 @@ class TestLoadFile(unittest.TestCase):
             TestLoad.loadfile(f, options)
             with self.assertRaises(FileImported):
                 TestLoad.loadfile(f, options)
+
+    def testTeller(self):
+        path = Path('d:/users_output.csv')
+        options = {'dupcheck': False}
+        Teller.loadfile(path, options)
+        obj = Teller.objects.first()
+        for k, v in obj.items():
+            print(k, v, sep='\t')

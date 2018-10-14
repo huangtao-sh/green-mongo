@@ -7,5 +7,19 @@
 
 from glemon import Document, Descriptor
 
+
 class Teller(Document):
-    _projects='_id','name','telephone','grade','branch','userid'
+    _projects = ('_id', 'name', 'telephone', 'grade', 'branch', 'userid',
+                 'gangwei', 'jyz', 'jgz', 'zzjb', 'xjjb', 'rzlx', 'zt', 'pbjy',
+                 'gwxz', 'qyrq', 'zzrq', 'czbz', 'fqjyz', 'gwjyz', 'zjzl', 'zjhm')
+    load_options = {
+        'fields': ('_id,name,telephone,,grade,,branch,userid,'
+                   ',,,,,,,,,,,,,,,,,,,,,,,,,,,'
+                   'jyz,jgz,zzjb,xjjb,rzlx,'
+                   ',,,,,,,,,,'
+                   'zt,pbjy,gwxz,qyrq,zzrq,czbz,fqjyz,gwjyz,zjzl,zjhm'),
+        'converter': {
+            str.strip: (0,2,6,36,37,55,56,59)
+            }
+    }
+    

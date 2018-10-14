@@ -17,6 +17,7 @@ from .branch import Branch
 from .dzzz import GgDzzz
 from glemon import FileImported
 from contextlib import suppress
+from .user import Teller
 
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
@@ -30,9 +31,7 @@ Coros = (
     (JyJiaoyi, {'filename': Files.get('transactions_output'),
                 'dupcheck': True, 'drop': True}),
     (GgJgm, {'filename': Files.get('ggjgm'), 'dupcheck': True, 'drop': True}),
-    (GgBzb, {'filename': Files.get('ggbzb'), 'dupcheck': True, 'drop': True}),
     (GgKmzd, {'filename': Files.get('ggkmzd'), 'dupcheck': True, 'drop': True}),
-    (GgQzb, {'filename': Files.get('ggqzb'), 'dupcheck': True, 'drop': True}),
     (JyMenu, {'filename': max((ROOT / '交易菜单').glob('menu*.xml')),
               'dupcheck': True, 'drop': True}),
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
@@ -47,6 +46,9 @@ Coros = (
 LoadFiles = (
     (JyShbs, Files.get('是否需要事后补扫')),
     (JyCdjy, Files.get('是否校验磁道信息')),
+    (GgBzb,  Files.get('ggbzb')),
+    (GgQzb,  Files.get('ggqzb')),
+    (Teller, Files.get('users_output')),
 )
 
 
@@ -66,6 +68,7 @@ def sjdr():
     for cls, kw in Coros:
         with suppress(FileImported):
             print(f'开始处理 {cls.__name__}')
+            cls.import_file(**kw)
             print(f'{cls.__name__} 处理成功')
 
     for cls, filename in LoadFiles:
