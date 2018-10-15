@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-09-11 18:52
 
-from glemon import Document, Descriptor
+from glemon import Document, Descriptor, profile
 from orange import arg, R
 from .jgm import GgJgm
 
@@ -37,6 +37,7 @@ class Teller(Document):
     def main(cls, check=False, query=None):
         if check:
             print('check')
+            print(f'当前参数月份：{profile.param_yf}')
         if query:
             for q in query:
                 if R/r'\d{3,5}' == q:

@@ -15,7 +15,7 @@ from .accounting import Accounting
 from .jgm import GgJgm
 from .branch import Branch
 from .dzzz import GgDzzz
-from glemon import FileImported
+from glemon import FileImported, profile
 from contextlib import suppress
 from .user import Teller
 from .pzzl import Pzzl
@@ -59,6 +59,9 @@ def sjdr():
     print('开始数据导入')
     print('导入数据目录：%s' % (ROOT))
     print('导入参数目录：%s' % (CANSHU))
+    yf = str(CANSHU)[-7:]
+    profile.param_yf = yf
+    print(f'当前月份：{yf}')
     for cls, kw in Coros:
         with suppress(FileImported):
             print(f'开始处理 {cls.__name__}')

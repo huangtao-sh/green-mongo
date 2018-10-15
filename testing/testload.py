@@ -41,11 +41,3 @@ class TestLoadFile(unittest.TestCase):
             TestLoad.loadfile(f, options)
             with self.assertRaises(FileImported):
                 TestLoad.loadfile(f, options)
-
-    def testTeller(self):
-        path = Path('d:/users_output.csv')
-        options = {'dupcheck': False}
-        Teller.loadfile(path, options)
-        obj = Teller.objects.first()
-        for k, v in obj.items():
-            print(k, v, sep='\t')

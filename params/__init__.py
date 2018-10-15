@@ -8,3 +8,4 @@
 '''
 本包主要用于创建参数的相关模块。
 '''
+from glemon import profile
