@@ -22,7 +22,6 @@ class AcTemplate(Document):
         'converter':{
             'tzed':float,
         },
-        'dupcheck':False,
     }
     _textfmt = '''机构类型：  {self.jglx}
 生效日期：  {self.sxrq} 
