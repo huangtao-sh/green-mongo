@@ -19,6 +19,10 @@ class AcTemplate(Document):
     load_options = {
         'encoding': 'gbk',
         'errors': 'ignore',
+        'converter':{
+            'tzed':float,
+        },
+        'dupcheck':False,
     }
     _textfmt = '''机构类型：  {self.jglx}
 生效日期：  {self.sxrq} 
@@ -35,10 +39,10 @@ class AcTemplate(Document):
     def search(cls, km):
         objs = cls.objects.filter(km=km).order_by(P.xh, P.jglx, P.bz)
         if objs:
-            print('机构类型  生效日期  科目  币种  序号  户名规则   户名   透支额度  初始状态   计息标志')
+            print('机构类型  生效日期  科目  币种  序号   户名  ')
             objs.show('jglx', 'sxrq', 'km', 'bz',
-                      'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz',
-                      format_spec='^4,^10,^8,^6,>4,^4,40,19.2f,^8,^4'.split(','))
+                      'xh', 'hmgz', 'hm',
+                      format_spec='^4,^10,^8,^6,>4,40'.split(','))
 
 
 class GgKmzd(Document):

@@ -21,8 +21,8 @@ class Teller(Document):
                    ',,,,,,,,,,'
                    'zt,pbjy,gwxz,qyrq,zzrq,czbz,fqjyz,gwjyz,zjzl,zjhm'),
         'converter': {
-            str.strip: (0, 2, 6, 36, 37, 55, 56, 59)
-        }
+            '_id,telephone,branch,zzjb,xjjb,czbz,fqjyz,zjhm': str.strip,
+        },
     }
 
     @property
@@ -38,8 +38,8 @@ class Teller(Document):
         print('采用密码认证有柜员清单')
         for r in Teller.objects.filter(
                 P.zt.regex('[1256].')
-                & (p.rzlx == '0')).scalar('_id', 'branch', 'rzlx', 'qyrq', 'gwxz', 'name'):
-            print(*r sep='\t')
+                & (P.rzlx == '0')).scalar('_id', 'branch', 'rzlx', 'qyrq', 'name'):
+            print(*r, sep='\t')
         print('-'*20)
         print('同一机构开立多个柜员号')
         a = Teller.aggregate()
@@ -65,12 +65,7 @@ class Teller(Document):
                 if R/r'\d{3,5}' == q:
                     obj = cls.objects.filter(_id='%05d' % int(q)).first()
                     if obj:
-                        print(obj._id)
-                        print(obj.userid)
-                        print(obj.name)
-                        print(obj.telephone)
-                        print(obj.branch)
-                        print(obj.brname)
+                        print(obj)
                 if R/r'\d{9}' == q:
                     for obj in cls.objects.filter(branch=q):
                         print(obj._id)
