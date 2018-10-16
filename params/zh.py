@@ -38,9 +38,9 @@ class AcTemplate(Document):
     def search(cls, km):
         objs = cls.objects.filter(km=km).order_by(P.xh, P.jglx, P.bz)
         if objs:
-            print('机构类型  生效日期  科目  币种  序号   户名  ')
+            print('机构类型  生效日期  科目  币种     序号       户名  ')
             objs.show('jglx', 'sxrq', 'km', 'bz',
-                      'xh', 'hmgz', 'hm',
+                      'xh','hm',
                       format_spec='^4,^10,^8,^6,>4,40'.split(','))
 
 
