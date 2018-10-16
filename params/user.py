@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-09-11 18:52
 
-from glemon import Document, Descriptor, profile
+from glemon import Document, Descriptor, profile, P
 from orange import arg, R
 from .jgm import GgJgm
 
@@ -32,12 +32,34 @@ class Teller(Document):
             return br.jgmc
 
     @classmethod
+    def check(cls):
+        print(f'当前参数月份：{profile.param_yf}')
+        print('-'*20)
+        print('采用密码认证有柜员清单')
+        for r in Teller.objects.filter(
+                P.zt.regex('[1256].')
+                & (p.rzlx == '0')).scalar('_id', 'branch', 'rzlx', 'qyrq', 'gwxz', 'name'):
+            print(*r sep='\t')
+        print('-'*20)
+        print('同一机构开立多个柜员号')
+        a = Teller.aggregate()
+        a.match(P.zt.regex('[1256].'))
+        a.group(P.zjzl, P.zjhm,
+                P.branchs.addToSet('$branch'),
+                P.ids.addToSet('$_id'),
+                P.names.addToSet('$name'),
+                P.counts.sum(1)
+                )
+        a.match(P.counts > 1)
+        for r in a:
+            print(r)
+
+    @classmethod
     @arg('-c', '--check', action='store_true', help='检查柜员表是否存在问题')
     @arg('query', nargs='*', help='输入查询条件')
     def main(cls, check=False, query=None):
         if check:
-            print('check')
-            print(f'当前参数月份：{profile.param_yf}')
+            cls.check()
         if query:
             for q in query:
                 if R/r'\d{3,5}' == q:
