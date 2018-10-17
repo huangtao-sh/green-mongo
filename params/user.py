@@ -37,22 +37,25 @@ class Teller(Document):
         print('-'*20)
         print('采用密码认证有柜员清单')
         for r in Teller.objects.filter(
-                P.zt.regex('[1256].')
-                & (P.rzlx == '0')).scalar('_id', 'branch', 'rzlx', 'qyrq', 'name'):
+                P.zt.regex('[12356].')
+                & (P.rzlx == '0')).order_by(P.branch).scalar('_id', 'branch',  'qyrq', 'name'):
             print(*r, sep='\t')
         print('-'*20)
         print('同一机构开立多个柜员号')
         a = Teller.aggregate()
-        a.match(P.zt.regex('[1256].'))
-        a.group(P.zjzl, P.zjhm,
-                P.branchs.addToSet('$branch'),
-                P.ids.addToSet('$_id'),
-                P.names.addToSet('$name'),
-                P.counts.sum(1)
-                )
+        a.match(P.zt.regex('[12356].'))
+        a.group(
+            P.zjzl, P.zjhm,
+            P.branchs.addToSet('$branch'),
+            P.ids.addToSet('$_id'),
+            P.names.addToSet('$name'),
+            P.counts.sum(1)
+        )
         a.match(P.counts > 1)
-        for r in a:
-            print(r)
+        for zjhm, names, branchs in a.scalar('_id.zjhm', 'names', 'branchs'):
+            if len(names) > 1:
+                print(
+                    f'证件号码：{zjhm}  姓名：{" ".join(names)}   机构：{" ".join(branchs)}')
 
     @classmethod
     @arg('-c', '--check', action='store_true', help='检查柜员表是否存在问题')
