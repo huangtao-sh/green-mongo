@@ -32,18 +32,18 @@ class JyMenu(Document):
     @classmethod
     def submenus(cls, menu):
         # 一级菜单项下的二级菜单
-        return cls.objects(menu=menu).distinct('submenu')
+        return cls.find(menu=menu).distinct('submenu')
 
     @classmethod
     def trs(cls, menu, submenu=None):
         # 某一菜单下所有交易
-        d = cls.objects(menu=menu, sumenu=submenu).first()
+        d = cls.find(menu=menu, sumenu=submenu).first()
         return d or d.trans
 
     @classmethod
     def get_path(cls, code):
         # 获取指定交易码的菜单路径
-        d = cls.objects(trans=code).first()
+        d = cls.find(trans=code).first()
         if d:
             return d.menu, d.submenu
 
@@ -159,7 +159,7 @@ class JyJiaoyi(Document):
 
     @classmethod
     def get_item(cls, jym):
-        obj = cls.objects(_id=jym).first()
+        obj = cls.find(_id=jym).first()
 
         def trans(a):
             v = getattr(obj, a)
@@ -220,7 +220,7 @@ class JyJiaoyi(Document):
 
     @property
     def cdjy(self):  # 磁道校验
-        return 'TRUE' if JyShbs.objects.get(self._id) else 'FALSE'
+        return 'TRUE' if JyCdjy.objects.get(self._id) else 'FALSE'
 
     @classmethod
     @arg('-e', '--export', action='store_true', help='导出交易码文件')
@@ -236,5 +236,5 @@ class JyJiaoyi(Document):
                     for n, v in obj:
                         print(n, v, sep=' ' * (20 - wlen(n)))
             else:
-                for jy in cls.objects(P.jymc.contains(query)):
+                for jy in cls.find(P.jymc.contains(query)):
                     print(jy._text)

@@ -19,8 +19,8 @@ class AcTemplate(Document):
     load_options = {
         'encoding': 'gbk',
         'errors': 'ignore',
-        'converter':{
-            'tzed':float,
+        'converter': {
+            'tzed': float,
         },
     }
     _textfmt = '''机构类型：  {self.jglx}
@@ -40,7 +40,7 @@ class AcTemplate(Document):
         if objs:
             print('机构类型  生效日期  科目  币种     序号       户名  ')
             objs.show('jglx', 'sxrq', 'km', 'bz',
-                      'xh','hm',
+                      'xh', 'hm',
                       format_spec='^4,^10,^8,^6,>4,40'.split(','))
 
 

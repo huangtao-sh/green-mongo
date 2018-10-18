@@ -24,6 +24,17 @@ class Teller(Document):
             '_id,telephone,branch,zzjb,xjjb,czbz,fqjyz,zjhm': str.strip,
         },
     }
+    _profile = {
+        '柜员号': '_id',
+        '姓名': 'name',
+        '员工号': 'userid',
+        '证件号码': 'zjhm',
+        '电话': 'telephone',
+        '机构': 'brname',
+        '岗位': 'gangwei',
+        '启用日期': 'qyrq',
+        '中止日期': 'zzrq',
+    }
 
     @property
     def brname(self):
@@ -67,8 +78,7 @@ class Teller(Document):
             for q in query:
                 if R/r'\d{3,5}' == q:
                     obj = cls.objects.filter(_id='%05d' % int(q)).first()
-                    if obj:
-                        print(obj)
+                    obj and obj.show()
                 if R/r'\d{9}' == q:
                     for obj in cls.objects.filter(branch=q):
                         print(obj._id)
