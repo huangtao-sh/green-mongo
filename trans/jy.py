@@ -48,6 +48,25 @@ class JyMenu(Document):
             return d.menu, d.submenu
 
     @classmethod
+    def procdata(cls, data, options):
+        datas = []
+        for child in data:
+            menu = child.attrb['DisplayName']
+            trans = []
+            for node in child:
+                if node.tag == 'SubMenu':
+                    trs = [n.attrib['Code']for n in node if n.tag == 'Trade']
+                    datas.append({
+                        'menu': menu,
+                        'submenu': node.attrib['DisplayName'],
+                        'trans': trs
+                    })
+                else:
+                    datas.append({'menu': menu, 'trans': trans})
+        if datas:
+            print(datas)
+
+    @classmethod
     def import_file(cls, filename, dupcheck=False, **kw):
         # 从科技提供的文件中导入
         dupcheck and cls._dupcheck(filename)          # 防重复文件检查
