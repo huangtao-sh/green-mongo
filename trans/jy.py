@@ -154,7 +154,6 @@ class JyJiaoyi(Document):
         'converter': {
             '_id,yxj': str.strip,
         },
-        'dupcheck': False,
     }
     _profile={
         '交易码':'_id',
