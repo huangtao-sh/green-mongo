@@ -5,6 +5,8 @@
 # @Link    : http://www.jianshu.com/u/3bf5919e38a7
 # @Version : $Id$
 # 修订：2018-09-06 调整导出文件格式，增加菜单
+# 修改：2018-10-19 19:53 使用 loadfile 导入文件
+
 
 from orange import classproperty, arg, Path, now, R, wlen
 from glemon import Document, P
@@ -51,44 +53,17 @@ class JyMenu(Document):
     def procdata(cls, data, options):
         datas = []
         for child in data:
-            menu = child.attrb['DisplayName']
-            trans = []
-            for node in child:
-                if node.tag == 'SubMenu':
-                    trs = [n.attrib['Code']for n in node if n.tag == 'Trade']
-                    datas.append({
-                        'menu': menu,
-                        'submenu': node.attrib['DisplayName'],
-                        'trans': trs
-                    })
-                else:
-                    datas.append({'menu': menu, 'trans': trans})
-        if datas:
-            print(datas)
-
-    @classmethod
-    def import_file(cls, filename, dupcheck=False, **kw):
-        # 从科技提供的文件中导入
-        dupcheck and cls._dupcheck(filename)          # 防重复文件检查
-        datas = []
-        for child in Path(filename).xmlroot:
             menu = child.attrib['DisplayName']
             trans = []
             for node in child:
                 if node.tag == 'SubMenu':
-                    trs = [n.attrib['Code'] for n in node if n.tag == 'Trade']
-                    datas.append({'menu': menu,
-                                  'submenu': node.attrib['DisplayName'],
-                                  'trans': trs})
-                else:
+                    trs = [n.attrib['Code']for n in node if n.tag == 'Trade']
+                    datas.append((menu, node.attrib['DisplayName'], trs))
+                elif node.tag == 'Trade':
                     trans.append(node.attrib['Code'])
             if trans:
-                datas.append({'menu': menu, 'trans': trans})
-        if datas:
-            cls.drop()
-            cls.objects.insert(datas)
-            dupcheck and cls._importsave(filename)
-            print('文件 %s 导入完成' % (filename))
+                datas.append((menu, None, trans))
+        return datas
 
 
 SHAMA = (('jymc', '交易名称'),
@@ -175,6 +150,24 @@ class JyJiaoyi(Document):
         'bxwdsq', 'zxsqjg', 'bxzxsq', 'jnjb', 'xzbz', 'wb',\
         'dets', 'dzdk', 'sxf', 'htjc', 'jdfs', 'bssx', 'sc', 'mz', 'cesq', 'fjjyz'
     _textfmt = '{self._id}\t{self.jyz}\t{self.jyzm}\t{self.jymc}'
+    load_options = {
+        'converter': {
+            '_id,yxj': str.strip,
+        },
+        'dupcheck': False,
+    }
+    _profile={
+        '交易码':'_id',
+        '交易名称':'jymc',
+        '交易组':'jyz',
+        '交易组名':'jyzm',
+    }
+
+    @classmethod
+    def procrow(cls, row, converter):
+        if len(row) < 22:
+            row.append(None)
+        return super().procrow(row, converter)
 
     @classmethod
     def get_item(cls, jym):
@@ -216,17 +209,6 @@ class JyJiaoyi(Document):
             book.add_table('A1', columns=FORMAT, data=data, sheet='交易码表')
             book.add_table(
                 "A1", columns=FORMAT, data=data2, sheet='交易码参数')
-
-    @classmethod
-    def _proc_csv(cls, data, **kw):
-        d = []
-        for row in data:
-            r = row.split(',')
-            r[0] = r[0].strip()
-            if len(r) < 22:
-                r.append(None)
-            d.append(r)
-        return d
 
     @property
     def jyzm(self):

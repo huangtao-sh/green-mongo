@@ -41,3 +41,9 @@ class TestLoadFile(unittest.TestCase):
             TestLoad.loadfile(f, options)
             with self.assertRaises(FileImported):
                 TestLoad.loadfile(f, options)
+
+jyfile = (HOME/'OneDrive/工作/参数备份').find('transactions_output.*')
+from trans.jy import JyJiaoyi
+JyJiaoyi.loadfile(jyfile)
+for row in JyJiaoyi.objects.scalar(*JyJiaoyi._projects):
+    print(*row)

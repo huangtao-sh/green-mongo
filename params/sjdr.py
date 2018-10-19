@@ -30,8 +30,6 @@ Coros = (
                'dupcheck': True, 'drop': True}),
     (JyJiaoyi, {'filename': Files.get('transactions_output'),
                 'dupcheck': True, 'drop': True}),
-    (JyMenu, {'filename': max((ROOT / '交易菜单').glob('menu*.xml')),
-              'dupcheck': True, 'drop': True}),
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
                  'dupcheck': True, 'drop': True}),
     (Accounting, {'filename': max((ROOT / '科目说明').glob('*.txt')),
@@ -52,6 +50,7 @@ LoadFiles = (
     (GgKmzd,        Files.get('ggkmzd')),
     (Pzzl,          Files.get('ggpzzl')),
     (GgJszh,        Files.get('ggjszh')),
+    (JyJiaoyi,      Files.get('transactions_output')),
 )
 
 
