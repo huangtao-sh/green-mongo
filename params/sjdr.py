@@ -28,8 +28,6 @@ Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 Coros = (
     (ZhangHu, {'filename': Files.get('fhnbhzz'),
                'dupcheck': True, 'drop': True}),
-    (JyJiaoyi, {'filename': Files.get('transactions_output'),
-                'dupcheck': True, 'drop': True}),
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
                  'dupcheck': True, 'drop': True}),
     (Accounting, {'filename': max((ROOT / '科目说明').glob('*.txt')),
