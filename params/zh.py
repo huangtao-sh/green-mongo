@@ -8,9 +8,10 @@
 # 修订：2018-09-06 修正内部账户导入问题
 # 修订：2018-09007 由于性能问题，不再支持 aiofiles
 # 修改：2018-09-12 15:13 调整打印格式
+# 修改：2018-10-20 14:23 调整数据导入方式
 
 
-from glemon import Document, P
+from glemon import Document, P, Descriptor
 from orange import R, arg, Path, tprint
 
 
@@ -21,18 +22,32 @@ class AcTemplate(Document):
         'errors': 'ignore',
         'converter': {
             'tzed': float,
+            'jglx': str.strip,
         },
     }
-    _textfmt = '''机构类型：  {self.jglx}
-生效日期：  {self.sxrq} 
-科目：      {self.km}
-币种：      {self.bz}
-序号：      {self.xh}
-户名规则：  {self.hmgz}
-户名：      {self.hm}
-透支额度：  {self.tzed}
-初始状态：  {self.cszt}
-计息标志：  {self.jxbz}'''
+
+    _profile = {
+        '机构类型': 'jg',
+        '生效日期': 'sxrq',
+        '币种': 'bz',
+        '科目': 'km',
+        '序号': 'xh',
+        '户名规则': 'hmgz_',
+        '透支额度': 'tzed',
+        '初始装态': 'cszt',
+        '计息标志': 'jxbz'
+    }
+    jg = Descriptor('jglx', {
+        '00': '总行清算中心',
+        '01': '总行业务处理中心',
+        '10': '分行业务处理中心',
+        '11': '分行营业部',
+        '12': '支行营业部'
+    })
+    hmgz_ = Descriptor('hmgz', {
+        '1': '按科目名称',
+        '2': '按账户名称'
+    })
 
     @classmethod
     def search(cls, km):
@@ -53,29 +68,23 @@ class GgKmzd(Document):
 借贷标志：  {self.jd}
 科目类型：  {self.lx}
 标志：      {self.bz}'''
-
-    @property
-    def jb(self):
-        return {
-            '0': '明细科目',
-            '1': '一级科目',
-            '2': '二级科目',
-            '3': '三级科目'}.get(self.kmjb, None)
-
-    @property
-    def jd(self):
-        return {
-            '0': '两性',
-            '1': '借方',
-            '2': '贷方',
-            '3': '并列（借贷不轧差）'}.get(self.jdbz, None)
-
-    @property
-    def lx(self):
-        return {
-            '0': '汇总科目（不开户）',
-            '1': '单账户科目',
-            '2': '多账户科目'}.get(self.kmlx, None)
+    jb = Descriptor('kmjb', {
+        '0': '明细科目',
+        '1': '一级科目',
+        '2': '二级科目',
+        '3': '三级科目'
+    })
+    jd = Descriptor('jdbz', {
+        '0': '两性',
+        '1': '借方',
+        '2': '贷方',
+        '3': '并列（借贷不轧差）'
+    })
+    lx = Descriptor('kmlx', {
+        '0': '汇总科目（不开户）',
+        '1': '单账户科目',
+        '2': '多账户科目'
+    })
 
     @classmethod
     def search(cls, item):
@@ -87,14 +96,20 @@ class GgKmzd(Document):
 class ZhangHu(Document):
     _projects = '_id', 'name'
     load_options = {
-        'encoding': 'gbk',
-        'errors': 'ignore',
-        'fields': "_id,,,name",
-        'converter': {
-            '_id': lambda x: x[13:22],
-            'name': str.strip,
-        }
+        'encoding':     'gbk',
+        'errors':       'ignore',
     }
+
+    @classmethod
+    def procdata(cls, data, options):
+        datas = set()
+
+        def _(row):
+            ac = row[0][13:22]
+            if ac not in datas:
+                datas.add(ac)
+                return (ac, row[3].strip())
+        return filter(None, map(_, data))
 
     @classmethod
     def show(cls, ac):
@@ -112,39 +127,6 @@ class ZhangHu(Document):
             print('最小未用账户序号：%03d' % (wy))
         else:
             print('尚未开立账户')
-
-    @classmethod
-    def proctxt(cls, file):
-        datas = set()
-        data = []
-        with file.open('rb')as f:
-            for row in f:
-                s = row.split(b',')
-                ac = s[0].decode()[13:22]
-                if ac not in datas:
-                    datas.add(ac)
-                    name = s[3].decode('gbk', 'ignore')[1:-1].strip()
-                    data.append((ac, name))
-        [print(row)for row in data]
-        return data
-
-    @classmethod
-    def import_file(cls, filename, drop=True, dupcheck=True):
-        dupcheck and cls._dupcheck(filename)
-        with open(str(filename), 'rb')as f:
-            cls.drop()
-            datas = set()
-            data = []
-            for row in f:
-                s = row.split(b',')
-                ac = s[0].decode()[13:22]
-                if ac not in datas:
-                    datas.add(ac)
-                    name = s[3].decode('gbk', 'ignore')[1:-1].strip()
-                    data.append((ac, name))
-            cls._load_data(data=data, drop=True)
-            dupcheck and cls._importsave(filename)
-            print('文件 %s 已导入' % (filename))
 
 
 @arg('ac', nargs='?', help='账户，格式应为：999999')
@@ -165,6 +147,8 @@ def main(ac=None):
 
         elif R/r'\d{6}\-\d{1,3}':
             km, xh = ac.split('-')
-            objects = AcTemplate.objects.filter(km=km, xh=int(xh))
-            objects.show('jglx', 'km', 'xh', 'bz', 'sxrq', 'tzed', 'hm',
-                         format_spec={5: '17.2f'})
+            objects = AcTemplate.objects.filter(
+                km=km, xh=xh).order_by(P.jglx, P.bz)
+            for obj in objects:
+                obj.show()
+                print('\n')

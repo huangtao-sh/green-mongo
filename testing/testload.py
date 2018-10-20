@@ -43,7 +43,8 @@ class TestLoadFile(unittest.TestCase):
                 TestLoad.loadfile(f, options)
 
 
-file = (HOME/'OneDrive/工作/参数备份').find('fhnbhz*.del')
-
-from params.zh import ZhangHu
-ZhangHu.loadfile(file,{'dupcheck':False})
+#file = (HOME/'OneDrive/工作/参数备份').find('fhnbhz*.del')
+#from params.zh import ZhangHu
+#ZhangHu.loadfile(file, {'dupcheck': False})
+# for row in ZhangHu.objects.scalar('_id',"name"):
+#    print(*row)
