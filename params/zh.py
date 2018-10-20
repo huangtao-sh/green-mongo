@@ -86,6 +86,15 @@ class GgKmzd(Document):
 
 class ZhangHu(Document):
     _projects = '_id', 'name'
+    load_options = {
+        'encoding': 'gbk',
+        'errors': 'ignore',
+        'fields': "_id,,,name",
+        'converter': {
+            '_id': lambda x: x[13:22],
+            'name': str.strip,
+        }
+    }
 
     @classmethod
     def show(cls, ac):
@@ -103,6 +112,21 @@ class ZhangHu(Document):
             print('最小未用账户序号：%03d' % (wy))
         else:
             print('尚未开立账户')
+
+    @classmethod
+    def proctxt(cls, file):
+        datas = set()
+        data = []
+        with file.open('rb')as f:
+            for row in f:
+                s = row.split(b',')
+                ac = s[0].decode()[13:22]
+                if ac not in datas:
+                    datas.add(ac)
+                    name = s[3].decode('gbk', 'ignore')[1:-1].strip()
+                    data.append((ac, name))
+        [print(row)for row in data]
+        return data
 
     @classmethod
     def import_file(cls, filename, drop=True, dupcheck=True):
