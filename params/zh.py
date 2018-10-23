@@ -105,15 +105,15 @@ class ZhangHu(Document):
         datas = set()
 
         def _(row):
-            ac = row[0][13:22]
+            ac = row[0][12:20]
             if ac not in datas:
                 datas.add(ac)
                 return (ac, row[3].strip())
-        return filter(None, map(_, data))
+        return filter(None,map(_,data)))
 
     @classmethod
     def show(cls, ac):
-        objects = cls.objects.filter(P._id.startswith(ac)).order_by(P._id)
+        objects = cls.find(P._id.startswith(ac)).order_by(P._id)
         if objects.count() > 0:
             print('已开账户情况：')
             wy = None
