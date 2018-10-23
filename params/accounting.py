@@ -42,10 +42,10 @@ class Accounting(Document):
             return self.id[:4]
 
     @classmethod
-    def _proc_txt(cls, lines, **kw):
+    def proctxt(cls, file, options=None):
         data = {}
         kemu = None
-        for line in lines:
+        for line in file.lines:
             line = line.strip()
             if any([blank.match(line) for blank in BLANKS]):
                 continue
@@ -71,7 +71,7 @@ class Accounting(Document):
             q = P.id.regex(r'^%s\d{2}$' % (items))
         else:
             q = P.id.regex(r'\d{4}$')
-        return cls.objects(q).order_by(P.id)
+        return cls.find(q).order_by(P.id)
 
     @classmethod
     @arg('-i', '--import', dest='filename', help='导入科目文件')

@@ -28,13 +28,13 @@ Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 Coros = (
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
                  'dupcheck': True, 'drop': True}),
-    (Accounting, {'filename': max((ROOT / '科目说明').glob('*.txt')),
-                  'dupcheck': True, 'drop': True}),
+
     (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
               'dupcheck': True, 'drop': True}),
 )
 
 LoadFiles = (
+    (Accounting,    max((ROOT / '科目说明').glob('*.txt'))),
     (JyShbs,        Files.get('是否需要事后补扫')),
     (JyCdjy,        Files.get('是否校验磁道信息')),
     (GgBzb,         Files.get('ggbzb')),
@@ -55,8 +55,8 @@ def sjdr():
     print('开始数据导入')
     print('导入数据目录：%s' % (ROOT))
     print('导入参数目录：%s' % (CANSHU))
-    yf = str(CANSHU)[-7:]
-    profile.param_yf = yf
+    yf=str(CANSHU)[-7:]
+    profile.param_yf=yf
     print(f'当前月份：{yf}')
     for cls, kw in Coros:
         with suppress(FileImported):
@@ -67,7 +67,7 @@ def sjdr():
     for cls, filename in LoadFiles:
         with suppress(FileImported):
             print(f'开始处理 {cls.__name__}')
-            result = cls.loadfile(filename)
+            result=cls.loadfile(filename)
             print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
 
 

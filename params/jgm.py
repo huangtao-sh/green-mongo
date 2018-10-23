@@ -37,13 +37,13 @@ class GgJgm(Document):
     @arg('query', help='查询条件')
     def main(cls, query=None):
         filter = None
-        if R/'\d{9}' == query:
+        if R/r'\d{9}' == query:
             filter = P._id == query
-        elif R/'\d{12}' == query:
+        elif R/r'\d{12}' == query:
             filter = P.zfhh == query
-        elif R/'\d{2}' == query:
+        elif R/r'\d{2}' == query:
             filter = P.lx == query
         else:
             filter = P.jgmc.contains(query)
-        for obj in cls.objects(filter):
+        for obj in cls.find(filter):
             print(obj)
