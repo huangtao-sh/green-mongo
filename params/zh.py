@@ -105,7 +105,7 @@ class ZhangHu(Document):
         datas = set()
 
         def _(row):
-            ac = row[0][12:20]
+            ac = row[0][12:21]
             if ac not in datas:
                 datas.add(ac)
                 return (ac, row[3].strip())
