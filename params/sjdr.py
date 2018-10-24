@@ -41,7 +41,7 @@ LoadFiles = (
     (JyMenu,        (ROOT/'交易菜单').find('menu*.xml')),
     (Contacts,      (ROOT/'通讯录').find('通讯录*.xls')),
     (Branch,        (ROOT/'分行表').find('分行顺序表.xlsx')),
-    (JyGangwei,     (ROOT / '岗位与交易组').find('岗位及组*.xls')),
+    (JyGangwei,     (ROOT/'岗位与交易组').find('岗位及组*.xls')),
 )
 
 
