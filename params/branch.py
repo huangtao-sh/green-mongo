@@ -24,8 +24,7 @@ class Branch(Document):
     @classmethod
     def procdata(cls, file, options):
         data = file.sheets('分行顺序表')
-        data = super().procdata(data, options)
-        return data
+        return super().procdata(data, options)
 
     @classproperty
     def branchs(self):

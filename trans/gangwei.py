@@ -15,9 +15,10 @@ class JyGangwei(Document):
     _mapper = 0, 1, 2
 
     @classmethod
-    def _proc_sheet(cls, index, name, data, **kw):
+    def procdata(cls, file,  options):
         def _conv(x): return '%02d' % (x) if isinstance(
             x, (int, float)) else '%s' % (x)
+        data = file.sheets(0)
         if data:
             da = []
             gangwei = ['%s-%s' % (_conv(row[1]), row[2]) for row in
@@ -29,12 +30,12 @@ class JyGangwei(Document):
                     if data[k][i]:
                         d.append(gangwei[k - 2])
                 da.append((data[1][i], data[0][i], d))
-            return cls, da
+            return da
 
     @classproperty
     def gangweis(self):
         ''' 获取岗位清单'''
-        obj = self.objects(_id='').first()
+        obj = self.find(_id='').first()
         return obj and obj.gangwei
 
     @classproperty

@@ -9,7 +9,6 @@
 from orange import Path
 from .bz import GgBzb, GgQzb
 from .zh import ZhangHu, AcTemplate, GgKmzd
-from orange.coroutine import run
 from trans import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
 from .accounting import Accounting
 from .jgm import GgJgm
@@ -24,12 +23,6 @@ from .jszh import GgJszh
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = max(ROOT.glob('运营管理*'))
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
-
-Coros = (
-    (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
-                 'dupcheck': True, 'drop': True}),
-)
-
 LoadFiles = (
     (Accounting,    max((ROOT / '科目说明').glob('*.txt'))),
     (JyShbs,        Files.get('是否需要事后补扫')),
@@ -48,6 +41,7 @@ LoadFiles = (
     (JyMenu,        (ROOT/'交易菜单').find('menu*.xml')),
     (Contacts,      (ROOT/'通讯录').find('通讯录*.xls')),
     (Branch,        (ROOT/'分行表').find('分行顺序表.xlsx')),
+    (JyGangwei,     (ROOT / '岗位与交易组').find('岗位及组*.xls')),
 )
 
 
@@ -58,17 +52,13 @@ def sjdr():
     yf = str(CANSHU)[-7:]
     profile.param_yf = yf
     print(f'当前月份：{yf}')
-    for cls, kw in Coros:
-        with suppress(FileImported):
-            print(f'开始处理 {cls.__name__}')
-            cls.import_file(**kw)
-            print(f'{cls.__name__} 处理成功')
 
     for cls, filename in LoadFiles:
-        with suppress(FileImported):
-            print(f'开始处理 {cls.__name__}')
-            result = cls.loadfile(filename)
-            print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
+        if filename:
+            with suppress(FileImported):
+                print(f'开始处理 {cls.__name__}')
+                result = cls.loadfile(filename)
+                print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
 
 
 if __name__ == "__main__":
