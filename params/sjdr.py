@@ -13,7 +13,7 @@ from orange.coroutine import run
 from trans import JyGangwei, JyJiaoyi, JyMenu, JyCdjy, JyShbs
 from .accounting import Accounting
 from .jgm import GgJgm
-from .branch import Branch
+from .branch import Branch, Contacts
 from .dzzz import GgDzzz
 from glemon import FileImported, profile
 from contextlib import suppress
@@ -28,8 +28,6 @@ Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 Coros = (
     (JyGangwei, {'filename': max((ROOT / '岗位与交易组').glob('*.xls')),
                  'dupcheck': True, 'drop': True}),
-    (Branch, {'filename': max((ROOT / '全行通讯录').glob('全行通讯录*.xls*')),
-              'dupcheck': True, 'drop': True}),
 )
 
 LoadFiles = (
@@ -48,6 +46,8 @@ LoadFiles = (
     (JyJiaoyi,      Files.get('transactions_output')),
     (ZhangHu,       Files.get('fhnbhzz')),
     (JyMenu,        (ROOT/'交易菜单').find('menu*.xml')),
+    (Contacts,      (ROOT/'通讯录').find('通讯录*.xls')),
+    (Branch,        (ROOT/'分行表').find('分行顺序表.xlsx')),
 )
 
 
