@@ -21,7 +21,7 @@ from .pzzl import Pzzl
 from .jszh import GgJszh
 
 ROOT = Path('~/OneDrive/工作/参数备份')
-CANSHU = max(ROOT.glob('运营管理*'))
+CANSHU = ROOT.find('运营管理*')
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 LoadFiles = (
     (Accounting,    max((ROOT / '科目说明').glob('*.txt'))),
