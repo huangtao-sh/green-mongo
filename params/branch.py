@@ -86,4 +86,4 @@ class Contacts(Document):
 if __name__ == '__main__':
     # from parameters.sjdr import sjdr
     # sjdr()
-    print(Branch.branchs)
+    print(Branch.branchs())
