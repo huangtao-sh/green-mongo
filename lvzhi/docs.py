@@ -32,12 +32,12 @@ class LzBranchs(Document):
 
     @classmethod
     def update(cls, jg, name):
-        cls.objects(_id=jg).upsert_one(name=name)
+        cls.find(_id=jg).upsert_one(name=name)
 
     @classmethod
     def remove(cls, brs):
         for br in brs:
-            objs = cls.objects(P._id == br)
+            objs = cls.find(P._id == br)
             if objs.count() == 1:
                 objs.delete()
             elif objs.count() == 0:
@@ -63,7 +63,7 @@ class LzBaogao(Document):
             print('当前期次：%s' % (qc))
             yb = defaultdict(lambda: [])
             count = 0
-            for br, dept, name in cls.objects(P.qc == qc).scalar('br', 'dept', 'name'):
+            for br, dept, name in cls.find(P.qc == qc).scalar('br', 'dept', 'name'):
                 yb[br+dept].append(name)
                 count += 1
             print('当期共 %d 条记录\n' % (count))
@@ -100,7 +100,7 @@ class LzBaogao(Document):
                 continue
             if _id != row[0]:
                 nr = []
-                if cls.objects(P._id == row[0]).count() == 0:
+                if cls.find(P._id == row[0]).count() == 0:
                     LzBranchs.update('%s%s' % (row[4], row[3]), row[2])
                     line = [row[x] for x in mapper]
                     line.extend([nr, _get_qc(row[5])])
@@ -114,7 +114,7 @@ class LzBaogao(Document):
 
     @classmethod
     def export(cls):
-        for obj in cls.objects(P.dev_st == False):
+        for obj in cls.find(P.dev_st == False):
             print(obj.br, obj.name, obj.err_devs, obj.dev_errs)
 
 
@@ -133,7 +133,7 @@ class LzWenTi(Document):
         data = fn.sheets(0)[1:]
         data.extend(fn.sheets(1)[1:])
         count = 0
-        cls.objects(yf=qc).delete()
+        cls.find(yf=qc).delete()
         for row in data:
             if row[3]:
                 for jtnr in row[3].split('\n\n'):
@@ -227,7 +227,7 @@ class LzDafu(Document):
             book.A2 = ['提出时间', '问题分类', '机构', '具体内容',
                        '报告人', '反馈部门', '答复意见', '后续跟踪'], 'header'
             book += 1
-            for row in cls.objects((P.yf == curyf) & (P.zyx == '重点问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
+            for row in cls.find((P.yf == curyf) & (P.zyx == '重点问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
                 book.row += 1
                 book.A = [mk_date(row[0]), row[1], row[2]], 'center'
                 book.D = row[3], 'nr'
@@ -242,7 +242,7 @@ class LzDafu(Document):
             book.A2 = ['提出时间', '问题分类', '机构', '具体内容',
                        '报告人', '反馈部门', '答复意见', '后续跟踪'], 'header'
             book += 1
-            for row in cls.objects((P.yf == curyf) & (P.zyx == '一般问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
+            for row in cls.find((P.yf == curyf) & (P.zyx == '一般问题')).scalar('yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfyj', 'hxgz'):
                 book += 1
                 book.A = [mk_date(row[0]), row[1], row[2]], 'center'
                 book.D = row[3], 'nr'

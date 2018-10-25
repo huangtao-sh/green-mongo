@@ -18,7 +18,7 @@ WenTi = namedtuple('WenTi', ('fh', 'tcr', 'ms'))
 SAVEPATH = Path('~/Documents/工作/工作档案/分行履职报告')
 ROOT = SAVEPATH / "分行上报"
 BRANCHS = Branch.branchs
-BRANCHS.pop('香港分行')
+print(BRANCHS)
 
 
 def transbr(name):
@@ -68,8 +68,8 @@ class FhLvzhi(Document):
         qc = qc or cls.curqc
         print('分行未上报情况统计')
         print('报告期次：%s' % (qc))
-        fghz = set(cls.objects(qc=qc, lb='分管行长').distinct('jg'))
-        kjzg = set(cls.objects(qc=qc, lb='运营主管').distinct('jg'))
+        fghz = set(cls.find(qc=qc, lb='分管行长').distinct('jg'))
+        kjzg = set(cls.find(qc=qc, lb='运营主管').distinct('jg'))
         print('  分行    分管行长     运营主管')
         for x in sorted(BRANCHS):
             def test(a): return "    " if x in a else "未报"
@@ -89,7 +89,7 @@ class FhLvzhi(Document):
                     as book:
                 book.add_formats(FORMATS)
                 count = 0
-                for bg in cls.objects(query).order_by('br_order'):
+                for bg in cls.find(query).order_by('br_order'):
                     print("%-10s%s" % (bg.jg, bg.bgr))
                     book.worksheet = bg.jg
                     book.set_widths(WIDTHS)
@@ -181,7 +181,7 @@ class FhLvzhi(Document):
             print('报告期次：%s' % (qc))
             print('报告类别：%s' % (lb))
             print('报告人：  %s' % (bgr))
-            await cls.abjects(qc=qc, lb=lb, jg=jg).upsert_one(
+            await cls.find(qc=qc, lb=lb, jg=jg).upsert_one(
                 headers=headers, bgr=bgr, data=d)
             LoadFile.save('fhlz', fn)
         except Exception as e:
@@ -212,11 +212,11 @@ class FhWenTi(Document):
     @classmethod
     def import_file(cls, filename):
         qc = extract(filename.pname, r'\d{4}\-\d')
-        hz = set(FhLvzhi.objects((P.qc == qc) &
+        hz = set(FhLvzhi.find((P.qc == qc) &
                                  (P.lb == '分管行长')).distinct('bgr'))
         data = filename.sheets('分行履职报告问题表')
         if data:
-            cls.objects(P.qc == qc).delete()
+            cls.find(P.qc == qc).delete()
             for d in data[1:]:
                 d = d[:6]
                 if not d[3].strip():
@@ -228,7 +228,7 @@ class FhWenTi(Document):
                 d.insert(0, qc)
                 obj = cls(zip(cls._projects, d))
                 obj.save()
-            data = [x for x in cls.objects(P.qc == qc).order_by(P.order).scalar(
+            data = [x for x in cls.find(P.qc == qc).order_by(P.order).scalar(
                 'fh', 'wtms', 'tcr', 'dfbm', 'dfyj'
             )]
             title = "%s年%s季度分管行领导及部门负责人履职报告问题的答复意见" % tuple(qc.split('-'))
@@ -280,7 +280,7 @@ def main(imp=False, export=False, report=False, clear=False, qc=None, convert=Fa
     if report:        # 报告分行报送情况
         FhLvzhi.report(qc)
     if clear:         # 清理已导入数据
-        LoadFile.objects(category='fhlz').delete()
+        LoadFile.find(category='fhlz').delete()
         FhLvzhi.drop_collection()
         print('清理完成')
     if convert:

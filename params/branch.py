@@ -29,7 +29,7 @@ class Branch(Document):
     @classproperty
     def branchs(self):
         '''返回分行字典，其值为： 分行名称：顺序'''
-        return dict(self.objects.sacalar('br,order'))
+        return dict(self.objects.scalar('br,order'))
 
 
 class Contacts(Document):
