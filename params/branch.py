@@ -26,7 +26,7 @@ class Branch(Document):
         data = file.sheets('分行顺序表')
         return super().procdata(data, options)
 
-    @classproperty
+    @classmethod
     def branchs(self):
         '''返回分行字典，其值为： 分行名称：顺序'''
         return dict(self.objects.scalar('br,order'))

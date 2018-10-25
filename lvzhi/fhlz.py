@@ -17,7 +17,7 @@ WenTi = namedtuple('WenTi', ('fh', 'tcr', 'ms'))
 
 SAVEPATH = Path('~/Documents/工作/工作档案/分行履职报告')
 ROOT = SAVEPATH / "分行上报"
-BRANCHS = Branch.branchs
+BRANCHS = Branch.branchs()
 print(BRANCHS)
 
 
