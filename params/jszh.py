@@ -6,7 +6,7 @@
 # 创建：2018-10-14 20:08
 
 from glemon import Document, P
+
+
 class GgJszh(Document):
-    _projects='br','bz','jszh','tczh','qtzh'
-    
-    
+    _projects = 'br', 'bz', 'jszh', 'tczh', 'qtzh'

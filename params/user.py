@@ -31,7 +31,6 @@ class Teller(Document):
         '证件号码': 'zjhm',
         '电话': 'telephone',
         '机构': 'brname',
-        '岗位': 'gangwei',
         '启用日期': 'qyrq',
         '中止日期': 'zzrq',
     }
@@ -77,14 +76,21 @@ class Teller(Document):
         if query:
             for q in query:
                 if R/r'\d{3,5}' == q:
-                    obj = cls.objects.filter(_id='%05d' % int(q)).first()
+                    obj = cls.find(_id='%05d' % int(q)).first()
                     obj and obj.show()
                 if R/r'\d{9}' == q:
-                    for obj in cls.objects.filter(branch=q):
-                        print(obj._id)
-                        print(obj.userid)
-                        print(obj.name)
-                        print(obj.telephone)
-                        print(obj.branch)
-                        print(obj.brname)
+                    for obj in cls.find(branch=q):
                         print('\n')
+                        obj.show()
+                if R/r'[\u4e00-\u9fa5]+' == q:
+                    for obj in cls.find(P.name.contains(q)):
+                        print('\n')
+                        obj.show()
+                if R/r'[A-Z]+\d+' == q:
+                    for obj in cls.find(P.userid.startswith(q)):
+                        print('\n')
+                        obj.show()
+                if R/r'1\d+' == q:
+                    for obj in cls.find(P.telephone.startswith(q)):
+                        print('\n')
+                        obj.show()
