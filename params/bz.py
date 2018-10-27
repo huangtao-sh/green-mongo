@@ -41,19 +41,19 @@ class GgBzb(Document):
                 filter_ = filter_[0]
             else:
                 filter_ = {'$or': filter_}
-            for d in cls.find(filter_):
-                if not detail:
-                    print('%s\t%s\t%s' % (d['bz'], d['ywsx'], d['bzmc']))
-                else:
-                    d.show()
-                    print('\n')
+            objects = cls.find(filter_)
+            if detail:
+                objects.show_detail()
+            else:
+                print('代码  英文简称   币种名称')
+                objects.show('bz,ywsx,bzmc', sep='    ')
         elif all:
-            for d in cls.objects:
-                if not detail:
-                    print('%s\t%s\t%s' % (d['bz'], d['ywsx'], d['bzmc']))
-                else:
-                    d.show()
-                    print('\n')
+            objs = cls.objects
+            if detail:
+                objs.show_detail()
+            else:
+                print('代码  英文简称   币种名称')
+                objs.show('bz,ywsx,bzmc', sep='    ')
 
 
 class GgQzb(Document):   # 公共券别表

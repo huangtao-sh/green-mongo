@@ -6,7 +6,15 @@
 # 创建：2018-01-19 15:01
 
 from orange import arg, R
-from glemon import Document, P
+from glemon import Document, P, Descriptor
+
+JGLX = {
+    '00': '总行清算中心',
+    '01': '总行营业部',
+    '10': '分行业务处理中心',
+    '11': '分行营业部',
+    '12': '支行'
+}
 
 
 class GgJgm(Document):
@@ -23,20 +31,21 @@ class GgJgm(Document):
             'hzjgm': 17
         },
     }
-    _textfmt = '''
-机构号：    {self._id}
-机构名称：  {self.jgmc}
-地址：      {self.dz}
-电话：      {self.dh}
-支付行号：  {self.zfhh}
-类型：      {self.lx}
-开办日期：  {self.kbrq}
-汇总机构：  {self.hzjgm}'''
+    _profile = {
+        '机构号': '_id',
+        '机构名称': 'jgmc',
+        '地址': 'dz',
+        '电话': 'dh',
+        '支付系统行号': 'zfhh',
+        '类型': 'jglx',
+        '开办日期': 'kbrq',
+        '汇总机构': 'hzjgm'
+    }
+    jglx = Descriptor('lx', JGLX)
 
     @classmethod
     @arg('query', help='查询条件')
     def main(cls, query=None):
-        filter = None
         if R/r'\d{9}' == query:
             filter = P._id == query
         elif R/r'\d{12}' == query:
@@ -46,4 +55,5 @@ class GgJgm(Document):
         else:
             filter = P.jgmc.contains(query)
         for obj in cls.find(filter):
-            print(obj)
+            obj.show()
+            print('\n')

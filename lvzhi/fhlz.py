@@ -10,21 +10,19 @@ from orange import Path, R, classproperty, arg, ensure, extract
 from glemon import Document, P
 from glemon.loadcheck import LoadFile
 from collections import namedtuple
-from orange.coroutine import run, wait
 from params.branch import Branch, Contacts
 
 WenTi = namedtuple('WenTi', ('fh', 'tcr', 'ms'))
 
-SAVEPATH = Path('~/Documents/工作/工作档案/分行履职报告')
+SAVEPATH = Path('~/OneDrive/工作/工作档案/分行履职报告')
 ROOT = SAVEPATH / "分行上报"
 BRANCHS = Branch.branchs()
-print(BRANCHS)
 
 
 def transbr(name):
-    for br in BRANCHS:
+    for br, order in BRANCHS.items():
         if br in name:
-            return br
+            return br, order
 
 
 LeiBieTrans = {'分管行长': '分管行长',
@@ -106,9 +104,9 @@ class FhLvzhi(Document):
                         for i, n in enumerate(d['nr']):
                             book['B%s' % (i + r1)] = str(n).strip(), 'normal'
                         r1 = r2 + 1
-                        if '意见或建议' in d['xm']:
+                        if '问题' in d['xm'] or '意见或建议' in d['xm']:
                             for n in d['nr']:
-                                if n and n != '无':
+                                if n and len(n) > 10:
                                     wentis.append(WenTi(bg.jg, bg.bgr,
                                                         n.strip()))
                     count += 1
@@ -138,18 +136,14 @@ class FhLvzhi(Document):
             print(x['xm'], x['nr'])
 
     @classmethod
-    async def load_files(cls, *files):
+    def load_files(cls, *files):
         files = [x for x in (files or ROOT.rglob('*履职报告*.*'))
                  if x.lsuffix.startswith('.xls')]
-        files = LoadFile.check('fhlz', *files)
-        if files:
-            coros = [cls.load_file(filename)for filename in files]
-            await wait(coros)
-        else:
-            print('无需要导入的文件')
+        for file in files:  # LoadFile.check('fhlz', *files):
+            cls.load_file(file)
 
     @classmethod
-    async def load_file(cls, filename):
+    def load_file(cls, filename):
         print('开始处理文件', filename.pname)
         fn = filename
         try:
@@ -157,8 +151,11 @@ class FhLvzhi(Document):
             headers = [data[i][0] for i in range(3)]
             lb = translb(headers[0])
             ensure(lb is not None, '类别不正确')
-            jg = transbr(headers[1])
-            ensure(jg is not None, '报告机构格式不正确')
+            result = transbr(headers[1])
+            if result:
+                jg, order = result
+            else:
+                print('报告机构格式不正确')
             d = headers[2]
             if Date2 / d:
                 qc = list(Date2 / d)
@@ -181,8 +178,9 @@ class FhLvzhi(Document):
             print('报告期次：%s' % (qc))
             print('报告类别：%s' % (lb))
             print('报告人：  %s' % (bgr))
-            await cls.find(qc=qc, lb=lb, jg=jg).upsert_one(
-                headers=headers, bgr=bgr, data=d)
+            print('顺序：    %s' % (order))
+            cls.find(qc=qc, lb=lb, jg=jg).upsert_one(
+                headers=headers, bgr=bgr, data=d, br_order=order)
             LoadFile.save('fhlz', fn)
         except Exception as e:
             print('文件 %s 处理存在问题' % (fn.pname))
@@ -213,7 +211,7 @@ class FhWenTi(Document):
     def import_file(cls, filename):
         qc = extract(filename.pname, r'\d{4}\-\d')
         hz = set(FhLvzhi.find((P.qc == qc) &
-                                 (P.lb == '分管行长')).distinct('bgr'))
+                              (P.lb == '分管行长')).distinct('bgr'))
         data = filename.sheets('分行履职报告问题表')
         if data:
             cls.find(P.qc == qc).delete()
@@ -274,7 +272,7 @@ class FhWenTi(Document):
 @arg('-v', '--convert', action='store_true', help='转换正式答复意见格式')
 def main(imp=False, export=False, report=False, clear=False, qc=None, convert=False):
     if imp:           # 导入履职报告文件
-        run(FhLvzhi.load_files())
+        FhLvzhi.load_files()
     if export:        # 导出报告
         FhLvzhi.export(qc)
     if report:        # 报告分行报送情况
