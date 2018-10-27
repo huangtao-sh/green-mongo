@@ -4,6 +4,7 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2017-06-23 09:43
+# 修订：2018-10-27 采用 profile 来显示内容
 
 from orange import command, arg, R
 from glemon import Document, P
@@ -11,12 +12,21 @@ from glemon import Document, P
 
 class GgBzb(Document):
     _projects = 'bz', 'gbh', 'bzmc', 'ywsx', 'hltzcs', 'hltzrq', 'ws', 'qybz', 'qyrq', 'zyrq', 'dgqygz'
+    _profile = {
+        '代码': 'bz',
+        '英文缩写': 'ywsx',
+        '币种名称': 'bzmc',
+        '国标号': 'gbh',
+        '启用标志': 'qybz',
+        '启用日期': 'qyrq',
+    }
 
     @classmethod
     @command(description='币种代码查询程序')
     @arg('codes', metavar='bz', nargs='*', help='币种代码列表')
     @arg('-d', '--detail', action='store_true', help='显示详细信息')
-    def main(cls, codes=None, detail=False):
+    @arg('-a', '--all', action='store_true', help='显示所有币种')
+    def main(cls, codes=None, detail=False, all=False):
         if codes:
             filter_ = []
             for d in codes:
@@ -31,16 +41,19 @@ class GgBzb(Document):
                 filter_ = filter_[0]
             else:
                 filter_ = {'$or': filter_}
-            for d in cls._get_collection().find(filter_):
+            for d in cls.find(filter_):
                 if not detail:
                     print('%s\t%s\t%s' % (d['bz'], d['ywsx'], d['bzmc']))
                 else:
-                    print('\n代码      ：%s' % (d['bz']))
-                    print('英文缩写  ：%s' % (d['ywsx']))
-                    print('名称      ：%s' % (d['bzmc']))
-                    print('国标号    ：%s' % (d['gbh']))
-                    print('启用标志  ：%s' % (d['qybz']))
-                    print('启用日期  ：%d' % (d['qyrq']))
+                    d.show()
+                    print('\n')
+        elif all:
+            for d in cls.objects:
+                if not detail:
+                    print('%s\t%s\t%s' % (d['bz'], d['ywsx'], d['bzmc']))
+                else:
+                    d.show()
+                    print('\n')
 
 
 class GgQzb(Document):   # 公共券别表

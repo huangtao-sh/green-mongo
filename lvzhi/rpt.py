@@ -42,7 +42,7 @@ def export_ylb(fn=None):
         if s.upper() != 'Y':
             return
     wt_data, zh_data, sb_data = [], [], []
-    for obj in LzBaogao.objects(P.qc == qc):
+    for obj in LzBaogao.find(P.qc == qc):
         for k in obj.nr:
             if (('建议' in k['zl'])or('问题'in k['zl']))and(len(k['nr']) >= 10):
                 wt_data.append(('%s%s' % (obj.br, obj.dept),
@@ -77,7 +77,7 @@ def export_wt(yyb=True, fn=None):
     yf = LzBaogao.cur_qc()
     print('当前月份：%s' % (yf))
     fn = ROOTPATH / '3处理问题' / ('营业主管履职报告（%s）·.xlsx' % (yf))
-    data = list(LzWenTi.objects(yf=yf).order_by('bm', 'wtfl', 'dfr').scalar(
+    data = list(LzWenTi.find(yf=yf).order_by('bm', 'wtfl', 'dfr').scalar(
         'wtfl', 'jg', 'jtnr', 'bgr', 'dfr', 'dfyj'))
     with fn.write_xlsx(formats=FORMATS) as book:
         book.worksheet = '运营管理部'

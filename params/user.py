@@ -33,6 +33,7 @@ class Teller(Document):
         '机构': 'brname',
         '启用日期': 'qyrq',
         '中止日期': 'zzrq',
+        '状态':'zt',
     }
 
     @property
