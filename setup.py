@@ -2,7 +2,7 @@
 #  项目：生产管理平台
 #  作者：黄涛
 #  创建：2018-3-15
-# 修改：2018-05-25 20:50 删除lzwt
+#  修改：2018-05-25 20:50 删除lzwt
 
 
 from orange import setup
@@ -19,7 +19,8 @@ consoles = [
     #   'lzwt=lvzhi:lvzhiwenti',
     'br=params.branch:Contacts.main',
     'teller=params.user:Teller.main',
-    'bz=params.bz:GgBzb.main'
+    'bz=params.bz:GgBzb.main',
+    'ed=params.dengji:EduDengji.main',
 ]
 guis = []
 

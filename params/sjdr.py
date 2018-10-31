@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2017-05-05 14:31
 # 修订：2018-09-06 忽略已导入文件的异常
+# 修订：2018-10-31 20:47 增加 dengji 的处理
 
 from orange import Path
 from .bz import GgBzb, GgQzb
@@ -19,6 +20,7 @@ from contextlib import suppress
 from .user import Teller
 from .pzzl import Pzzl
 from .jszh import GgJszh
+from .dengji import EduDengji
 
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = ROOT.find('运营管理*')
@@ -42,6 +44,7 @@ LoadFiles = (
     (Contacts,      (ROOT/'通讯录').find('通讯录*.xls')),
     (Branch,        (ROOT/'分行表').find('分行顺序表.xlsx')),
     (JyGangwei,     (ROOT/'岗位与交易组').find('岗位及组*.xls')),
+    (EduDengji,     (ROOT/'额度登记配置').find('额度登记配置*.xls')),
 )
 
 
