@@ -16,7 +16,6 @@ consoles = [
     'fhlz=lvzhi.fhlz:main',
     'lz=lvzhi:main',
     'jqb=vacation:Vacation.main',
-    #   'lzwt=lvzhi:lvzhiwenti',
     'br=params.branch:Contacts.main',
     'teller=params.user:Teller.main',
     'bz=params.bz:GgBzb.main',

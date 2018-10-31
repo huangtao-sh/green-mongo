@@ -1,9 +1,9 @@
-# 项目：   参数平台
-# 模块：   额度等级
-# 作者：   黄涛
+# 项目：参数平台
+# 模块：额度等级
+# 作者：黄涛
 # License: GPL
-# Email:   huangtao.sh@icloud.com
-# 创建：   2018-10-31 20:43
+# Email:huangtao.sh@icloud.com
+# 创建：2018-10-31 20:43
 
 
 from glemon import Document, enlist, FileImported, P

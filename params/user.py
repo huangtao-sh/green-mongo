@@ -33,7 +33,7 @@ class Teller(Document):
         '机构': 'brname',
         '启用日期': 'qyrq',
         '中止日期': 'zzrq',
-        '状态':'zt',
+        '状态': 'zt',
     }
 
     @property
@@ -51,22 +51,18 @@ class Teller(Document):
                 P.zt.regex('[12356].')
                 & (P.rzlx == '0')).order_by(P.branch).scalar('_id', 'branch',  'qyrq', 'name'):
             print(*r, sep='\t')
+
         print('-'*20)
-        print('同一机构开立多个柜员号')
-        a = Teller.aggregate()
+        print('证件号码错误')
+        a = Teller .aggregate()
         a.match(P.zt.regex('[12356].'))
-        a.group(
-            P.zjzl, P.zjhm,
-            P.branchs.addToSet('$branch'),
-            P.ids.addToSet('$_id'),
-            P.names.addToSet('$name'),
-            P.counts.sum(1)
-        )
-        a.match(P.counts > 1)
-        for zjhm, names, branchs in a.scalar('_id.zjhm', 'names', 'branchs'):
-            if len(names) > 1:
-                print(
-                    f'证件号码：{zjhm}  姓名：{" ".join(names)}   机构：{" ".join(branchs)}')
+        a.group(P.zjzl, P.zjhm, P.names.addToSet(
+            '$name'), P.branches.addToSet('$branch'))
+        for zjhm, names, branches in a.scalar('_id.zjhm', 'names', 'branches'):
+            if(len(names) > 1)and all(map(lambda x: len(x) <= 5, names)):
+                print(f'证件号码： {zjhm}')
+                print('姓名：', *names)
+                print('机构：', *branches, '\n')
 
     @classmethod
     @arg('-c', '--check', action='store_true', help='检查柜员表是否存在问题')

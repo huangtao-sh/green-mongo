@@ -26,7 +26,6 @@ ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = ROOT.find('运营管理*')
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 LoadFiles = (
-    (Accounting,    max((ROOT / '科目说明').glob('*.txt'))),
     (JyShbs,        Files.get('是否需要事后补扫')),
     (JyCdjy,        Files.get('是否校验磁道信息')),
     (GgBzb,         Files.get('ggbzb')),
@@ -45,6 +44,7 @@ LoadFiles = (
     (Branch,        (ROOT/'分行表').find('分行顺序表.xlsx')),
     (JyGangwei,     (ROOT/'岗位与交易组').find('岗位及组*.xls')),
     (EduDengji,     (ROOT/'额度登记配置').find('额度登记配置*.xls')),
+    (Accounting,    (ROOT/'科目说明').find('*.txt')),
 )
 
 
