@@ -74,13 +74,12 @@ class Holiday(Document):
         ab = self.ab
         for a in anpai:
             s = Pattern == a
-            if s:
-                d = s.groupdict()
-                holidays.update(
-                    zip(parsedate(d.get('fj'), year), cycle([d['name']])))
-                sb = d.get('sb')
-                if sb:
-                    workdays.update(parsedate(sb, year))
+            d = s.groupdict()
+            holidays.update(
+                zip(parsedate(d.get('fj'), year), cycle([d['name']])))
+            sb = d.get('sb')
+            if sb:
+                workdays.update(parsedate(sb, year))
         begin = datetime(f'{self._id}-1-1')
         for d in begin.iter(begin.add(years=1)):
             memo = holidays.get(d)or WEEKDAY.get(d.isoweekday())
