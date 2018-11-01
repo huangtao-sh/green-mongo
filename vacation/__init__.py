@@ -5,5 +5,4 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-29 09:09
 
-from .jqb import Vacation
-__all__ = 'Vacation'
+from .jq import Holiday

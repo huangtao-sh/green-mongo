@@ -20,6 +20,7 @@ consoles = [
     'teller=params.user:Teller.main',
     'bz=params.bz:GgBzb.main',
     'ed=params.dengji:EduDengji.main',
+    'jq=vacation:Holiday.main',
 ]
 guis = []
 
