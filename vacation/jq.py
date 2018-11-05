@@ -43,6 +43,7 @@ class Holiday(Document):
     @classmethod
     @arg('-f', '--fetch', action='store_true', help='从网站获取假期表')
     @arg('-e', '--export', dest='begindate', default='noset', nargs='?', help='显示假期表')
+    @arg('-s', '--show', dest='year', default='noset', nargs='?', help='显示假期安排')
     def main(cls, **options):
         if options.get('fetch'):
             from .fetch import FetchVacation
@@ -50,6 +51,19 @@ class Holiday(Document):
         begindate = options.get('begindate')
         if begindate != 'noset':
             cls.export(begindate)
+        year = options.get('year')
+        if year != 'noset':
+            cls.show(year)
+
+    @classmethod
+    def show(cls, year):
+        year = year or str(now().year)
+        obj = cls.objects.get(year)
+        if obj:
+            print(f'年份： {year}')
+            if obj.ab:
+                print(f'初始AB户标志：{obj.ab}')
+            print(*obj.anpai, sep='\n')
 
     @classmethod
     def parse(cls, txt):
