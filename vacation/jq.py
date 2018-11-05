@@ -61,8 +61,9 @@ class Holiday(Document):
         obj = cls.objects.get(year)
         if obj:
             print(f'年份： {year}')
-            for a in obj.anpai:
-                print(a)
+            if obj.ab:
+                print(f'初始AB户标志：{obj.ab}')
+            print(*obj.anpai, sep='\n')
 
     @classmethod
     def parse(cls, txt):
