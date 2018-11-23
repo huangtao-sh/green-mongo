@@ -31,12 +31,12 @@ class Zhxxbm(Document):
         }
     }
 
-
-@arg('km', nargs='?', help='查询科目对应的信息编码')
-def main(km=None):
-    for obj in Zhxxbm.find(kemu=km):
-        print(f'\n{obj.kemu}     {obj.name}')
-        print(f'编码       {obj.bm}')
-        tprint(
-            zip(names.split(','), split(obj.bm)),
-            format_spec={0: '10'})
+    @classmethod
+    @arg('km', nargs='?', help='查询科目对应的信息编码')
+    def main(cls, km=None):
+        for obj in cls.find(kemu=km):
+            print(f'\n{obj.kemu}     {obj.name}')
+            print(f'编码       {obj.bm}')
+            tprint(
+                zip(names.split(','), split(obj.bm)),
+                format_spec={0: '10'})
