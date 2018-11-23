@@ -21,6 +21,7 @@ from .user import Teller
 from .pzzl import Pzzl
 from .jszh import GgJszh
 from .dengji import EduDengji
+from .zhxxbm import Zhxxbm
 
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = ROOT.find('运营管理*')
@@ -45,6 +46,7 @@ LoadFiles = (
     (JyGangwei,     (ROOT/'岗位与交易组').find('岗位及组*.xls')),
     (EduDengji,     (ROOT/'额度登记配置').find('额度登记配置*.xls')),
     (Accounting,    (ROOT/'科目说明').find('*.txt')),
+    (Zhxxbm,        Files.get('ggxxbmdzb')),
 )
 
 

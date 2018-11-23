@@ -22,6 +22,7 @@ consoles = [
     'ed=params.dengji:EduDengji.main',
     'jq=vacation:Holiday.main',
     'wh=params.paijia:PaiJia.main',
+    'xxbm=params.zhxxbm:main',
 ]
 guis = []
 
