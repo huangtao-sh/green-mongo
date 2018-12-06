@@ -23,6 +23,7 @@ class AcTemplate(Document):
         'converter': {
             'tzed': float,
             'jglx': str.strip,
+            'xh': int,
         },
     }
 
@@ -109,7 +110,7 @@ class ZhangHu(Document):
             if ac not in datas:
                 datas.add(ac)
                 return (ac, row[3].strip())
-        return filter(None,map(_,data))
+        return filter(None, map(_, data))
 
     @classmethod
     def show(cls, ac):

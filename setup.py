@@ -27,7 +27,7 @@ consoles = [
 guis = []
 
 setup(
-    name='green-mongo',
+    name='gmongo',
     author='huangtao',
     author_email='hunto@163.com',
     platforms='any',

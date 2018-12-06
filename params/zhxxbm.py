@@ -33,10 +33,15 @@ class Zhxxbm(Document):
 
     @classmethod
     @arg('km', nargs='?', help='查询科目对应的信息编码')
-    def main(cls, km=None):
-        for obj in cls.find(kemu=km):
-            print(f'\n{obj.kemu}     {obj.name}')
-            print(f'编码       {obj.bm}')
-            tprint(
-                zip(names.split(','), split(obj.bm)),
-                format_spec={0: '10'})
+    @arg('-l', '--list', dest='list_', action='store_true', help='列出所有的科目清单')
+    def main(cls, km=None, list_=False):
+        if km:
+            for obj in cls.find(kemu=km):
+                print(f'\n{obj.kemu}     {obj.name}')
+                print(f'编码       {obj.bm}')
+                tprint(
+                    zip(names.split(','), split(obj.bm)),
+                    format_spec={0: '10'})
+        if list_:
+            for km, name in cls.objects.order_by('kemu').scalar('kemu,name'):
+                print(km, name)
