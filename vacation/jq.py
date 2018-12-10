@@ -82,34 +82,6 @@ class Holiday(Document):
         cls.find(_id=year).upsert_one(anpai=anpai)
         print(f'{year}年假期安排获取成功')
 
-    def __iter__(self):
-        workdays = set()
-        holidays = {}
-        anpai = self.anpai or ""
-        year = self._id
-        ab = self.ab
-        for a in anpai:
-            s = Pattern == a
-            d = s.groupdict()
-            holidays.update(
-                zip(parsedate(d.get('fj'), year), cycle([d['name']])))
-            sb = d.get('sb')
-            if sb:
-                workdays.update(parsedate(sb, year))
-        begin = datetime(f'{self._id}-1-1')
-        for d in begin.iter(begin.add(years=1)):
-            memo = holidays.get(d)or WEEKDAY.get(d.isoweekday())
-            if not memo:
-                flag, sx, memo = '0', '0', ''
-            elif memo.startswith('星期') and d in workdays:
-                flag, sx, memo = '0', '0', '调休上班'
-            else:
-                flag, sx = '1', '2'
-            ab_ = ab if flag == '1' else "A" if ab == 'B' else "B"
-            yield d % '%Y%m%d', flag, sx, memo, ab, ab_
-            ab = ab_
-        self.ab_ = ab   # 返回次年 1 月 1 日的 AB 户标志
-
     @classmethod
     def iter(cls, begin, years=9):
         workdays = set()
