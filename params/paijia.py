@@ -6,13 +6,18 @@
 # 创建：2018-11-05 19:42
 
 from glemon import Document, P, enlist
-from orange import datetime, R, arg
+from orange import datetime, R, arg, tprint
 
 JIANJIE = {'林吉特', '卢布', '兰特', '韩元'}  # 这些币种的汇率采取间接标价法
 
 
 class PaiJia(Document):
     _projects = enlist('_id,huilv')
+
+    @property
+    def hv(self):
+        for bz, hv in sorted(self.huilv.items()):
+            yield bz, 10000/float(hv) if bz in JIANJIE else float(hv)
 
     @classmethod
     @arg('-f', '--fetch', action='store_true', help='获取当前的外汇牌价')
@@ -25,9 +30,8 @@ class PaiJia(Document):
             rq = rq or datetime.today() % ('%Y-%m-%d')
             obj = cls.objects.get(rq)
             if rq:
-                print(f'日期：    {rq}')
-                for k, v in obj.huilv.items():
-                    print(k, v, sep='\t')
+                print(f'日期：     {rq}')
+                tprint(obj.hv, format_spec={0: '10', 1: '>10.4f'})
 
     @classmethod
     def fetch(cls):

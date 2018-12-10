@@ -11,9 +11,9 @@ from glemon import Document, P, enlist
 
 YEAR = R/r'.*?(\d{4})年'
 Pattern = R/r'\s*(?P<xh>.*?)、(?P<name>.*?)：(?P<fj>.*?)。((?P<sb>.*?)。)?\s*'
-Rq = R / (r'(?P<m1>\d{1,2})月(?P<d1>\d{1,2})日'
+Rq = R / (r'((?P<y1>\d{4})年)?(?P<m1>\d{1,2})月(?P<d1>\d{1,2})日'
           r'(?P<flag>至)?'
-          r'(((?P<m2>\d{1,2})月)?(?P<d2>\d{1,2})日)?')
+          r'((((?P<y2>\d{4})年)?(?P<m2>\d{1,2})月)?(?P<d2>\d{1,2})日)?')
 WEEKDAY = {7: "星期日", 6: '星期六'}
 
 HEADERS = [{'header': '日期', },
@@ -27,11 +27,13 @@ HEADERS = [{'header': '日期', },
 def parsedate(s, year):
     for r in Rq.finditer(s):
         r = r.groupdict()
-        flag, m1, d1, m2, d2 = tuple(
-            map(r.__getitem__, enlist('flag,m1,d1,m2,d2')))
-        d1 = datetime("-".join([year, m1, d1]))
+        flag, y1, m1, d1, y2, m2, d2 = tuple(
+            map(r.__getitem__, enlist('flag,y1,m1,d1,y2,m2,d2')))
+        y1 = y1 or year
+        y2 = y2 or y1 or year
+        d1 = datetime("-".join([y1, m1, d1]))
         if flag:
-            d2 = datetime("-".join([year, m2 or m1, d2]))
+            d2 = datetime("-".join([y2, m2 or m1, d2]))
             yield from d1.iter(d2+1)
         else:
             yield d1
@@ -109,10 +111,20 @@ class Holiday(Document):
         self.ab_ = ab   # 返回次年 1 月 1 日的 AB 户标志
 
     @classmethod
-    def export(cls, begindate):
-        from orange.xlsx import Book
-        begindate = datetime(begindate or now()+5) % '%Y%m%d'
-        year = begindate[:4]
+    def iter(cls, begin, years=9):
+        workdays = set()
+        holidays = {}
+        for obj in cls.find(P._id >= begin[:4]):
+            year = obj._id
+            for a in obj.anpai:
+                s = Pattern == a
+                d = s.groupdict()
+                holidays.update(
+                    zip(parsedate(d.get('fj'), year), cycle([d['name']])))
+                sb = d.get('sb')
+                if sb:
+                    workdays.update(parsedate(sb, year))
+        year = begin[:4]
         obj = cls.objects.get(year)
         if not obj:
             print('起始年份无对应的假期表，请先下载')
@@ -125,25 +137,36 @@ class Holiday(Document):
                 exit(2)
             obj.ab = ab
             obj.save()
+        ab = obj.ab
         data = []
-        for d in obj:
-            if d[0] >= begindate:
-                data.append(d)
-        for y in range(int(year)+1, int(year)+9):
-            y = str(y)
-            if obj.anpai:
-                obj_ = cls.objects.get(y)
-                if obj_:
-                    obj_.ab = obj.ab_
-                else:
-                    obj_ = cls(_id=y, ab=obj.ab_)
-                obj_.save()
+        begin = datetime(f'{year}-1-1')
+        for d in begin.iter(begin.add(years=years)):
+            memo = holidays.get(d)or WEEKDAY.get(d.isoweekday())
+            if not memo:
+                flag, sx, memo = '0', '0', ''
+            elif memo.startswith('星期') and d in workdays:
+                flag, sx, memo = '0', '0', '调休上班'
             else:
-                obj_ = cls(_id=y, ab=obj.ab_)
-            obj = obj_
-            for d in obj:
-                data.append(d)
+                flag, sx = '1', '2'
+            ab_ = ab if flag == '1' else "A" if ab == 'B' else "B"
+            if d.month == 1 and d.day == 1:
+                obj = cls.objects.get(str(d.year))
+                if obj:
+                    obj.ab = ab
+                    obj.save()
+            data.append((d % '%Y%m%d', flag, sx, memo, ab, ab_))
+            ab = ab_
+        return data
+
+    @classmethod
+    def export(cls, begindate):
+        from orange.xlsx import Book
+        begindate = datetime(begindate or now()+5) % '%Y%m%d'
+        data = cls.iter(begindate)
+        data = [x for x in data if x[0] >= begindate]
+        if data:
             fn = '假期参数表%s.xlsx' % (begindate)
             with Book(fn) as rpt:
                 rpt.add_table('A1', sheet='假期参数表', columns=HEADERS,
-                              autofilter=False, data=data)
+                              autofilter=False,
+                              data=data)
