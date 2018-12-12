@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-25 20:48
 
-from .docs import LzBaogao, LzWenTi, ROOTPATH
+from .docs import LzBaogao, LzWenTi, ROOTPATH, ROOT
 from orange import Path
 from glemon import P
 
@@ -35,7 +35,7 @@ SBFORMAT = [
 
 def export_ylb(fn=None):
     qc = LzBaogao.cur_qc()
-    fn = ROOTPATH / '2报告一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
+    fn = ROOT / '一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
 
     if fn.exists():
         s = input('%s 已存在，是否覆盖，Y or N?\n' % (fn.name))

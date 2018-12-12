@@ -13,7 +13,7 @@ from orange.utils.hclient import Crawler, wait
 
 URL = 'http://sousuo.gov.cn/list.htm'
 values = {'searchfield': 'title',  # 搜索标题
-          'n': 5,                 # 只取三条记录
+          'n': 5,                 # 只取最近5年的记录
           't': 'paper',
           'sort': 'pubtime',      # 按发布时间排序
           'timetype': 'timeqb',

@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2016-09-11 22:05
 # 修订：2018-01-19 重新构造代码
+# 修订：2018-12-12 10:24 增加通讯录显示
 
 from orange import Path, R, classproperty, arg
 from orange.coroutine import run
@@ -46,6 +47,16 @@ class Contacts(Document):
             '电子邮件': 'email',
         }
     }
+    _profile = {
+        '机构': 'br',
+        '部门': 'dept',
+        '姓名': 'name',
+        '职务': 'title',
+        '办公电话': 'tel',
+        '传真': 'fax',
+        '手机': 'mobile',
+        '电子邮件': 'email',
+    }
 
     @classmethod
     def procdata(cls, file, options):
@@ -70,6 +81,8 @@ class Contacts(Document):
                 filter = P.tel.endswith('8765' + query)
             elif R / r'\d{1,}' == query:
                 filter = P.tel.contains(query)
+            elif R / r'[A-Za-z].*' == query:
+                filter = P.email.contains(query)
             else:
                 filter = P.name.contains(query)
             return cls.find(filter)
@@ -80,7 +93,8 @@ class Contacts(Document):
     def main(cls, query, yunying=False):
         if query:
             for obj in cls.search(query, yunying):
-                print(obj)
+                obj.show()
+                print('')
 
 
 if __name__ == '__main__':

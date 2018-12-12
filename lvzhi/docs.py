@@ -6,11 +6,12 @@
 # 创建：2018-05-25 20:47
 # 修订：2018-05-30 增加答复意见
 
-from orange import Path, R, datetime, wlen
+from orange import Path, R, datetime, wlen, HOME
 from glemon import Document, P
 from collections import defaultdict
 
 ROOTPATH = Path('~/Documents/工作/工作档案/分行履职报告')
+ROOT = HOME/'OneDrive/工作/工作档案/履职报告'
 
 
 def wprint(s, width=20):
@@ -50,6 +51,7 @@ class LzBaogao(Document):
     _projects = '_id', 'name', 'dept', 'br', 'date',\
         'cc', 'atts', 'dev_st', 'err_devs', 'dev_errs', 'spyj',\
         'fhjj', 'zhjj', 'shryj', 'fzryj', 'nr', 'qc'
+    _mapper = 0, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17
 
     @classmethod
     def cur_qc(cls):
@@ -89,9 +91,10 @@ class LzBaogao(Document):
 
     @classmethod
     def import_file(cls):
-        path = max((ROOTPATH / '1下载报告').glob('会计履职报告*.xls'))
+        path = ROOT.find('会计履职报告*.xls')
+        print(f'当前处理文件：{path}')
         rows = path.sheets('会计履职报告')[1:]
-        mapper = 0, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17
+        mapper = cls._mapper
         print('处理文件：%s' % (path))
         data = []
         _id = None
@@ -106,7 +109,7 @@ class LzBaogao(Document):
                     line.extend([nr, _get_qc(row[5])])
                     data.append(line)
                 _id = row[0]
-            nr.append({'zl': row[18], 'nr': row[20]})
+            nr.append({'zl': row[19], 'nr': row[21]})
         if data:
             data = [dict(zip(cls._projects, d))for d in data]
             cls.objects.insert(data)
@@ -125,10 +128,10 @@ class LzWenTi(Document):
     _projects = 'yf', 'wtfl', 'jg', 'jtnr', 'bgr', 'bm', 'dfr', 'dfyj', 'zt', 'zdwt'
 
     @classmethod
-    def load_files(cls):
+    def load_file(cls):
         # 从文件中读取收集到的问题
         qc = LzBaogao.cur_qc()
-        fn = ROOTPATH / '2报告一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
+        fn = ROOT / '一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
         print('导入文件 %s' % (fn))
         data = fn.sheets(0)[1:]
         data.extend(fn.sheets(1)[1:])
