@@ -6,6 +6,7 @@
 # @Version : $Id$
 # 修订：2018-09-06 调整导出文件格式，增加菜单
 # 修改：2018-10-19 19:53 使用 loadfile 导入文件
+# 修订：2018-12-12 09:09 查询交易码时，按交易码排序
 
 
 from orange import classproperty, arg, Path, now, R, wlen
@@ -155,11 +156,11 @@ class JyJiaoyi(Document):
             '_id,yxj': str.strip,
         },
     }
-    _profile={
-        '交易码':'_id',
-        '交易名称':'jymc',
-        '交易组':'jyz',
-        '交易组名':'jyzm',
+    _profile = {
+        '交易码': '_id',
+        '交易名称': 'jymc',
+        '交易组': 'jyz',
+        '交易组名': 'jyzm',
     }
 
     @classmethod
@@ -236,5 +237,5 @@ class JyJiaoyi(Document):
                     for n, v in obj:
                         print(n, v, sep=' ' * (20 - wlen(n)))
             else:
-                for jy in cls.find(P.jymc.contains(query)):
+                for jy in cls.find(P.jymc.contains(query)).order_by(P._id):
                     print(jy._text)
