@@ -25,7 +25,7 @@ def _get_qc(dt):
     dt = datetime(dt)
     if dt.day <= 20:
         dt = dt.add(months=-1)
-    return dt % '%Y%m'
+    return dt % '%Y-%m'
 
 
 class LzBranchs(Document):
