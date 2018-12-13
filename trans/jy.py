@@ -237,5 +237,9 @@ class JyJiaoyi(Document):
                     for n, v in obj:
                         print(n, v, sep=' ' * (20 - wlen(n)))
             else:
-                for jy in cls.find(P.jymc.contains(query)).order_by(P._id):
-                    print(jy._text)
+                cls.find(P.jymc.contains(query)).order_by(P._id).show(
+                    '_id','jyz','jyzm','jymc',
+                    format_spec={
+                        2:'20',
+                    }
+                )
