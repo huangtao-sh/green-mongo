@@ -24,7 +24,6 @@ consoles = [
     'wh=params.paijia:PaiJia.main',
     'xxbm=params.zhxxbm:Zhxxbm.main',
 ]
-guis = []
 
 setup(
     name='gmongo',
@@ -33,9 +32,7 @@ setup(
     platforms='any',
     description='work platform',
     long_description='work platform',
-    entry_points={
-        'gui_scripts': guis,
-        'console_scripts': consoles},
+    cscripts=consoles,
     url='https://github.com/huangtao-sh/mongo.git',
     license='GPL',
 )
