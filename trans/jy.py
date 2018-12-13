@@ -7,6 +7,7 @@
 # 修订：2018-09-06 调整导出文件格式，增加菜单
 # 修改：2018-10-19 19:53 使用 loadfile 导入文件
 # 修订：2018-12-12 09:09 查询交易码时，按交易码排序
+# 修改：2018-12-13 17:32 调整 jym 查询列表的显示格式
 
 
 from orange import classproperty, arg, Path, now, R, wlen
@@ -238,8 +239,8 @@ class JyJiaoyi(Document):
                         print(n, v, sep=' ' * (20 - wlen(n)))
             else:
                 cls.find(P.jymc.contains(query)).order_by(P._id).show(
-                    '_id','jyz','jyzm','jymc',
+                    '_id', 'jyz', 'jyzm', 'jymc',
                     format_spec={
-                        2:'20',
+                        2: '20',
                     }
                 )
