@@ -30,7 +30,7 @@ def main(report=False, import_=False, branchs=None, export=False,
     if export:
         export_ylb()
     if collection:
-        LzWenTi.load_files()
+        LzWenTi.load_file()
     if wenti:
         export_wt()
     if publish:

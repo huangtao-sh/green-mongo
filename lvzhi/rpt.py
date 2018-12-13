@@ -76,7 +76,7 @@ WTFORMAT = [
 def export_wt(yyb=True, fn=None):
     yf = LzBaogao.cur_qc()
     print('当前月份：%s' % (yf))
-    fn = ROOTPATH / '3处理问题' / ('营业主管履职报告（%s）·.xlsx' % (yf))
+    fn = ROOT / '处理问题' / ('营业主管履职报告（%s）.xlsx' % (yf))
     data = list(LzWenTi.find(yf=yf).order_by('bm', 'wtfl', 'dfr').scalar(
         'wtfl', 'jg', 'jtnr', 'bgr', 'dfr', 'dfyj'))
     with fn.write_xlsx(formats=FORMATS) as book:
