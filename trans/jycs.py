@@ -4,8 +4,9 @@
 # License:GPL
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-29 15:18
+# 修订：2019-01-02 20:42 新增命令行处理模块
 
-from orange import Path, R, now
+from orange import Path, R, now, arg
 from glemon import Document, P
 from trans.jy import JyJiaoyi, FORMAT
 
@@ -16,6 +17,41 @@ JYFORMAT.extend([{'header': '创建日期', 'width': 8.43},
                  {'header': '投产时间', 'width': 8.43},
                  {'header': '备注', 'width': 60}
                  ])
+
+JYSX = {
+    'jymc':     '交易名称',
+    'jym':      '交易码',
+    'jyz':      '交易组',
+    'yxj':      '优先级',
+    'wdsqjb':   '网点授权级别',
+    'zssqjb':   '中心授权级别',
+    'wdsq':     '网点授权',
+    'zssq':     '中心授权',
+    'zssqjg':   '中心授权机构',
+    'jnjb':     '技能级别',
+    'xzbz':     '现转标志',
+    'wb':       '外包',
+    'dets':     '大额提示',
+    'dzdk':     '电子底卡',
+    'szjd':     '事中监督',
+    'bssx':     '补扫时限',
+    'mz':       '抹账',
+    'cesq':     '超额授权',
+    'fzjyz':    '辅助交易组',
+    'shbs':     '事后补扫',
+    'cdjy':     '磁道校验',
+    'cd':       '菜单',
+}
+
+
+@arg('-u', '--update', action='store_true', help='更新参数表')
+@arg('-n', '--new', action='store_true', help='新增交易码')
+@arg('-d', '--delete', action='store_true', help='删除交易码')
+@arg('-m', '--modify', action='store_true', help='修改交易码')
+@arg('-e', '--export', action='store_true', help='导出交易参数')
+@arg('-v', '--valid', action='store_true', help='生效')
+def main(**kw):
+    print(kw)
 
 
 class PmJiaoyi(Document):

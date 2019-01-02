@@ -9,6 +9,7 @@ from orange import setup
 
 consoles = [
     'jym=trans:JyJiaoyi.main',               # 交易码表
+    'jycs=trans.jycs:main',                  # 交易码参数
     'sjdr=params.sjdr:sjdr',                 # 数据导入
     'jgm=params.jgm:GgJgm.main',             # 机构码表
     'ac=params.zh:main',                     # 内部账户
