@@ -38,7 +38,7 @@ def translb(name):
 
 Date1 = R / r'.*?(\d{4}).*?(\d{1,2}).*?(\d{1,2})?'
 Date2 = R / r'\d{8}'
-Baogaoren = R / r'报告人[:：]?\s*(.*?)\s.*?'
+Baogaoren = R / r'.*?报告人[:：]?\s*(.*?)\s.*?'
 
 FORMATS = {
     'bt': {'font_name': '黑体', 'font_size': 18,
@@ -139,7 +139,7 @@ class FhLvzhi(Document):
     def load_files(cls, *files):
         files = [x for x in (files or ROOT.rglob('*履职报告*.*'))
                  if x.lsuffix.startswith('.xls')]
-        for file in files:  # LoadFile.check('fhlz', *files):
+        for file in LoadFile.check('fhlz', *files):
             cls.load_file(file)
 
     @classmethod
