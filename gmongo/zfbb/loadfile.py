@@ -41,8 +41,8 @@ def loadfile(path):
                 if len(data) < 7:
                     data.append(0)
                 objs.append(data)
-            executemany(
-                'insert or replace into PaymentData(subno,at,ac,"in",dn,vv,vv2)values(?,?,?,?,?,?,?)', objs)
+            executemany('insert or replace into PaymentData(subno,at,ac,"in",dn,vv,vv2)'
+                        'values(?,?,?,?,?,?,?)', objs)
     print(f'{path.name} 文件导入成功')
 
 
