@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-18 09:15
 from orange import R, ensure
-from orange.sqlite import find
+from orange.utils.sqlite import find
 from collections import defaultdict
 QcPattern = R/r'20\d{2}-[1234]'
 
@@ -23,7 +23,9 @@ SQL = ('select a."id",sum(b.vv),sum(vv2) from parameter a '
 
 
 def export(qc):
-    ensure(QcPattern == qc, '期次的格式应为：YYYY-Q')
+    if not(QcPattern == qc):
+        raise Exception('期次的格式应为：YYYY-Q')
+    print(f'当前期次： {qc}')
     year, q = qc.split('-')
     d = int(year)*12+(int(q)-1)*3-12
     months = [f'{m//12}{m%12+1:02d}' for m in range(d, d+15)]  # 生成 15 个连续的月份

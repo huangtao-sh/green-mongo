@@ -45,7 +45,6 @@ def main(path=None, show=False, config=False, xhs=None, qc=None):
         load(path)
     if qc != 'NOSET':
         qc = qc or (now().add(months=-1)) % '%Q'
-        print(f'当前期次： {qc}')
         from .rpt import export
         try:
             export(qc)
