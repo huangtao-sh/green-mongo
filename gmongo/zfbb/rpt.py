@@ -16,7 +16,7 @@ def export(qc):
     d = int(year)*12+(int(q)-1)*3-12
     months = [f'{m//12}{m%12+1:02d}' for m in range(d, d+15)]
     data = defaultdict(lambda: [])
-    for i in (2, 11, 14):
+    for i in (14, 2, 11):
         for r in find('select a."id",sum(b.vv),sum(vv2) from parameter a '
                       'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
                       'where a.rule=0 and b.subno=? and b.at="CITY" '
@@ -32,4 +32,4 @@ def export(qc):
                       [months[i-2], months[i]]):
             data[r[0]].extend(r[1:])
     for k, v in sorted(data.items()):
-        print(k, v[-2],v[-1], sep='\t')
+        print(k, v[0], v[1], sep='\t')
