@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-18 09:15
 from orange import R, ensure
-from orange.sqlite import find, connect
+from orange.sqlite import find
 from collections import defaultdict
 QcPattern = R/r'20\d{2}-[1234]'
 

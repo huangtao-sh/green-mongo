@@ -7,8 +7,7 @@
 
 from orange import Path, HOME, tempdir
 from asyncio import run, wait
-from orange.sqlite import db_config, execute, executescript, find, findone, executemany, connect,\
-    executefile
+from orange.utils.sqlite import execute, executescript, find, findone, executemany, executefile
 
 
 def checkload(filename, loader):
@@ -47,7 +46,6 @@ def loadfile(path):
 
 
 def load(path):
-    with connect():
-        executefile('gmongo', 'sql/zfbb.sql')                # 建立数据库表
-        for file in path.glob('*.zip'):   # 导入文件
-            checkload(file, loadfile)
+    executefile('gmongo', 'sql/zfbb.sql')                # 建立数据库表
+    for file in path.glob('*.zip'):   # 导入文件
+        checkload(file, loadfile)

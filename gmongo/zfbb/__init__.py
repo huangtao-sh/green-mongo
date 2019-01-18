@@ -7,7 +7,7 @@
 
 
 from orange import command, arg, HOME, Path, R, now
-from orange.sqlite import db_config, connect, find, execute, executemany, findone
+from orange.utils.sqlite import db_config, find, execute, executemany, findone
 
 DefaultPath = HOME/'OneDrive/文档/支付报表数据'
 db_config('zfbb')
@@ -25,9 +25,9 @@ def loadconfig():
                 row[0] = int(row[0])
                 row[-1] = int(row[-1])
                 data.append(row)
-        with connect():
-            execute('delete from parameter')
-            executemany('insert into parameter values(?,?,?,?,?)', data)
+        execute('delete from parameter')
+        executemany('insert into parameter values(?,?,?,?,?)', data)
+        print('导入参数文件成功！')
 
 
 @command(description='支付报表程序')
@@ -48,32 +48,29 @@ def main(path=None, show=False, config=False, xhs=None, qc=None):
         print(f'当前期次： {qc}')
         from .rpt import export
         try:
-            with connect():
-                export(qc)
+            export(qc)
         except Exception as e:
             print(e)
     if show:
-        with connect():
-            print('数据明细清单')
-            print('期次\t条数')
-            for r in find('select subno,count("in")as num from PaymentData group by subno order by subno'):
-                print(*r, sep='\t')
+        print('数据明细清单')
+        print('期次\t条数')
+        for r in find('select subno,count("in")as num from PaymentData group by subno order by subno'):
+            print(*r, sep='\t')
     if xhs:
-        with connect():
-            for xh in xhs:
-                xh, zb, dn, name, rule = findone(
-                    'select * from parameter where "id"=?', [xh])
-                print(zb, name)
-                qc = now().add(months=-1) % '%Y%m'
-                sq = now().add(months=-3) % '%Y%m'
-                if not rule:
-                    vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
-                                      'where subno=? and "in"=? and dn=? and at="CITY" group by "in" ',
-                                      [qc, zb, dn])
+        for xh in xhs:
+            xh, zb, dn, name, rule = findone(
+                'select * from parameter where "id"=?', [xh])
+            print(zb, name)
+            qc = now().add(months=-1) % '%Y%m'
+            sq = now().add(months=-3) % '%Y%m'
+            if not rule:
+                vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
+                                    'where subno=? and "in"=? and dn=? and at="CITY" group by "in" ',
+                                    [qc, zb, dn])
 
-                else:
-                    vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
-                                      'where subno between ? and ? and "in"=? and dn=? and at="CITY" group by "in" ',
-                                      [sq, qc, zb, dn])
-                print(f'值1：{vv:19,.2f}')
-                print(f'值2：{vv2:19,.2f}')
+            else:
+                vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
+                                    'where subno between ? and ? and "in"=? and dn=? and at="CITY" group by "in" ',
+                                    [sq, qc, zb, dn])
+            print(f'值1：{vv:19,.2f}')
+            print(f'值2：{vv2:19,.2f}')
