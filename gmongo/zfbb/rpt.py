@@ -18,18 +18,18 @@ def export(qc):
     data = defaultdict(lambda: [])
     for i in (2, 11, 14):
         for r in find('select a."id",sum(b.vv),sum(vv2) from parameter a '
-                 'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
-                 'where a.rule=0 and b.subno=? and b.at="CITY" '
-                 'group by a."in",a.dn '
-                 'order by a."id"',
-                 [months[i]])
+                      'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
+                      'where a.rule=0 and b.subno=? and b.at="CITY" '
+                      'group by a."in",a.dn '
+                      'order by a."id"',
+                      [months[i]]):
             data[r[0]].extend(r[1:])
         for r in find('select a."id",sum(b.vv),sum(vv2) from parameter a '
-                 'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
-                 'where a.rule=1 and b.subno between ? and ? and b.at="CITY" '
-                 'group by a."in",a.dn '
-                 'order by a."id"',
-                 [months[i-2],months[i]])
+                      'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
+                      'where a.rule=1 and b.subno between ? and ? and b.at="CITY" '
+                      'group by a."in",a.dn '
+                      'order by a."id"',
+                      [months[i-2], months[i]]):
             data[r[0]].extend(r[1:])
-    for k,v in sorted(data.items()):
-        print(k,*v,sep='\t')
+    for k, v in sorted(data.items()):
+        print(k, v[-2],v[-1], sep='\t')

@@ -12,7 +12,7 @@ from orange.sqlite import db_config, connect, find, execute, executemany, findon
 DefaultPath = HOME/'OneDrive/文档/支付报表数据'
 db_config('zfbb')
 
-InPattern = R/r'\d{10}'
+InPattern = R/r'[0-9A-Z]{10}'
 
 
 def loadconfig():
