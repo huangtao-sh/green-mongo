@@ -24,7 +24,7 @@ consoles = [
     'jq=vacation:Holiday.main',              # 假期表
     'wh=params.paijia:PaiJia.main',          # 外汇
     'xxbm=params.zhxxbm:Zhxxbm.main',        # 性质编码
-    'zfbb=zfbb.ab:main'
+    'zfbb=gmongo.zfbb:main',                 # 支付报表
 ]
 
 setup(

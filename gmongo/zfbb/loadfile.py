@@ -10,20 +10,17 @@ from asyncio import run, wait
 from orange.sqlite import db_config, execute, executescript, find, findone, executemany, connect,\
     executefile
 
-ROOT = HOME/'OneDrive/文档/支付报表数据'
-
 
 def checkload(filename, loader):
     file = Path(filename)
-    a = findone('select mtime from LoadFile where filename=?', [str(file)])
+    a = findone('select mtime from LoadFile where filename=?',
+                [str(file.name)])
     if not a or a[0] < file.mtime:
         loader(filename)
-        execute('insert into LoadFile values(?,?)', [str(file), file.mtime])
+        execute('insert or replace into LoadFile values(?,?)',
+                [str(file.name), file.mtime])
     else:
         print(f'{file.name} 已导入，跳过!')
-
-
-db_config('zfbbtest')
 
 
 def loadfile(path):
@@ -46,15 +43,11 @@ def loadfile(path):
                 objs.append(data)
             executemany(
                 'insert or replace into PaymentData(subno,at,ac,"in",dn,vv,vv2)values(?,?,?,?,?,?,?)', objs)
-    print(f'{path} 文件导入成功')
+    print(f'{path.name} 文件导入成功')
 
 
-def main():
+def load(path):
     with connect():
-        executefile('zfbb', 'sql/zfbb.sql')                # 建立数据库表
-        for file in ROOT.glob('*.zip'):   # 导入文件
+        executefile('gmongo', 'sql/zfbb.sql')                # 建立数据库表
+        for file in path.glob('*.zip'):   # 导入文件
             checkload(file, loadfile)
-        for r in find('select count("in") from Paymentdata'):
-            print(*r)
-
-
