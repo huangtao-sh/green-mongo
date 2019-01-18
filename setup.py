@@ -15,7 +15,7 @@ consoles = [
     'ac=params.zh:main',                     # 内部账户
     'km=params.accounting:Accounting.run',   # 科目表
     'fhlz=lvzhi.fhlz:main',                  # 分行运营主管履职报告
-    'lz=lvzhi:main',                         # 营业主管履职报告
+    # 'lz=lvzhi:main',                       # 营业主管履职报告 mongo 版的不再使用
     # 'jqb=vacation:Vacation.main',
     'lxr=params.branch:Contacts.main',       # 查询联系人
     'teller=params.user:Teller.main',        # 柜员表
@@ -25,6 +25,7 @@ consoles = [
     'wh=params.paijia:PaiJia.main',          # 外汇
     'xxbm=params.zhxxbm:Zhxxbm.main',        # 性质编码
     'zfbb=gmongo.zfbb:main',                 # 支付报表
+    'lzbg=gmongo.lzbg:main'                  # 营业主管履职报告
 ]
 
 setup(

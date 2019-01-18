@@ -6,7 +6,6 @@
 # 创建：2019-01-15 21:59
 
 from orange import Path, HOME, tempdir
-from asyncio import run, wait
 from orange.utils.sqlite import execute, executescript, find, findone, executemany, executefile
 
 
