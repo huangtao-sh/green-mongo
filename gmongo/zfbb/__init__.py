@@ -35,13 +35,22 @@ def loadconfig():
 @arg('-s', '--show', action='store_true', help='显示')
 @arg('-c', '--config', action='store_true', help='导入参数配置文件')
 @arg('-t', '--count', nargs='*', dest='xhs', metavar='xh', help='统计指标')
-def main(path=None, show=False, config=False, xhs=None):
+@arg('-e', '--export', nargs='?', dest='qc', default='NOSET', help='生成报表')
+def main(path=None, show=False, config=False, xhs=None, qc=None):
     if config:
         loadconfig()
     if path != 'NOSET':
         path = path or DefaultPath
         from .loadfile import load
         load(path)
+    if qc != 'NOSET':
+        qc = qc or (now().add(months=-1)) % '%Q'
+        print(f'当前期次： {qc}')
+        from .rpt import export
+        try:
+            export(qc)
+        except Exception as e:
+            print(e)
     if show:
         with connect():
             print('数据明细清单')
