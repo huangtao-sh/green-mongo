@@ -10,7 +10,7 @@ from asyncio import run, wait
 from orange.sqlite import db_config, execute, executescript, find, findone, executemany, connect,\
     executefile
 
-ROOT = Path('D:/支付报表数据')
+ROOT = HOME/'OneDrive/文档/支付报表数据'
 
 
 def checkload(filename, loader):
@@ -58,4 +58,3 @@ def main():
             print(*r)
 
 
-main()
