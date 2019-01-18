@@ -48,7 +48,8 @@ def main(path=None, show=False, config=False, xhs=None, qc=None):
         print(f'当前期次： {qc}')
         from .rpt import export
         try:
-            export(qc)
+            with connect():
+                export(qc)
         except Exception as e:
             print(e)
     if show:
