@@ -17,13 +17,19 @@ def export(qc):
     months = [f'{m//12}{m%12+1:02d}' for m in range(d, d+15)]
     data = defaultdict(lambda: [])
     for i in (2, 11, 14):
-        d = find('select a."id",sum(b.vv),sum(vv2) from parameter a '
+        for r in find('select a."id",sum(b.vv),sum(vv2) from parameter a '
                  'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
                  'where a.rule=0 and b.subno=? and b.at="CITY" '
                  'group by a."in",a.dn '
                  'order by a."id"',
                  [months[i]])
-        for r in d:
             data[r[0]].extend(r[1:])
-    for k,v in data.items():
+        for r in find('select a."id",sum(b.vv),sum(vv2) from parameter a '
+                 'left join PaymentData b on a."in"=b."in" and a.dn=b.dn '
+                 'where a.rule=1 and b.subno between ? and ? and b.at="CITY" '
+                 'group by a."in",a.dn '
+                 'order by a."id"',
+                 [months[i-2],months[i]])
+            data[r[0]].extend(r[1:])
+    for k,v in sorted(data.items()):
         print(k,*v,sep='\t')
