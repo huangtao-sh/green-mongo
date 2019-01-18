@@ -32,4 +32,4 @@ def export(qc):
                       [months[i-2], months[i]]):
             data[r[0]].extend(r[1:])
     for k, v in sorted(data.items()):
-        print(k, v[0], v[1], sep='\t')
+        print(f'{k:02d}', *(f'{x:19,.2f}'for x in v))
