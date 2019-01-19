@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-18 09:15
 from orange import R, ensure
-from orange.utils.sqlite import find
+from gmongo import find
 from collections import defaultdict
 QcPattern = R/r'20\d{2}-[1234]'
 

@@ -6,7 +6,7 @@
 # 创建：2018/07/20
 
 from orange import Path, arg
-from orange.utils.sqlite import db_config, execute, findone, find
+from orange.utils.sqlite import db_config, execute, findone, find, executefile
 
 db_config('lzbg')
 
@@ -17,13 +17,11 @@ db_config('lzbg')
 @arg('-r', '--report', action='store_true', help='报告上报情况')
 @arg('-f', '--force', action='store_true', help='强制初始化')
 @arg('-w', '--wenti', action='store_true', help='收集问题')
-@arg('-s', '--show', action='store_true', help='text')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
 def main(init_=False, loadfile=False, branchs=None, report=False, force=False,
          export_qc=None, wenti=False, show=False):
     if init_:
-        from .db import init
-        init(force=force)
+        executefile('gmongo', 'sql/lzbg.sql')
     if loadfile:
         from .lzbg import load_file
         load_file()
@@ -36,12 +34,6 @@ def main(init_=False, loadfile=False, branchs=None, report=False, force=False,
     if export_qc != "NOSET":
         from .report import export_ylb
         export_ylb(export_qc)
-    if show:
-        from .db import init_fhlz
-        init_fhlz(True)
-        execute('insert into brorder values(?,?,?)', ['深圳分行', 23, False])
-        d = findone('select * from brorder where state=?', [False])
-        print(*d)
     if wenti:
         from .report import export_wt
         export_wt()

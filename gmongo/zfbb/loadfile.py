@@ -6,9 +6,7 @@
 # 创建：2019-01-15 21:59
 
 from orange import Path, HOME, tempdir
-from orange.utils.sqlite import execute, executescript, find, findone, executemany, executefile
-
-from gmongo.fcheck import checkload
+from gmongo import checkload, execute, executescript, find, findone, executemany, executefile
 
 
 def loadfile(path):

@@ -7,27 +7,30 @@
 
 
 from orange import command, arg, HOME, Path, R, now
-from orange.utils.sqlite import db_config, find, execute, executemany, findone
+from gmongo import db_config, find, execute, executemany, findone, checkload, procdata, trans
 
 DefaultPath = HOME/'OneDrive/文档/支付报表数据'
 db_config('zfbb')
 
 InPattern = R/r'[0-9A-Z]{10}'
 
+ConfigFile = DefaultPath/'核心指标参数.xlsx'
 
-def loadconfig():
-    ConfigFile = DefaultPath/'核心指标参数.xlsx'
+
+def loadconfig(ConfigFIle):
     if ConfigFile:
         rows = ConfigFile.sheets('报表参数')
-        data = []
-        for row in rows:
-            if InPattern == row[1]:
-                row[0] = int(row[0])
-                row[-1] = int(row[-1])
-                data.append(row)
-        execute('delete from parameter')
-        executemany('insert into parameter values(?,?,?,?,?)', data)
-        print('导入参数文件成功！')
+        data = procdata(rows, mapper={
+            '序号': int,
+            '指标代码': None,
+            '维度代码': None,
+            '指标名称': None,
+            '取值': int,
+        })
+        with trans():
+            execute('delete from parameter')
+            cur = executemany('insert into parameter values(?,?,?,?,?)', data)
+            print(f'导入数据 {cur.rowcount} 条')
 
 
 @command(description='支付报表程序')
@@ -38,7 +41,8 @@ def loadconfig():
 @arg('-e', '--export', nargs='?', dest='qc', default='NOSET', help='生成报表')
 def main(path=None, show=False, config=False, xhs=None, qc=None):
     if config:
-        loadconfig()
+        if checkload(ConfigFile, loadconfig):
+            print('参数文件已导入，忽略！')
     if path != 'NOSET':
         path = path or DefaultPath
         from .loadfile import load
@@ -64,12 +68,12 @@ def main(path=None, show=False, config=False, xhs=None, qc=None):
             sq = now().add(months=-3) % '%Y%m'
             if not rule:
                 vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
-                                    'where subno=? and "in"=? and dn=? and at="CITY" group by "in" ',
-                                    [qc, zb, dn])
+                                  'where subno=? and "in"=? and dn=? and at="CITY" group by "in" ',
+                                  [qc, zb, dn])
 
             else:
                 vv, vv2 = findone('select sum(vv)as vv,sum(vv2)as vv2 from PaymentData ' +
-                                    'where subno between ? and ? and "in"=? and dn=? and at="CITY" group by "in" ',
-                                    [sq, qc, zb, dn])
+                                  'where subno between ? and ? and "in"=? and dn=? and at="CITY" group by "in" ',
+                                  [sq, qc, zb, dn])
             print(f'值1：{vv:19,.2f}')
             print(f'值2：{vv2:19,.2f}')

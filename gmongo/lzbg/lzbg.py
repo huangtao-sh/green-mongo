@@ -50,7 +50,7 @@ def load_file():
             data2.append((r[3], r[2]))
     with trans():
         sql = f'insert or replace into report values({",".join(["?"]*16)})'
-        executemany(sql, data)
+        cur = executemany(sql, data)
         sql = 'insert or ignore into branch values(?,?)'
         executemany(sql, data2)
-        print('已处理数据：%d' % (len(data)))
+        print(f'已导入数据：{cur.rowcount}')
