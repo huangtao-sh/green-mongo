@@ -15,11 +15,11 @@ db_config('lzbg')
 @arg('-l', '--loadfile', action='store_true', help='导入文件')
 @arg('-d', '--delete', metavar='branch', dest='branchs', nargs='*', help='删除机构')
 @arg('-r', '--report', action='store_true', help='报告上报情况')
-@arg('-f', '--force', action='store_true', help='强制初始化')
 @arg('-w', '--wenti', action='store_true', help='收集问题')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
-def main(init_=False, loadfile=False, branchs=None, report=False, force=False,
-         export_qc=None, wenti=False, show=False):
+@arg('-p', '--publish', action='store_true', help='发布文档')
+def main(init_=False, loadfile=False, branchs=None, report=False,
+         export_qc=None, wenti=False, show=False, publish=False):
     if init_:
         executefile('gmongo', 'sql/lzbg.sql')
     if loadfile:
@@ -37,3 +37,6 @@ def main(init_=False, loadfile=False, branchs=None, report=False, force=False,
     if wenti:
         from .report import export_wt
         export_wt()
+    if publish:
+        from .report import publish_wt
+        publish_wt()

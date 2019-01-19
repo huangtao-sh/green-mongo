@@ -44,7 +44,12 @@ def checkload(filename: str, loadfile: "function", *args, **kw)->bool:  # 检查
 
 
 def procdata(data, header: list = None, converter: dict = None, mapper: dict = None):
-    converter = converter or {}
+    if converter:
+        converter = converter.copy()
+    else:
+        converter = {}
+    if mapper:
+        mapper = mapper.copy()
     if isinstance(mapper, dict)and mapper:
         header = list(mapper.keys())
         for i, v in enumerate(mapper.values()):

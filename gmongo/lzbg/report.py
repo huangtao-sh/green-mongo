@@ -9,7 +9,7 @@
 from .lzbg import ROOT
 from orange import Path, extract
 import json
-from orange.utils.sqlite import find, findone
+from gmongo import find, findone, procdata, R
 
 FORMATS = {       # 预定义格式
     'h1': {'font_name': '黑体', 'text_wrap': True, 'font_size': 18,
@@ -112,3 +112,31 @@ PUBLISH_FORMAT = {
     'nr': {'font_name': '微软雅黑', 'font_size': 11, 'valign': 'vcenter',
            'text_wrap': True},
 }
+
+RIQI = R/'(\d{4})年(\d{1,2})月份'
+
+
+def yuefen(d):
+    q = RIQI == d
+    if q:
+        y, m = q.groups()
+        return f'{y}-{int(m):02d}'
+
+
+header1 = '提出时间 问题分类 机构 具体内容 报告人 反馈部门 答复意见 状态'.split()
+header2 = '提出时间 重要性 问题分类 机构 具体内容 报告人 反馈部门 答复意见 后续跟踪'.split()
+
+
+def publish_wt():
+    path = (ROOT / '营业主管履职报告重点问题与答复意见').find('营业主管履职报告重点问题与答复意见（*年*月）.xlsx')
+    print(f'处理文件： {path.name}')
+    converter = {0: yuefen}
+    for idx, name, data in path.iter_sheets():
+        if name.endswith('问题'):
+            rows = procdata(data, header=header1, converter=converter)
+            # for r in rows:
+            #    print(*r)
+        else:
+            rows = procdata(data, header=header2, converter=converter)
+            for r in rows:
+                print(*r[:3])
