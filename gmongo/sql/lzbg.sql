@@ -30,16 +30,16 @@ create table if not exists brreport(
 /*
     导入文件记录，用于防止重复导入文件
 */
-create table if not exists loadfile(
-    filename text primary key,  -- 文件名
-    mtime int                   -- 修改时间
+create table if not exists LoadFile(
+    filename    text primary key,  -- 文件名
+    mtime       int                   -- 修改时间
 );
 
 /*
     分行序列表
 */
 create table if not exists brorder(
-    brname text primary key,       -- 分行名称
-    "order" int,                     -- 序号
-    state bool                     -- 状态
+    brname  text primary key,       -- 分行名称
+    brorder int,                     -- 序号
+    state   bool                     -- 状态
 );

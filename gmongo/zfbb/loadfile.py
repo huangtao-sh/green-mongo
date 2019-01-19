@@ -8,17 +8,7 @@
 from orange import Path, HOME, tempdir
 from orange.utils.sqlite import execute, executescript, find, findone, executemany, executefile
 
-
-def checkload(filename, loader):
-    file = Path(filename)
-    a = findone('select mtime from LoadFile where filename=?',
-                [str(file.name)])
-    if not a or a[0] < file.mtime:
-        loader(filename)
-        execute('insert or replace into LoadFile values(?,?)',
-                [str(file.name), file.mtime])
-    else:
-        print(f'{file.name} 已导入，跳过!')
+from gmongo.fcheck import checkload
 
 
 def loadfile(path):
@@ -47,4 +37,5 @@ def loadfile(path):
 def load(path):
     executefile('gmongo', 'sql/zfbb.sql')                # 建立数据库表
     for file in path.glob('*.zip'):   # 导入文件
-        checkload(file, loadfile)
+        if checkload(file, loadfile):
+            print(f'{file.name}已导入，忽略')

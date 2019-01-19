@@ -1,7 +1,3 @@
-create table if not exists LoadFile( -- 文件重复检查表
-    filename text primary key,       -- 文件名
-    mtime int                        -- 修改时间
-);
 
 create table if not exists PaymentData(  -- 支付数据表
     subno text,                          -- 期次
