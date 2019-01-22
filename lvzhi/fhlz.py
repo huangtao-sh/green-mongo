@@ -282,7 +282,7 @@ def main(imp=False, export=False, report=False, clear=False, qc=None, convert=Fa
         FhLvzhi.drop_collection()
         print('清理完成')
     if convert:
-        ROOT = Path('~/Documents/工作/工作档案/分行履职报告/答复意见')
+        ROOT = Path('~/OneDrive/工作/工作档案/分行履职报告/答复意见')
         filename = max(ROOT.glob('分行运营主管履职报告问题*.xlsx'))
         print('开始处理文件%s' % (filename))
         FhWenTi.import_file(filename)
