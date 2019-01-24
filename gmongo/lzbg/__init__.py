@@ -7,6 +7,7 @@
 
 from orange import Path, arg
 from orange.utils.sqlite import db_config, execute, findone, find, executefile
+from gmongo import checkload
 
 db_config('lzbg')
 
@@ -18,10 +19,16 @@ db_config('lzbg')
 @arg('-w', '--wenti', action='store_true', help='收集问题')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
 @arg('-p', '--publish', action='store_true', help='发布文档')
+@arg('-c','--config',action='store_true',help='导入参数')
 def main(init_=False, loadfile=False, branchs=None, report=False,
-         export_qc=None, wenti=False, show=False, publish=False):
+         export_qc=None, wenti=False, show=False, publish=False,
+         config=False):
     if init_:
         executefile('gmongo', 'sql/lzbg.sql')
+        print('初始化数据库成功！')
+    if config:
+        from .fhlz import loadbr
+        loadbr()
     if loadfile:
         from .lzbg import load_file
         load_file()

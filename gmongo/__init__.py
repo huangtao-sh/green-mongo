@@ -14,3 +14,7 @@ from orange.utils.sqlite import db_config, execute, executemany, executescript, 
 WORKPATH = Path('~/Documents/工作')
 
 __all__ = '__version__', 'R', 'Path', "WORKPATH", "checkload", "HOME"
+
+fetchone = findone
+fetch = find
+fetchvalue = findvalue
