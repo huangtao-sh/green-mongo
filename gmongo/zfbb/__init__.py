@@ -7,7 +7,7 @@
 
 
 from orange import command, arg, HOME, Path, R, now
-from gmongo import db_config, find, execute, executemany, findone, checkload, procdata, trans
+from gmongo import db_config, find, execute, executemany, findone, checkload, procdata, executetrans
 
 DefaultPath = HOME/'OneDrive/文档/支付报表数据'
 db_config('zfbb')
@@ -17,6 +17,7 @@ InPattern = R/r'[0-9A-Z]{10}'
 ConfigFile = DefaultPath/'核心指标参数.xlsx'
 
 
+@executetrans
 def loadconfig(ConfigFIle):
     if ConfigFile:
         rows = ConfigFile.sheets('报表参数')
@@ -27,10 +28,9 @@ def loadconfig(ConfigFIle):
             '指标名称': None,
             '取值': int,
         })
-        with trans():
-            execute('delete from parameter')
-            cur = executemany('insert into parameter values(?,?,?,?,?)', data)
-            print(f'导入数据 {cur.rowcount} 条')
+        execute('delete from parameter')
+        cur = executemany('insert into parameter values(?,?,?,?,?)', data)
+        print(f'导入数据 {cur.rowcount} 条')
 
 
 @command(description='支付报表程序')
