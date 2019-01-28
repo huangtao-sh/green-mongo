@@ -13,22 +13,36 @@ db_config('lzbg')
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
-@arg('-l', '--loadfile', action='store_true', help='导入文件')
-@arg('-d', '--delete', metavar='branch', dest='branchs', nargs='*', help='删除机构')
-@arg('-r', '--report', action='store_true', help='报告上报情况')
-@arg('-w', '--wenti', action='store_true', help='收集问题')
-@arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
-@arg('-p', '--publish', action='store_true', help='发布文档')
-@arg('-c','--config',action='store_true',help='导入参数')
-def main(init_=False, loadfile=False, branchs=None, report=False,
-         export_qc=None, wenti=False, show=False, publish=False,
-         config=False):
+@arg('-d', '--drop', nargs='*', dest='tables', metavar='table', help='删除数据库表')
+@arg('-c', '--config', action='store_true', help='导入参数')
+def fhlz(init_=False, tables=None, config=False):
+    if tables:
+        for table in tables:
+            try:
+                execute(f'drop table if exists {table}')
+                print(f'{table} 已被删除!')
+            except:
+                print(f'{table} 不存在!')
     if init_:
         executefile('gmongo', 'sql/lzbg.sql')
         print('初始化数据库成功！')
     if config:
         from .fhlz import loadbr
         loadbr()
+
+
+@arg('-i', '--init', dest='init_', action='store_true', help='初始化')
+@arg('-l', '--loadfile', action='store_true', help='导入文件')
+@arg('-d', '--delete', metavar='branch', dest='branchs', nargs='*', help='删除机构')
+@arg('-r', '--report', action='store_true', help='报告上报情况')
+@arg('-w', '--wenti', action='store_true', help='收集问题')
+@arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
+@arg('-p', '--publish', action='store_true', help='发布文档')
+def lzbg(init_=False, loadfile=False, branchs=None, report=False,
+         export_qc=None, wenti=False, show=False, publish=False):
+    if init_:
+        executefile('gmongo', 'sql/lzbg.sql')
+        print('初始化数据库成功！')
     if loadfile:
         from .lzbg import load_file
         load_file()

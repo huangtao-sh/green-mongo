@@ -2,7 +2,9 @@
     营业主管问题一览表
 */
 
-create table if not exists report(          -- 营业主管履职报告
+create table
+if not exists report
+(          -- 营业主管履职报告
     title text primary key,                 -- 标题
     period text,                            -- 期次
     name text,                              -- 报告人
@@ -20,13 +22,16 @@ create table if not exists report(          -- 营业主管履职报告
     fzryj text,                             -- 负责人意见
     content text                            -- 内容，包括 类别、重要性、内容
 );
-create table if not exists branch           -- 屏蔽机构清单，出现在本清单的机构，不需要报送
+create table
+if not exists branch
+-- 屏蔽机构清单，出现在本清单的机构，不需要报送
 (
     br text unique,                         -- 机构号
     name text                               -- 机构名称
 );
 
-create table if not exists lzwenti
+create table
+if not exists lzwenti
 (
     type text,                -- 0-分管行长，1-运营主管，2-营业主管 
     period text,              -- 运营主管：2018-1；营业主管： 2018-01  
@@ -46,13 +51,13 @@ create table if not exists lzwenti
 create table
 if not exists brreport
 (
-    id text primary key,    -- 编号
     period text,            -- 报告期 ，2018-1
     type text,              -- 类型：0-分管行长，1-运营主管
     branch text,            -- 分行
     name text,              -- 姓名
     date text,              -- 报告时间
-    content text            -- 报告内容
+    content text,           -- 报告内容
+    primary key(period,type,branch)
 );
 /*
     分行序列表
