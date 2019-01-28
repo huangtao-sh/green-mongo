@@ -72,32 +72,15 @@ def loadfile(filename, curqc):
             'header': header,
             'content': contents
         })
-        execute('insert  or replace into brreport values(?,?,?,?,?,?)',
+        execute('insert or replace into brreport values(?,?,?,?,?,?)',
                 [period, type_, branch, bgr, date, content])
 
 
 def loadfiles():
     curqc = (now().add(months=-1)) % "%Q"
-    execute('delete from brreport where period=?', [curqc])
     for file in (ROOT/'分行上报').glob('*.xls?'):
         try:
             if checkload(file, loadfile, curqc=curqc):
-                print('文件已导入，忽略')
+                print(f'文件 {file.name} 已导入，忽略')
         except Exception as e:
             print(e)
-
-
-db_config(':memory:')
-executescript('''
-create table
-if not exists brreport
-(
-    period text,            -- 报告期 ，2018-1
-    type text,              -- 类型：0-分管行长，1-运营主管
-    branch text,            -- 分行
-    name text,              -- 姓名
-    date text,              -- 报告时间
-    content text,           -- 报告内容
-    primary key(period,type,branch)
-);
-''')

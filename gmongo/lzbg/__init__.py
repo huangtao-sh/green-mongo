@@ -6,7 +6,7 @@
 # 创建：2018/07/20
 
 from orange import Path, arg
-from orange.utils.sqlite import db_config, execute, findone, find, executefile
+from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans
 from gmongo import checkload
 
 db_config('lzbg')
@@ -15,11 +15,14 @@ db_config('lzbg')
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
 @arg('-d', '--drop', nargs='*', dest='tables', metavar='table', help='删除数据库表')
 @arg('-c', '--config', action='store_true', help='导入参数')
-def fhlz(init_=False, tables=None, config=False):
+@arg('-l', '--load', action='store_true', help='导入报告文件')
+@arg('-r', '--report', action='store_true', help='报告上报情况')
+def fhlz(init_=False, tables=None, config=False, load=False,
+         report=False):
     if tables:
         for table in tables:
             try:
-                execute(f'drop table if exists {table}')
+                execute(f'drop table {table}')
                 print(f'{table} 已被删除!')
             except:
                 print(f'{table} 不存在!')
@@ -29,7 +32,13 @@ def fhlz(init_=False, tables=None, config=False):
     if config:
         from .fhlz import loadbr
         loadbr()
-
+    if load:
+        from .loadbrfile import loadfiles
+        with trans():
+            loadfiles()
+    if report:
+        from .reportbr import report
+        report()
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
 @arg('-l', '--loadfile', action='store_true', help='导入文件')
