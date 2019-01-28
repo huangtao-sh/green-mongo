@@ -8,6 +8,7 @@
 from orange import Path, arg
 from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans
 from gmongo import checkload
+from .db import init_db, drop_tables
 
 db_config('lzbg')
 
@@ -20,25 +21,19 @@ db_config('lzbg')
 def fhlz(init_=False, tables=None, config=False, load=False,
          report=False):
     if tables:
-        for table in tables:
-            try:
-                execute(f'drop table {table}')
-                print(f'{table} 已被删除!')
-            except:
-                print(f'{table} 不存在!')
+        drop_tables(*tables)
     if init_:
-        executefile('gmongo', 'sql/lzbg.sql')
-        print('初始化数据库成功！')
+        init_db()
     if config:
-        from .fhlz import loadbr
-        loadbr()
+        from .fhlz import loadbrorder
+        loadbrorder()
     if load:
         from .loadbrfile import loadfiles
-        with trans():
-            loadfiles()
+        loadfiles()
     if report:
         from .reportbr import report
         report()
+
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
 @arg('-l', '--loadfile', action='store_true', help='导入文件')
@@ -50,8 +45,7 @@ def fhlz(init_=False, tables=None, config=False, load=False,
 def lzbg(init_=False, loadfile=False, branchs=None, report=False,
          export_qc=None, wenti=False, show=False, publish=False):
     if init_:
-        executefile('gmongo', 'sql/lzbg.sql')
-        print('初始化数据库成功！')
+        init_db()
     if loadfile:
         from .lzbg import load_file
         load_file()

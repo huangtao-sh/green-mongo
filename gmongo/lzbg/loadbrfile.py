@@ -7,7 +7,7 @@
 from gmongo import findone
 import yaml
 from gmongo import db_config, execute, executemany, find, \
-    R, HOME, executescript, checkload, trans
+    R, HOME, executescript, checkload, executetrans
 from orange import now
 
 ROOT = HOME/'OneDrive/工作/工作档案/分行履职报告'
@@ -76,6 +76,7 @@ def loadfile(filename, curqc):
                 [period, type_, branch, bgr, date, content])
 
 
+@executetrans
 def loadfiles():
     curqc = (now().add(months=-1)) % "%Q"
     for file in (ROOT/'分行上报').glob('*.xls?'):

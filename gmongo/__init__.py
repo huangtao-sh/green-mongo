@@ -10,10 +10,20 @@ from orange import R, Path, HOME
 from .utils import checkload, procdata
 from orange.utils.sqlite import db_config, execute, executemany, executescript, executefile,\
     find, findone, findvalue, trans
+from functools import wraps
+
+
+def executetrans(func):
+    @wraps(func)
+    def _(*args, **kw):
+        with trans():
+            func(*args, **kw)
+    return _
+
 
 WORKPATH = Path('~/Documents/工作')
 
-__all__ = '__version__', 'R', 'Path', "WORKPATH", "checkload", "HOME"
+__all__ = '__version__', 'R', 'Path', "WORKPATH", "checkload", "HOME", 'executetrans'
 
 fetchone = findone
 fetch = find
