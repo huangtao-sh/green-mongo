@@ -6,7 +6,7 @@
 # 创建：2018/07/20
 
 from orange import Path, arg, HOME
-from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans
+from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans, fetch
 from gmongo import checkload
 from .db import init_db, drop_tables
 
@@ -18,11 +18,11 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-d', '--drop', nargs='*', dest='tables', metavar='table', help='删除数据库表')
 @arg('-c', '--config', action='store_true', help='导入参数')
 @arg('-l', '--load', action='store_true', help='导入报告文件')
-@arg('-r', '--report', action='store_true', help='报告上报情况')
+@arg('-r', '--report', nargs='?', default='NOSET', metavar='period', dest='rptqc', help='报告上报情况')
 @arg('-p', '--publish', action='store_true', help='发布报告')
 @arg('-o', '--restore', action='store_true', help='发布报告')
 def fhlz(init_=False, tables=None, config=False, load=False,
-         report=False, publish=False, restore=False):
+         rptqc=None, publish=False, restore=False):
     if tables:
         drop_tables(*tables)
     if init_:
@@ -36,12 +36,14 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if restore:
         from .loadbrfile import restorefiles
         restorefiles()
-    if report:
+    if rptqc != 'NOSET':
         from .reportbr import report
-        report()
+        report(rptqc)
     if publish:
-        from .fhlz import publish_reply
-        publish_reply()
+        #from .fhlz import publish_reply
+        # publish_reply()
+        for r in fetch('select name,branch from brreport where period=?', ['2018-4']):
+            print(*r)
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
