@@ -82,3 +82,8 @@ def loadfiles():
             loadfile(file, curqc=curqc)
         except Exception as e:
             print(e)
+
+
+def restorefiles():
+    for file in (ROOT/'报告').glob('*.xlsx'):
+        print(file.name)

@@ -20,8 +20,9 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-l', '--load', action='store_true', help='导入报告文件')
 @arg('-r', '--report', action='store_true', help='报告上报情况')
 @arg('-p', '--publish', action='store_true', help='发布报告')
+@arg('-o', '--restore', action='store_true', help='发布报告')
 def fhlz(init_=False, tables=None, config=False, load=False,
-         report=False, publish=False):
+         report=False, publish=False, restore=False):
     if tables:
         drop_tables(*tables)
     if init_:
@@ -32,6 +33,9 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if load:
         from .loadbrfile import loadfiles
         loadfiles()
+    if restore:
+        from .loadbrfile import restorefiles
+        restorefiles()
     if report:
         from .reportbr import report
         report()
