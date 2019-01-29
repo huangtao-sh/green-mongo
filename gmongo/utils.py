@@ -5,8 +5,9 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-19 08:46
 
-from orange.utils.sqlite import executescript, findvalue, execute, trans
+from orange.utils.sqlite import executescript, fetchvalue, execute, transaction, trans
 from orange import Path
+from functools import wraps
 
 need_create = True
 
@@ -32,8 +33,8 @@ def checkload(filename: str, loadfile: "function", *args, **kw)->bool:  # 检查
     need_create and createtable()       # 第一次执行本函数时建表
     file = Path(filename)
     name = file.name
-    a = findvalue('select mtime from LoadFile where filename=?',
-                  [name])  # 查询是否已导入
+    a = fetchvalue('select mtime from LoadFile where filename=?',
+                   [name])  # 查询是否已导入
     is_imported = a and a >= file.mtime  # 判断是否已经导入
     if not is_imported:
         loadfile(filename, *args, **kw)
@@ -41,6 +42,24 @@ def checkload(filename: str, loadfile: "function", *args, **kw)->bool:  # 检查
             execute('insert or replace into LoadFile values(?,?)',  # 保存记录
                     [name, file.mtime])
     return is_imported
+
+
+def loadcheck(func):
+    @transaction
+    def _(filename, *args, **kw):
+        need_create and createtable()       # 第一次执行本函数时建表
+        file = Path(filename)
+        name = file.name
+        a = fetchvalue('select mtime from LoadFile where filename=?',
+                       [name])  # 查询是否已导入
+        is_imported = a and a >= file.mtime  # 判断是否已经导入
+        if not is_imported:
+            func(filename, *args, **kw)
+            execute('insert or replace into LoadFile values(?,?)',  # 保存记录
+                    [name, file.mtime])
+        else:
+            print(f'{name} 已导入，忽略')
+    return _
 
 
 def procdata(data, header: list = None, converter: dict = None, mapper: dict = None):

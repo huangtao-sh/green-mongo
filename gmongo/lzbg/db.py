@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-28 21:19
 
-from gmongo import execute, executefile, fetch, executetrans
+from gmongo import execute, executefile
 
 
 def init_db():

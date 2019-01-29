@@ -7,18 +7,12 @@
 
 from .__version__ import version as __version__
 from orange import R, Path, HOME
-from .utils import checkload, procdata
+from .utils import checkload, procdata, loadcheck
 from orange.utils.sqlite import db_config, execute, executemany, executescript, executefile,\
-    find, findone, findvalue, trans
-from functools import wraps
+    find, findone, findvalue, trans, transaction
 
 
-def executetrans(func):
-    @wraps(func)
-    def _(*args, **kw):
-        with trans():
-            func(*args, **kw)
-    return _
+executetrans = transaction
 
 
 WORKPATH = Path('~/Documents/工作')

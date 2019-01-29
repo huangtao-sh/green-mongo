@@ -5,12 +5,13 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018/07/20
 
-from orange import Path, arg
+from orange import Path, arg, HOME
 from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans
 from gmongo import checkload
 from .db import init_db, drop_tables
 
 db_config('lzbg')
+brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
@@ -26,7 +27,7 @@ def fhlz(init_=False, tables=None, config=False, load=False,
         init_db()
     if config:
         from .fhlz import loadbrorder
-        loadbrorder()
+        loadbrorder(brfile)
     if load:
         from .loadbrfile import loadfiles
         loadfiles()

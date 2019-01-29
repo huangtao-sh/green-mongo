@@ -5,26 +5,22 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-23 10:16
 
-from gmongo import checkload, executemany, procdata, HOME, trans, R, executetrans
+from gmongo import checkload, executemany, procdata, HOME, trans, R, executetrans, loadcheck
 from orange import extract
 
-brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
+
 SAVEPATH = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
 
-@executetrans
-def loadbrorder():
-    def _():
-        r = executemany(
-            'insert or replace into brorder(brname,brorder)values(?,?)',
-            procdata(brfile.sheets('分行顺序表'), mapper={
-                '分行名称': None,
-                '顺序': int,
-            })
-        )
-        print(f'导入{r.rowcount}条数据')
-    if checkload(brfile, _):
-        print(f'{brfile.name}已导入，忽略')
+@loadcheck
+def loadbrorder(filename):
+    r = executemany(
+        'insert or replace into brorder(brname,brorder)values(?,?)',
+        procdata(filename.sheets('分行顺序表'), mapper={
+            '分行名称': None,
+            '顺序': int,
+        }))
+    print(f'导入{r.rowcount}条数据')
 
 
 def loadwenti(filename):

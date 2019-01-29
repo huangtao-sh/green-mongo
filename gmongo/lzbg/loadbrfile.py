@@ -4,11 +4,9 @@
 # License: GPL
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-23 20:14
-from gmongo import findone
-import yaml
-from gmongo import db_config, execute, executemany, find, \
-    R, HOME, executescript, checkload, executetrans
 from orange import now
+import yaml
+from gmongo import execute, R, HOME, loadcheck
 
 ROOT = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
@@ -44,6 +42,7 @@ def get_br(s):
     return m and m.group(1)
 
 
+@loadcheck
 def loadfile(filename, curqc):
     data = []
     print(f'开始处理文件：{filename.name}')
@@ -76,12 +75,10 @@ def loadfile(filename, curqc):
                 [period, type_, branch, bgr, date, content])
 
 
-@executetrans
 def loadfiles():
     curqc = (now().add(months=-1)) % "%Q"
     for file in (ROOT/'分行上报').glob('*.xls?'):
         try:
-            if checkload(file, loadfile, curqc=curqc):
-                print(f'文件 {file.name} 已导入，忽略')
+            loadfile(file, curqc=curqc)
         except Exception as e:
             print(e)
