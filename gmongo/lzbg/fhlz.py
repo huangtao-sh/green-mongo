@@ -5,10 +5,9 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-23 10:16
 
-from gmongo import checkload, executemany, procdata, HOME, trans, R, executetrans, loadcheck
+from gmongo import checkload, executemany, procdata, HOME, trans, R, executetrans, loadcheck,\
+    fetch
 from orange import extract
-
-
 SAVEPATH = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
 
@@ -21,6 +20,22 @@ def loadbrorder(filename):
             '顺序': int,
         }))
     print(f'导入{r.rowcount}条数据')
+
+
+def publish_reply():
+    path = (SAVEPATH/'答复意见').find('分行运营主管履职报告问题????-?.xls?')
+    if path:
+        _publish(path)
+    else:
+        print('未找到相应的文件')
+
+
+# @loadcheck
+def _publish(filename):
+    qc = extract(filename.pname, r'\d{4}\-\d')
+    print(f'当前期次： {qc}')
+    hz = set(x[0] for x in fetch('select name from brreport where type=0 and period=?', [qc]))
+    print(hz)
 
 
 def loadwenti(filename):

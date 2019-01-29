@@ -19,8 +19,9 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-c', '--config', action='store_true', help='导入参数')
 @arg('-l', '--load', action='store_true', help='导入报告文件')
 @arg('-r', '--report', action='store_true', help='报告上报情况')
+@arg('-p', '--publish', action='store_true', help='发布报告')
 def fhlz(init_=False, tables=None, config=False, load=False,
-         report=False):
+         report=False, publish=False):
     if tables:
         drop_tables(*tables)
     if init_:
@@ -34,6 +35,9 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if report:
         from .reportbr import report
         report()
+    if publish:
+        from .fhlz import publish_reply
+        publish_reply()
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
