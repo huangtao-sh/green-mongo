@@ -40,10 +40,8 @@ def fhlz(init_=False, tables=None, config=False, load=False,
         from .reportbr import report
         report(rptqc)
     if publish:
-        #from .fhlz import publish_reply
-        # publish_reply()
-        for r in fetch('select name,branch from brreport where period=?', ['2018-4']):
-            print(*r)
+        from .fhlz import publish_reply
+        publish_reply()
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
