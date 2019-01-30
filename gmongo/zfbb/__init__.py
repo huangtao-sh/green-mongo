@@ -7,7 +7,7 @@
 
 
 from orange import command, arg, HOME, Path, R, now
-from gmongo import db_config, find, execute, executemany, findone, checkload, procdata, executetrans
+from gmongo import db_config, find, execute, executemany, findone, procdata, loadcheck
 
 DefaultPath = HOME/'OneDrive/文档/支付报表数据'
 db_config('zfbb')
@@ -17,8 +17,8 @@ InPattern = R/r'[0-9A-Z]{10}'
 ConfigFile = DefaultPath/'核心指标参数.xlsx'
 
 
-@executetrans
-def loadconfig(ConfigFIle):
+@loadcheck
+def loadconfig(ConfigFile):
     if ConfigFile:
         rows = ConfigFile.sheets('报表参数')
         data = procdata(rows, mapper={
@@ -41,8 +41,7 @@ def loadconfig(ConfigFIle):
 @arg('-e', '--export', nargs='?', dest='qc', default='NOSET', help='生成报表')
 def main(path=None, show=False, config=False, xhs=None, qc=None):
     if config:
-        if checkload(ConfigFile, loadconfig):
-            print('参数文件已导入，忽略！')
+        loadconfig(ConfigFile)
     if path != 'NOSET':
         path = path or DefaultPath
         from .loadfile import load

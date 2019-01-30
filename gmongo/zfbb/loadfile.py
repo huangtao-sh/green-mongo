@@ -6,9 +6,10 @@
 # 创建：2019-01-15 21:59
 
 from orange import Path, HOME, tempdir
-from gmongo import checkload, execute, executescript, find, findone, executemany, executefile, executetrans
+from gmongo import checkload, execute, executescript, find, findone, executemany, executefile, loadcheck
 
 
+@loadcheck
 def loadfile(path):
     with tempdir() as tmp:
         Path(path).extractall(tmp)
@@ -32,9 +33,7 @@ def loadfile(path):
     print(f'{path.name} 文件导入成功')
 
 
-@executetrans
 def load(path):
     executefile('gmongo', 'sql/zfbb.sql')                # 建立数据库表
     for file in path.glob('*.zip'):   # 导入文件
-        if checkload(file, loadfile):
-            print(f'{file.name}已导入，忽略')
+        loadfile(file)
