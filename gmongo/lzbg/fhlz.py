@@ -5,8 +5,9 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-23 10:16
 
+from yaml import load
 from gmongo import executemany, procdata, HOME, R, execute, loadcheck,\
-    fetch, transaction
+    fetch, transaction, fetchvalue
 from orange import extract
 SAVEPATH = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
@@ -106,3 +107,75 @@ def _export(qc):
         if tcr:
             book['C%d:C%d' % (tcr_start, line)] = tcr, 'cnormal'
         book.set_border('A2:E%d' % (line))
+
+
+FORMATS = {
+    'bt': {'font_name': '黑体', 'font_size': 18,
+           'align': 'center', 'valign': 'vcenter'},
+    'normal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
+               'valign': 'center', 'align': 'left'},
+    'vnormal': {'font_name': '微软雅黑', 'font_size': 12, 'text_wrap': True,
+                'align': 'center', 'valign': 'vcenter'}, }
+
+WIDTHS = {'A:A': 13,
+          'B:B': 86}
+
+ylb_sql = ('select a.branch,a.name,a.content from brreport a'
+           'left join brorder b on a.branch = b.brname '
+           'where period=? and type=? '
+           'order by b.brorder')
+
+
+def export_ylb(qc):
+    if not qc:
+        qc = fetchvalue(
+            'select period from brreport order by period desc limit 1')
+    print('导出期次：%s' % (qc))
+    wentis = []
+    for lb in ('分管行长', '运营主管'):
+        type_ = 0 if lb == '分管行长' else 1
+        with (SAVEPATH / '报告' / ('%s履职报告（%s）.xlsx' % (lb, qc))).write_xlsx()\
+                as book:
+            book.add_formats(FORMATS)
+            count = 0
+            for br, name, content in fetch(ylb_sql, [type_, qc]):
+                print("%-10s%s" % (br, name))
+                book.worksheet = br
+                book.set_widths(WIDTHS)
+                content = load(content)
+                header = content['header']
+                book.A1_B1 = header[0], 'bt'
+                book.A2_B2 = header[1], 'normal'
+                book.A3_B3 = header[2], 'normal'
+                r1 = 4
+                for d in content['content']:
+                    r2 = r1 + len(d['nr']) - 1
+                    range_ = "A%s" % (r1)
+                    if r2 > r1:
+                        range_ = '%s:A%s' % (range_, r2)
+                    book[range_] = d['xm'], 'vnormal'
+                    for i, n in enumerate(d['nr']):
+                        book['B%s' % (i + r1)] = str(n).strip(), 'normal'
+                    r1 = r2 + 1
+                    if '问题' in d['xm'] or '意见或建议' in d['xm']:
+                        for n in d['nr']:
+                            if n and len(n) > 10:
+                                wentis.append(WenTi(bg.jg, bg.bgr,
+                                                    n.strip()))
+                count += 1
+            print('%s，共 %d 条记录' % (lb, count))
+    filename = SAVEPATH / '问题' / ('分行运营主管履职报告问题%s.xlsx' % (qc))
+
+    with filename.write_xlsx() as book:
+        book.add_formats(FORMATS)
+        book.worksheet = '分行履职报告问题表'
+        book.set_widths({'A:B': 9, 'C:C': 80, 'D:E': 15, 'F:F': 80})
+        book.A = '分行 提出人 问题描述 答复部门 答复人 答复意见'.split(), 'h2'
+        book + 1
+        for d in wentis:
+            book.A = [d.fh, d.tcr], "vnormal"
+            book.C = d.ms, 'normal'
+            book.D = ['', ''], 'vnormal'
+            book.F = '', 'normal'
+            book + 1
+        print('共导出问题 %d 条' % (len(wentis)))

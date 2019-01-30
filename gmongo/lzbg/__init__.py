@@ -21,8 +21,10 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-r', '--report', nargs='?', default='NOSET', metavar='period', dest='rptqc', help='报告上报情况')
 @arg('-p', '--publish', action='store_true', help='发布报告')
 @arg('-o', '--restore', action='store_true', help='发布报告')
+@arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
 def fhlz(init_=False, tables=None, config=False, load=False,
-         rptqc=None, publish=False, restore=False):
+         rptqc=None, publish=False, restore=False,
+         export_qc=None):
     if tables:
         drop_tables(*tables)
     if init_:
@@ -39,6 +41,9 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if rptqc != 'NOSET':
         from .reportbr import report
         report(rptqc)
+    if export_qc != 'NOSET':
+        from .fhlz import export_ylb
+        export_ylb(export_qc)
     if publish:
         from .fhlz import publish_reply
         publish_reply()
