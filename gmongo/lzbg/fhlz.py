@@ -150,7 +150,7 @@ def export_ylb(qc):
                 isWenTi = False
                 oldlb = None
                 for lb, nr in content['content']:
-                    nr=nr.strip()
+                    nr = nr.strip()
                     book[f'B{r2}'] = nr, 'normal'
                     if lb:
                         isWenTi = '问题' in lb or '意见或建议' in lb
