@@ -14,7 +14,7 @@ def percent(b, t):
     return f'{(t-b)*100/b:7.2f}%' if b else ' '*3+'*'*5
 
 
-SQL = ('select a."id",sum(b.vv),sum(vv2) from parameter a '
+SQL = ('select a."id",sum(b.vv),sum(b.vv2) from parameter a '
        'join PaymentData b on a."in"=b."in" and a.dn=b.dn '
        'where b.at="CITY" and '
        '((a.rule=0 and b.subno=?) or (a.rule=1 and b.subno between ? and ?)) '
