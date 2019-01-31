@@ -35,7 +35,7 @@ def _publish(filename, qc):
         for row in data:
             row.extend([0 if row[1] in hz else 1, qc])
         r = executemany('insert into lzwenti(rpt_branch,rpt_name,content,reply_depart,reply_name,reply,type,period)'
-                        'values(?,?,?,?,?,?,?,?)', data)
+                        'values(?,?,?,?,?,?,?,?)F', data)
         print(f'共导入 {r.rowcount} 条数据')
 
 
@@ -120,7 +120,7 @@ FORMATS = {
 WIDTHS = {'A:A': 13,
           'B:B': 86}
 
-ylb_sql = ('select a.branch,a.name,a.content from brreport a'
+ylb_sql = ('select a.branch,a.name,a.content from brreport a '
            'left join brorder b on a.branch = b.brname '
            'where period=? and type=? '
            'order by b.brorder')
@@ -137,8 +137,7 @@ def export_ylb(qc):
         with (SAVEPATH / '报告' / ('%s履职报告（%s）.xlsx' % (lb, qc))).write_xlsx()\
                 as book:
             book.add_formats(FORMATS)
-            count = 0
-            for br, name, content in fetch(ylb_sql, [type_, qc]):
+            for br, name, content in fetch(ylb_sql, [qc, type_]):
                 print("%-10s%s" % (br, name))
                 book.worksheet = br
                 book.set_widths(WIDTHS)
@@ -147,25 +146,23 @@ def export_ylb(qc):
                 book.A1_B1 = header[0], 'bt'
                 book.A2_B2 = header[1], 'normal'
                 book.A3_B3 = header[2], 'normal'
-                r1 = 4
-                for d in content['content']:
-                    r2 = r1 + len(d['nr']) - 1
-                    range_ = "A%s" % (r1)
-                    if r2 > r1:
-                        range_ = '%s:A%s' % (range_, r2)
-                    book[range_] = d['xm'], 'vnormal'
-                    for i, n in enumerate(d['nr']):
-                        book['B%s' % (i + r1)] = str(n).strip(), 'normal'
-                    r1 = r2 + 1
-                    if '问题' in d['xm'] or '意见或建议' in d['xm']:
-                        for n in d['nr']:
-                            if n and len(n) > 10:
-                                wentis.append(WenTi(bg.jg, bg.bgr,
-                                                    n.strip()))
-                count += 1
-            print('%s，共 %d 条记录' % (lb, count))
+                r1, r2 = 4, 4
+                isWenTi = False
+                oldlb = None
+                for lb, nr in content['content']:
+                    nr=nr.strip()
+                    book[f'B{r2}'] = nr, 'normal'
+                    if lb:
+                        isWenTi = '问题' in lb or '意见或建议' in lb
+                        if oldlb and oldlb != lb:
+                            book[f'A{r1}:A{r2-1}'] = oldlb, 'vnormal'
+                        r1 = r2
+                        oldlb = lb
+                    if isWenTi and nr and len(nr) > 10:
+                        wentis.append([br, name, nr])
+                    r2 += 1
+                book[f'A{r1}:A{r2-1}'] = oldlb, 'vnormal'
     filename = SAVEPATH / '问题' / ('分行运营主管履职报告问题%s.xlsx' % (qc))
-
     with filename.write_xlsx() as book:
         book.add_formats(FORMATS)
         book.worksheet = '分行履职报告问题表'
@@ -173,8 +170,8 @@ def export_ylb(qc):
         book.A = '分行 提出人 问题描述 答复部门 答复人 答复意见'.split(), 'h2'
         book + 1
         for d in wentis:
-            book.A = [d.fh, d.tcr], "vnormal"
-            book.C = d.ms, 'normal'
+            book.A = [d[0], d[1]], "vnormal"
+            book.C = d[2], 'normal'
             book.D = ['', ''], 'vnormal'
             book.F = '', 'normal'
             book + 1
