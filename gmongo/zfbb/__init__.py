@@ -8,7 +8,7 @@
 
 from orange import command, arg, Path, R, now
 from gmongo import db_config, find, execute, executemany, findone, procdata, loadcheck
-from orange.utils.config import YamlConfig
+from orange.utils.config import JsonConfig, YamlConfig
 
 DefaultConfig = {
     'datapath': '~/OneDrive/文档/支付报表数据',
