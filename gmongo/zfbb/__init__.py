@@ -6,15 +6,22 @@
 # 创建：2019-01-15 21:59
 
 
-from orange import command, arg, HOME, Path, R, now
+from orange import command, arg, Path, R, now
 from gmongo import db_config, find, execute, executemany, findone, procdata, loadcheck
+from orange.utils.config import YamlConfig
 
-DefaultPath = HOME/'OneDrive/文档/支付报表数据'
-db_config('zfbb')
+DefaultConfig = {
+    'datapath': '~/OneDrive文档/支付报表数据',
+    'database': 'zfbb',
+    'parameterfile': '~/OneDrive文档/支付报表数据/核心指标参数.xlsx'
+}
+config = YamlConfig('~/.zfbb.yaml')
+
+DefaultPath = Path(config['datapath'])
+db_config(config['database'])
+ConfigFile = Path(config['parameterfile'])
 
 InPattern = R/r'[0-9A-Z]{10}'
-
-ConfigFile = DefaultPath/'核心指标参数.xlsx'
 
 
 @loadcheck
