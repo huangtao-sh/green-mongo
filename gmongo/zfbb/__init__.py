@@ -11,11 +11,11 @@ from gmongo import db_config, find, execute, executemany, findone, procdata, loa
 from orange.utils.config import YamlConfig
 
 DefaultConfig = {
-    'datapath': '~/OneDrive文档/支付报表数据',
+    'datapath': '~/OneDrive/文档/支付报表数据',
     'database': 'zfbb',
-    'parameterfile': '~/OneDrive文档/支付报表数据/核心指标参数.xlsx'
+    'parameterfile': '~/OneDrive/文档/支付报表数据/核心指标参数.xlsx'
 }
-config = YamlConfig('~/.zfbb.yaml')
+config = YamlConfig(default=DefaultConfig, filename='~/.zfbb.yaml')
 
 DefaultPath = Path(config['datapath'])
 db_config(config['database'])
