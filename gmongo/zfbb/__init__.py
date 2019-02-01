@@ -17,9 +17,7 @@ DefaultConfig = {
 }
 config = YamlConfig(default=DefaultConfig, filename='~/.zfbb.yaml')
 
-DefaultPath = Path(config['datapath'])
 db_config(config['database'])
-ConfigFile = Path(config['parameterfile'])
 
 InPattern = R/r'[0-9A-Z]{10}'
 
@@ -46,11 +44,11 @@ def loadconfig(ConfigFile):
 @arg('-c', '--config', action='store_true', help='导入参数配置文件')
 @arg('-t', '--count', nargs='*', dest='xhs', metavar='xh', help='统计指标')
 @arg('-e', '--export', nargs='?', dest='qc', default='NOSET', help='生成报表')
-def main(path=None, show=False, config=False, xhs=None, qc=None):
-    if config:
-        loadconfig(ConfigFile)
+def main(path=None, show=False, xhs=None, qc=None, **options):
+    if options['config']:
+        loadconfig(Path(config['parameterfile']))
     if path != 'NOSET':
-        path = path or DefaultPath
+        path = path or Path(config['datapath'])
         from .loadfile import load
         load(path)
     if qc != 'NOSET':
