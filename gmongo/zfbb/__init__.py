@@ -7,7 +7,7 @@
 
 
 from orange import command, arg, Path, R, now
-from gmongo import db_config, find, execute, executemany, findone, procdata, loadcheck
+from gmongo import db_config, find, execute, executemany, findone, procdata, loadcheck, findvalue
 from orange.utils.config import JsonConfig, YamlConfig
 
 DefaultConfig = {
@@ -43,7 +43,7 @@ def loadconfig(ConfigFile):
 @arg('-s', '--show', action='store_true', help='显示')
 @arg('-c', '--config', action='store_true', help='导入参数配置文件')
 @arg('-t', '--count', nargs='*', dest='xhs', metavar='xh', help='统计指标')
-@arg('-e', '--export', nargs='?', dest='qc', default='NOSET', help='生成报表')
+@arg('-r', '--report', nargs='?', dest='qc', default='NOSET', help='生成报表')
 def main(path=None, show=False, xhs=None, qc=None, **options):
     if options['config']:
         loadconfig(Path(config['parameterfile']))
@@ -52,7 +52,14 @@ def main(path=None, show=False, xhs=None, qc=None, **options):
         from .loadfile import load
         load(path)
     if qc != 'NOSET':
-        qc = qc or (now().add(months=-1)) % '%Q'
+        if not qc:
+            qc = now() % "%Y%m"
+            qc = findvalue(
+                'select subno from PaymentData order by subno desc limit 1')
+            if not int(qc[4:]) % 3:
+                qc = qc[:4] + '-'+str((int(qc[4:])+2)//3)
+            else:
+                qc = '-'.join([qc[:4], qc[4:]])
         from .rpt import export
         try:
             export(qc)
