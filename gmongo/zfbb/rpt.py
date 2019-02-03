@@ -17,9 +17,15 @@ def percent(b, t):
 SQL = ('select a."id",sum(b.vv),sum(b.vv2) from parameter a '
        'join PaymentData b on a."in"=b."in" and a.dn=b.dn '
        'where b.at="CITY" and '
-       '((a.rule=0 and b.subno=?) or (a.rule=1 and b.subno between ? and ?)) '
+       '((a.rule=0 and b.subno=:end) or (a.rule=1 and b.subno between :begin and :end)) '
        'group by a."in",a.dn '
        )
+MONTH_SQL = ('select a."id",b.vv,b.vv2 from parameter a '
+             'join PaymentData b on a."in"=b."in" and a.dn=b.dn '
+             'where b.at="CITY" and '
+             'b.subno=? '
+             'group by a."in",a.dn '
+             )
 
 
 def export(qc):
@@ -31,7 +37,7 @@ def export(qc):
     months = [f'{m//12}{m%12+1:02d}' for m in range(d, d+15)]  # 生成 15 个连续的月份
     data = defaultdict(lambda: [])                             # 初始化数据
     for i in (14, 2, 11):                                      # 分别获取当期、同比、环节数据
-        for r in find(SQL, [months[i], months[i-2], months[i]]):
+        for r in find(SQL, {'begin': months[i-2], 'end': months[i]}):
             data[r[0]].extend(r[1:])
     for k, v in sorted(data.items()):
         print(f'{k:02d}', *(f'{x:19,.2f}'for x in v[:2]), end='    ')
