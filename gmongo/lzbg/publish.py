@@ -68,7 +68,6 @@ def publish_wt():
     path = (HOME/'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
     if path:
         loadwt(path)
-    path = '~/test.xlsx'
     export_file(path)
 
 
@@ -102,7 +101,7 @@ def loaddfyj(filename):
 
 
 @loadcheck
-def loadwt(filenmae):
+def loadwt(filename):
     print(f'导入最新处理文件：{filename.name}')
     data = filename.sheets(0)
     if len(data) > 3 and len(data[2]) >= 7:
@@ -176,11 +175,13 @@ def write_year(book, year):
 
 
 def export_file(path):
+    path = Path(path)
     period = fetchvalue('select max(period) from lzwt')
-    with Path(path).write_xlsx()as book:
+    with path.write_xlsx()as book:
         book.add_formats(FORMATS)
         write_curpriod(book, period, '一般问题')
         write_curpriod(book, period, '重点问题')
         for r in fetch('select distinct substr(period,1,4)as year from lzwt '
                        'order by year desc'):
             write_year(book, r[0])
+        print(f'导出文件 {path.name} 成功')
