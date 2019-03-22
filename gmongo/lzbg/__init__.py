@@ -45,8 +45,8 @@ def fhlz(init_=False, tables=None, config=False, load=False,
         from .fhlz import export_ylb
         export_ylb(export_qc)
     if publish:
-        from .fhlz import publish_reply
-        publish_reply()
+        from .publish import publish_wt
+        publish_wt()
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')

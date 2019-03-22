@@ -57,7 +57,8 @@ if not exists brreport
     name text,              -- 姓名
     date text,              -- 报告时间
     content text,           -- 报告内容
-    primary key(period,type,branch)
+    primary key
+(period,type,branch)
 );
 /*
     分行序列表
@@ -68,4 +69,18 @@ if not exists brorder
     brname  text primary key,       -- 分行名称
     brorder int,                     -- 序号
     state   bool                     -- 状态
+);
+
+create table
+if not exists lzwt
+(
+    period      text,
+    importance  text,
+    category    text,
+    branch      text,
+    content     text,
+    reporter    text,
+    reply_dept  text,
+    reply       text,
+    status      text
 );
