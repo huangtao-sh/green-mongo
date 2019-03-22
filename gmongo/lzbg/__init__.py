@@ -20,7 +20,6 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-l', '--load', action='store_true', help='导入报告文件')
 @arg('-r', '--report', nargs='?', default='NOSET', metavar='period', dest='rptqc', help='报告上报情况')
 @arg('-p', '--publish', action='store_true', help='发布报告')
-@arg('-o', '--restore', action='store_true', help='发布报告')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
 def fhlz(init_=False, tables=None, config=False, load=False,
          rptqc=None, publish=False, restore=False,
@@ -35,9 +34,6 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if load:
         from .loadbrfile import loadfiles
         loadfiles()
-    if restore:
-        from .loadbrfile import restorefiles
-        restorefiles()
     if rptqc != 'NOSET':
         from .reportbr import report
         report(rptqc)
@@ -45,8 +41,8 @@ def fhlz(init_=False, tables=None, config=False, load=False,
         from .fhlz import export_ylb
         export_ylb(export_qc)
     if publish:
-        from .publish import publish_wt
-        publish_wt()
+        from .fhlz import publish_reply
+        publish_reply()
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')

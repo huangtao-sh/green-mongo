@@ -68,7 +68,7 @@ def publish_wt():
     path = (HOME/'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
     if path:
         loadwt(path)
-    export_file(path)
+    export_file()
 
 
 @loadcheck
@@ -174,9 +174,9 @@ def write_year(book, year):
     book.set_border(f'A2:I{row}')
 
 
-def export_file(path):
-    path = Path(path)
+def export_file():
     period = fetchvalue('select max(period) from lzwt')
+    path = ROOT/f'营业主管履职报告重点问题与答复意见{Period(period)}.xlsx'
     with path.write_xlsx()as book:
         book.add_formats(FORMATS)
         write_curpriod(book, period, '一般问题')
