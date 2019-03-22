@@ -72,5 +72,5 @@ def lzbg(init_=False, loadfile=False, branchs=None, report=False,
         from .report import export_wt
         export_wt()
     if publish:
-        from .report import publish_wt
+        from .publish import publish_wt
         publish_wt()
