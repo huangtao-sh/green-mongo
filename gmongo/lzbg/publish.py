@@ -13,7 +13,7 @@ from orange.utils.sqlite import insert
 PeriodPattern = R/r'.*?(?P<year>\d{4}).*?(?P<month>\d{1,2})'
 
 
-class Period(object):
+class Period(object):           # 期次
     def __init__(self, time):
         r = PeriodPattern.match(time)
         if r:
@@ -61,14 +61,14 @@ Widthes1 = {
 ROOT = HOME/'OneDrive/工作/工作档案/履职报告/营业主管履职报告重点问题与答复意见'
 
 
-def publish_wt():
+def publish_wt():       # 发布履职报告问题
     path = ROOT.find('营业主管履职报告重点问题与答复意见*.xlsx')
-    if path:
+    if path:            # 导入最新履职报告
         loaddfyj(path)
     path = (HOME/'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
-    if path:
+    if path:            # 导入最新处理的问题
         loadwt(path)
-    export_file()
+    export_file()       # 导出文件
 
 
 @loadcheck
@@ -174,6 +174,11 @@ def write_year(book, year):
     book.set_border(f'A2:I{row}')
 
 
+@loadcheck
+def write_update_time(filename):
+    pass
+
+
 def export_file():
     period = fetchvalue('select max(period) from lzwt')
     path = ROOT/f'营业主管履职报告重点问题与答复意见({str(Period(period))[:-1]}).xlsx'
@@ -185,3 +190,4 @@ def export_file():
                        'order by year desc'):
             write_year(book, r[0])
         print(f'导出文件 {path.name} 成功')
+    write_update_time(path)    # 更新写入时间，防止无变更导入
