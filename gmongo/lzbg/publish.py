@@ -185,8 +185,8 @@ def export_file():
     path = ROOT/f'营业主管履职报告重点问题与答复意见({str(Period(period))[:-1]}).xlsx'
     with path.write_xlsx()as book:
         book.add_formats(FORMATS)
-        write_curpriod(book, period, '一般问题')
         write_curpriod(book, period, '重点问题')
+        write_curpriod(book, period, '一般问题')
         for r in fetch('select distinct substr(period,1,4)as year from lzwt '
                        'order by year desc'):
             write_year(book, r[0])
