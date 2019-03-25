@@ -175,7 +175,8 @@ def write_year(book, year):
 
 
 @loadcheck
-def write_update_time(filename):
+def update_write_time(filename):
+    # 该文件是防重复读入检查的。故，在写入的时候需要更新时间，防止文件未更新就再次读取
     pass
 
 
@@ -190,4 +191,4 @@ def export_file():
                        'order by year desc'):
             write_year(book, r[0])
         print(f'导出文件 {path.name} 成功')
-    write_update_time(path)    # 更新写入时间，防止无变更导入
+    update_write_time(path)    # 更新写入时间，防止无变更导入
