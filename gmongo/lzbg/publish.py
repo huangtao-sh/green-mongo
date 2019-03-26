@@ -182,7 +182,7 @@ def update_write_time(filename):
 
 def export_file():
     period = fetchvalue('select max(period) from lzwt')
-    path = ROOT/f'营业主管履职报告重点问题与答复意见({str(Period(period))[:-1]}).xlsx'
+    path = ROOT/f'营业主管履职报告重点问题与答复意见（{str(Period(period))[:-1]}）.xlsx'
     with path.write_xlsx()as book:
         book.add_formats(FORMATS)
         write_curpriod(book, period, '重点问题')
