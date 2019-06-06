@@ -50,7 +50,7 @@ def main(query):
         for r in fetch('select * from ggjgm where zfhh=?', [query]):
             print(*r)
     elif R / r'\d{3,9}' == query:
-        for r in fetch(f'select * from ggjgm where jgm like "%{query}%"'):
+        for r in fetch(f'select * from ggjgm where jgm like "{query}%"'):
             print(*r)
     else:
         for r in fetch(f'select * from ggjgm where mc like "%{query}%"'):
