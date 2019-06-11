@@ -5,8 +5,9 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-05-14 16:46
 
+from gmongo.params import branch, ggnbzhmb
+
 
 def load_files():
-    from gmongo import params
-    params.branch.loadfile()    # 导入机构码
-    params.ggnbzhmb.loadfile()  # 导入内部账户模板
+    branch.loadfile()  # 导入机构码
+    ggnbzhmb.loadfile()  # 导入内部账户模板

@@ -46,8 +46,8 @@ def main(query):
     if R / r'\d{2}' == query:
         for r in fetch('select * from ggjgm where jglx=?', [query]):
             print(*r)
-    elif R / r'\d{12}' == query:
-        for r in fetch('select * from ggjgm where zfhh=?', [query]):
+    elif R / r'316\d{1,9}' == query:
+        for r in fetch(f'select * from ggjgm where zfhh like "{query}%"'):
             print(*r)
     elif R / r'\d{3,9}' == query:
         for r in fetch(f'select * from ggjgm where jgm like "{query}%"'):
