@@ -8,5 +8,5 @@
 
 def load_files():
     from gmongo import params
-    params.branch.loadfile()
-    params.ggnbzhmb.loadfile()
+    params.branch.loadfile()    # 导入机构码
+    params.ggnbzhmb.loadfile()  # 导入内部账户模板
