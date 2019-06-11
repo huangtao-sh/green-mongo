@@ -6,7 +6,7 @@
 # 创建：2019-05-14 14:01
 
 from gmongo.params import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction
-from orange import Path, R, extract, arg
+from orange import Path, R, extract, arg, tprint
 from orange.utils.sqlite import fix_db_name
 
 
@@ -44,14 +44,11 @@ def get_branches():
 @arg('query', help='查询条件')
 def main(query):
     if R / r'\d{2}' == query:
-        for r in fetch('select * from ggjgm where jglx=?', [query]):
-            print(*r)
+        data = fetch('select * from ggjgm where jglx=?', [query])
     elif R / r'316\d{1,9}' == query:
-        for r in fetch(f'select * from ggjgm where zfhh like "{query}%"'):
-            print(*r)
+        data = fetch(f'select * from ggjgm where zfhh like "{query}%"')
     elif R / r'\d{3,9}' == query:
-        for r in fetch(f'select * from ggjgm where jgm like "{query}%"'):
-            print(*r)
+        data = fetch(f'select * from ggjgm where jgm like "{query}%"')
     else:
-        for r in fetch(f'select * from ggjgm where mc like "%{query}%"'):
-            print(*r)
+        data = fetch(f'select * from ggjgm where mc like "%{query}%"')
+    tprint(data, format_spec={1: '40', 2: '10'})
