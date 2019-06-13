@@ -13,7 +13,9 @@ from functools import partial
 
 def loadfile():
     path = ROOT.find('ggjgm.del')
-    return load_file(path, 'ggjgm', encoding='gbk', errors='ignore', converter={1: str.strip},
+    return load_file(path, 'ggjgm', drop=True,
+                     encoding='gbk', errors='ignore',
+                     converter={1: str.strip},
                      columns=(0, 1, 3, 7, 15, 16, 17))
 
 
