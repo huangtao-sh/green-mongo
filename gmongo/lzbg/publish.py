@@ -83,7 +83,7 @@ def publish_wt():  # 发布履职报告问题
     path = ROOT.find('营业主管履职报告重点问题与答复意见*.xlsx')
     if path:  # 导入最新履职报告
         loaddfyj(path)
-    path = (HOME / 'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
+    path = (HOME / 'OneDrive/工作/工作档案/履职报告/处理完成').find('营业主管履职报告*.xlsx')
     if path:  # 导入最新处理的问题
         loadwt(path)
     export_file()  # 导出文件
