@@ -10,10 +10,10 @@ from gmongo import db_config, fetch, fetchone, fetchvalue, executescript, transa
     loadcheck
 from orange.utils.sqlite import insert
 
-PeriodPattern = R/r'.*?(?P<year>\d{4}).*?(?P<month>\d{1,2})'
+PeriodPattern = R / r'.*?(?P<year>\d{4}).*?(?P<month>\d{1,2})'
 
 
-class Period(object):           # 期次
+class Period(object):  # 期次
     def __init__(self, time):
         r = PeriodPattern.match(time)
         if r:
@@ -29,13 +29,31 @@ class Period(object):           # 期次
 
 
 FORMATS = {
-    'Title': {'font_name': '仿宋_GB2312', 'bold': True,
-              'font_size': 18, 'align': 'center'},
-    'Header': {'font_name': '黑体', 'font_size': 14, 'align': 'center'},
-    'Text': {'font_name': '微软雅黑', 'font_size': 11,
-             'align': 'left', 'valign': 'vcenter', 'text_wrap': True},
-    'VText': {'font_name': '微软雅黑', 'font_size': 11,
-              'align': 'center', 'valign': 'vcenter', 'text_wrap': True},
+    'Title': {
+        'font_name': '仿宋_GB2312',
+        'bold': True,
+        'font_size': 18,
+        'align': 'center'
+    },
+    'Header': {
+        'font_name': '黑体',
+        'font_size': 14,
+        'align': 'center'
+    },
+    'Text': {
+        'font_name': '微软雅黑',
+        'font_size': 11,
+        'align': 'left',
+        'valign': 'vcenter',
+        'text_wrap': True
+    },
+    'VText': {
+        'font_name': '微软雅黑',
+        'font_size': 11,
+        'align': 'center',
+        'valign': 'vcenter',
+        'text_wrap': True
+    },
 }
 
 Widthes2 = {
@@ -58,17 +76,17 @@ Widthes1 = {
     'H:H': 18.38
 }
 
-ROOT = HOME/'OneDrive/工作/工作档案/履职报告/营业主管履职报告重点问题与答复意见'
+ROOT = HOME / 'OneDrive/工作/工作档案/履职报告/营业主管履职报告重点问题与答复意见'
 
 
-def publish_wt():       # 发布履职报告问题
+def publish_wt():  # 发布履职报告问题
     path = ROOT.find('营业主管履职报告重点问题与答复意见*.xlsx')
-    if path:            # 导入最新履职报告
+    if path:  # 导入最新履职报告
         loaddfyj(path)
-    path = (HOME/'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
-    if path:            # 导入最新处理的问题
+    path = (HOME / 'OneDrive/工作/工作档案/履职报告/处理问题').find('营业主管履职报告*完成.xlsx')
+    if path:  # 导入最新处理的问题
         loadwt(path)
-    export_file()       # 导出文件
+    export_file()  # 导出文件
 
 
 @loadcheck
@@ -77,21 +95,25 @@ def loaddfyj(filename):
     excludes = set()
     for sheet in filename.worksheets:
         if sheet.name in ('重点问题', '一般问题'):
+
             def procline(x):
                 x = [l.strip() for l in x]
                 x.insert(1, sheet.name)
                 x[0] = Period(x[0]).value
                 excludes.add(x[0])
                 return x
+
             data = sheet._cell_values
             if len(data) > 3 and len(data[2]) == 8:
                 data = tuple(map(procline, filter(None, data[2:])))
             insert('lzwt', data)
         else:
+
             def procline(x):
-                x = [l.strip()for l in x]
+                x = [l.strip() for l in x]
                 x[0] = Period(x[0]).value
                 return x if x[0] not in excludes else None
+
             data = sheet._cell_values
             if len(data) > 3 and len(data[2]) == 9:
                 data = tuple(filter(None, map(procline, data[2:])))
@@ -107,8 +129,8 @@ def loadwt(filename):
     if len(data) > 3 and len(data[2]) >= 7:
         rq = Period(data[0][0]).value
         print(f'当前导入文件日期：{rq}')
-        count = fetchvalue(
-            'select count(reporter) from lzwt where period=?', [rq])
+        count = fetchvalue('select count(reporter) from lzwt where period=?',
+                           [rq])
         if count > 0:
             confirm = input('基准文件中已有数据，是否重新导入？ Y or N')
             if confirm.lower() == "n":
@@ -119,23 +141,28 @@ def loadwt(filename):
         def procline(line):
             line = [x.strip() for x in line]
             importance = '重点问题' if '重点问题' in line[6] else '一般问题'
+            if not (line[4].endswith('部') or line[4].endswith('中心')):
+                line[4] = '运营管理部'
             nline = [rq, importance]
             nline.extend(line[:7])
             return nline
+
         data = filter(None, map(procline, data[2:]))
         insert('lzwt', data)
         s = 0
-        for r in fetch('select importance,count(period) from lzwt '
-                       'where period=? group by importance ', [rq]):
+        for r in fetch(
+                'select importance,count(period) from lzwt '
+                'where period=? group by importance ', [rq]):
             print(*r)
             s += int(r[1])
         print(f'共导入数据：{s:,d}')
 
 
 def write_curpriod(book, period, importance):
-    data = fetch('select * from lzwt '
-                 'where period=? and importance =? '
-                 'order by rowid ', [period, importance])
+    data = fetch(
+        'select * from lzwt '
+        'where period=? and importance =? '
+        'order by rowid ', [period, importance])
     if not data:
         return
     book.worksheet = importance
@@ -154,9 +181,10 @@ def write_curpriod(book, period, importance):
 
 
 def write_year(book, year):
-    data = fetch('select * from lzwt '
-                 'where  period like ? '
-                 'order by period,importance desc,rowid ', [f'{year}%'])
+    data = fetch(
+        'select * from lzwt '
+        'where  period like ? '
+        'order by period,importance desc,rowid ', [f'{year}%'])
     if not data:
         return
     book.worksheet = f'{year}年汇总'
@@ -181,8 +209,8 @@ def update_write_time(filename):
 
 def export_file():
     period = fetchvalue('select max(period) from lzwt')
-    path = ROOT/f'营业主管履职报告重点问题与答复意见（{str(Period(period))[:-1]}）.xlsx'
-    with path.write_xlsx()as book:
+    path = ROOT / f'营业主管履职报告重点问题与答复意见（{str(Period(period))[:-1]}）.xlsx'
+    with path.write_xlsx() as book:
         book.add_formats(FORMATS)
         write_curpriod(book, period, '重点问题')
         write_curpriod(book, period, '一般问题')
@@ -190,4 +218,4 @@ def export_file():
                        'order by year desc'):
             write_year(book, r[0])
         print(f'导出文件 {path.name} 成功')
-    update_write_time(path)    # 更新写入时间，防止无变更导入
+    update_write_time(path)  # 更新写入时间，防止无变更导入
