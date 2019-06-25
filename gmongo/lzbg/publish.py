@@ -140,7 +140,7 @@ def loadwt(filename):
 
         def procline(line):
             line = [x.strip() for x in line]
-            importance = '重点问题' if '重点问题' in line[6] else '一般问题'
+            importance = '重点问题' if '重点' in line[6] else '一般问题'
             if not (line[4].endswith('部') or line[4].endswith('中心')):
                 line[4] = '运营管理部'
             nline = [rq, importance]
