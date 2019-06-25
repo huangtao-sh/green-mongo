@@ -102,7 +102,7 @@ def loaddfyj(filename):
 
 @loadcheck
 def loadwt(filename):
-    print(f'导入最新处理文件：{filename.name}')
+    print(f'导入最新处理完成的文件：{filename.name}')
     data = filename.sheets(0)
     if len(data) > 3 and len(data[2]) >= 7:
         rq = Period(data[0][0]).value
@@ -114,12 +114,11 @@ def loadwt(filename):
             if confirm.lower() == "n":
                 return
             r = execute('delete from lzwt weher period=?', [rq])
-            print(r)
             print('存量数据已删除')
 
         def procline(line):
             line = [x.strip() for x in line]
-            importance = '重要问题' if '重要问题' in line[6] else '一般问题'
+            importance = '重点问题' if '重点问题' in line[6] else '一般问题'
             nline = [rq, importance]
             nline.extend(line[:7])
             return nline
