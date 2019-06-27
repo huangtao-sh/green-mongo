@@ -17,6 +17,7 @@ create table if not exists ggjgm (
     --16 开办日期
     hzjgm text --17 汇总机构码
 );--内部账户开立模板
+
 create table if not exists ggnbzhmb (
     jglx text,
     -- 机构类型，00-总行清算中心，01-总行营业部，10-分行清算中心，11-分行营业部，12-支行营业部

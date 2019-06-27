@@ -12,10 +12,15 @@ from functools import wraps
 
 db_config('params')
 executefile('gmongo', 'sql/params.sql')
+executefile('gmongo', 'sql/nbzh.sql')
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
 
-def load_file(path: Path, table: str, drop: bool = True, proc: 'function' = None, **kw):
+def load_file(path: Path,
+              table: str,
+              drop: bool = True,
+              proc: 'function' = None,
+              **kw):
     @loadcheck
     def _(path: Path):
         if drop:
