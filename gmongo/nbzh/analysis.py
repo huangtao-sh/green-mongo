@@ -27,6 +27,26 @@ Headers = [
 ]
 
 
+def mb_exists(zh):
+    br, bz, km, xh = zh[:9], zh[9:11], zh[12:18], int(zh[18:21])
+    lx = fetchvalue('select jglx from ggjgm where jgm = ?', [br])
+    if lx:
+        #print(lx)
+        return fetchone(
+            'select jglx,bzh,kmh,zhxx from ggnbzhmb where '
+            'jglx=? and bzh in ("B1","00",?) and kmh=? and zhxx=? ',
+            [lx, bz, km, xh])
+
+
+def clear_nbzh():
+    for jgm, zh, hm, khrq, ye, sbfsr, zhzt in fetch(
+            'select jgm,zh,hm,khrq,ye,sbfsr,zhzt from nbzh '
+            f'where ({ZTZC}) and ye=0 and not km like "7114%"  '
+            'order by zh'):
+        if not mb_exists(zh):
+            print(jgm, zh, hm, khrq, ye, sbfsr, zhzt)
+
+
 def clear_nbzhmb():
     with (HOME / 'OneDrive/工作/当前工作/20190614内部账户模板清理/内部账户模板清理.xlsx').write_xlsx(
             force=True) as book:
