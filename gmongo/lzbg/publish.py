@@ -135,7 +135,7 @@ def loadwt(filename):
             confirm = input('基准文件中已有数据，是否重新导入？ Y or N')
             if confirm.lower() == "n":
                 return
-            r = execute('delete from lzwt weher period=?', [rq])
+            r = execute('delete from lzwt where period=?', [rq])
             print('存量数据已删除')
 
         def procline(line):
