@@ -7,6 +7,7 @@
 
 from orange import arg, command, R, tprint
 from orange.utils.sqlite import db_config, fetch, fetchone
+from orange import now
 
 ZTZC = 'substr(zhzt,1,1)="0"'
 YXH = 'substr(zhzt,1,1)="1"'
@@ -18,6 +19,9 @@ headers='账号','机构码','币种','户名','科目','余额方向','余额',
     '利息积数','罚息积数','起息日期','开户日期','销户日期','上笔发生日期','明细笔数','账户状态',\
         '计息标志','收息账号','付息账号','透支额度',"备注"
 
+begin_date = f'{now().year - 2:04d}1231'
+print('开始日期：', begin_date)
+
 
 @arg('-c', '--clear', action='store_true', help='生成清理内部户开立模板清单')
 @arg('-e', '--export', action='store_true', help='生成清理账户文件')
@@ -27,8 +31,8 @@ def main(clear=False, export=False, ac=None):
         from .analysis import clear_nbzhmb
         clear_nbzhmb()
     if export:
-        from .analysis import clear_nbzh
-        clear_nbzh()
+        from .clearnbzh import clear_nbzh
+        clear_nbzh(begin_date)
     if ac:
         if R / r'\d{9}' == ac:
             print(*headers, sep='\t')

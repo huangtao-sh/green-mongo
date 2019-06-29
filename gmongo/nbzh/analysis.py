@@ -10,7 +10,17 @@ from orange.xlsx import Header
 from orange import HOME, now, datetime
 from . import ZTZC, ZHXH
 
-db_config('~/OneDrive/db/params.db')
+# db_config('~/OneDrive/db/params.db')
+
+TingyongKemu = {
+    '710501': '关于停用“7105再贴现及卖出票据”科目的通知',
+    '710502': '关于停用“7105再贴现及卖出票据”科目的通知',
+    '137021': '浙商银办【2018】12号',
+    '137052': '浙商银办【2018】12号',
+    '140075': '浙商银办【2018】12号',
+    '137052': '浙商银办【2018】12号',
+    '137052': '浙商银办【2018】12号',
+}
 
 Headers = [
     Header('机构类型', width=9.88),
@@ -27,44 +37,42 @@ Headers = [
 ]
 
 
-def mb_exists(zh):
-    br, bz, km, xh = zh[:9], zh[9:11], zh[12:18], int(zh[18:21])
-    lx = fetchvalue('select jglx from ggjgm where jgm = ?', [br])
-    if lx:
-        #print(lx)
-        return fetchone(
-            'select jglx,bzh,kmh,zhxx from ggnbzhmb where '
-            'jglx=? and bzh in ("B1","00",?) and kmh=? and zhxx=? ',
-            [lx, bz, km, xh])
-
-
-def clear_nbzh():
-    for jgm, zh, hm, khrq, ye, sbfsr, zhzt in fetch(
-            'select jgm,zh,hm,khrq,ye,sbfsr,zhzt from nbzh '
-            f'where ({ZTZC}) and ye=0 and not km like "7114%"  '
-            'order by zh'):
-        if not mb_exists(zh):
-            print(jgm, zh, hm, khrq, ye, sbfsr, zhzt)
-
-
-def clear_nbzhmb():
+def clear_nbzhmb(begin_date):
     with (HOME / 'OneDrive/工作/当前工作/20190614内部账户模板清理/内部账户模板清理.xlsx').write_xlsx(
             force=True) as book:
         dump_nbzhmb(book)
-        useless_nbzhmb(book)
+        useless_nbzhmb(book, begin_date)
+        export_mb(book)
+        tingyong_mb(book)
 
 
-def useless_nbzhmb(book):
-    '满三年未使用账户'
-    '清理发生日期在两年前的账户'
-    begin_date = f'{now().year - 2:04d}0101'
-    print('开始日期：', begin_date)
+def tingyong_mb(book):
+    data = []
+    for km, bz in TingyongKemu.items():
+        for row in fetch('select * from ggnbzhmb where kmh=?', [km]):
+            data.append([*row, bz])
+    if data:
+        book.add_table('A1', '停用科目', data=data, columns=Headers)
+
+
+def export_mb(book):
+    book.add_table('A1',
+                   '全量模板',
+                   data=fetch('select * from ggnbzhmb '
+                              'order by kmh,zhxx,jglx,bzh'),
+                   columns=Headers[:-1])
+    print('导出全量模板成功')
+
+
+def useless_nbzhmb(book, begin_date):
+    '截止日期后未使用账户'
     useless_data = []
     for zhxh, rq in fetch(
             f'select {ZHXH},max(sbfsr) as zdfsr from nbzh '
             f'where ({ZTZC}) '
             'group by zhxh '
-            'having (zdfsr < ?) and (max(ye)=0.0) '  # 最大的发生日期大于起始日期，最大余额等于0
+            # 最大的发生日期大于起始日期，最大余额等于0
+            'having max(ye)=0.0 and (zdfsr <= ?) '
             'order by zhxh',
         [begin_date]):
         zh, xh = zhxh[:6], int(zhxh[6:])
