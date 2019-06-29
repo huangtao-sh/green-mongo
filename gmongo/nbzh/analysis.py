@@ -75,7 +75,7 @@ def useless_nbzhmb(book, begin_date):
         for row in fetch('select * from ggnbzhmb where kmh=? and zhxx=?',
                          [zh, xh]):
             useless_data.append([*row, bz])
-    book.add_table('A1', '满三年未使用账户', data=useless_data, columns=Headers)
+    book.add_table('A1', '满一年使用账户', data=useless_data, columns=Headers)
     print('生成不再使用模板成功')
 
 
