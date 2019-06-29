@@ -54,11 +54,8 @@ def tingyong_mb(book):
 
 
 def export_mb(book):
-    book.add_table('A1',
-                   '全量模板',
-                   data=fetch('select * from ggnbzhmb '
-                              'order by kmh,zhxx,jglx,bzh'),
-                   columns=Headers[:-1])
+    sql = 'select * from ggnbzhmb order by kmh,zhxx,jglx,bzh'
+    book.add_table('A1', '全量模板', data=fetch(sql), columns=Headers[:-1])
     print('导出全量模板成功')
 
 
