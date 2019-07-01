@@ -92,6 +92,8 @@ def publish_wt():  # 发布履职报告问题
 @loadcheck
 def loaddfyj(filename):
     print(f'导入基准文件：{filename.name}')
+    execute('delete from lzwt')
+    print('清理已导入的数据')
     excludes = set()
     for sheet in filename.worksheets:
         if sheet.name in ('重点问题', '一般问题'):
