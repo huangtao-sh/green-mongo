@@ -83,11 +83,12 @@ def loaddata(date, period, rows):
 
 def loadfiles():
     curqc = (now().add(months=-1)) % "%Q"
-    for file in (ROOT/'分行上报').glob('*.xls?'):
-        try:
-            loadfile(file, curqc=curqc)
-        except Exception as e:
-            print(e)
+    for file in ROOT/'分行上报':
+        if file.lsuffix.startswith('.xls'):
+            try:
+                loadfile(file, curqc=curqc)
+            except Exception as e:
+                print(e)
 
 
 def restorefiles():
