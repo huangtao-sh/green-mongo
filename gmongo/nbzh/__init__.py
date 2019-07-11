@@ -15,9 +15,9 @@ ZHXH = 'substr(zh,13,9) as zhxh'
 
 db_config('params')
 
-headers='账号','机构码','币种','户名','科目','余额方向','余额','切换额','昨日余额','正常利率','罚息利率','浮动系数',\
-    '利息积数','罚息积数','起息日期','开户日期','销户日期','上笔发生日期','明细笔数','账户状态',\
-        '计息标志','收息账号','付息账号','透支额度',"备注"
+headers = '账号', '机构码', '币种', '户名', '科目', '余额方向', '余额', '切换额', '昨日余额', '正常利率', '罚息利率', '浮动系数',\
+    '利息积数', '罚息积数', '起息日期', '开户日期', '销户日期', '上笔发生日期', '明细笔数', '账户状态',\
+    '计息标志', '收息账号', '付息账号', '透支额度', "备注"
 
 begin_date = f'{now().year - 2:04d}1231'
 print('开始日期：', begin_date)
@@ -26,10 +26,11 @@ print('开始日期：', begin_date)
 @arg('-c', '--clear', action='store_true', help='生成清理内部户开立模板清单')
 @arg('-e', '--export', action='store_true', help='生成清理账户文件')
 @arg('ac', nargs='?', help='查询指定账户')
-def main(clear=False, export=False, ac=None):
+@arg('-t', '--tongji', narg='?', dest='tac', metavar='ac', help='统计指定账户的情况')
+def main(clear=False, export=False, ac=None, tac=None):
     if clear:
         from .analysis import clear_nbzhmb
-        clear_nbzhmb()
+        clear_nbzhmb(begin_date)
     if export:
         from .clearnbzh import clear_nbzh
         clear_nbzh(begin_date)
@@ -43,3 +44,5 @@ def main(clear=False, export=False, ac=None):
             data = fetchone('select * from nbzh where zh=?', [ac])
             if data:
                 tprint(zip(headers, data), format_spec={0: '16'})
+    if tac:
+        print(tac)
