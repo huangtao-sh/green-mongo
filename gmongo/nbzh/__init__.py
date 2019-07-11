@@ -26,7 +26,7 @@ print('开始日期：', begin_date)
 @arg('-c', '--clear', action='store_true', help='生成清理内部户开立模板清单')
 @arg('-e', '--export', action='store_true', help='生成清理账户文件')
 @arg('ac', nargs='?', help='查询指定账户')
-@arg('-t', '--tongji', narg='?', dest='tac', metavar='ac', help='统计指定账户的情况')
+@arg('-t', '--tongji', nargs='?', dest='tac', metavar='ac', help='统计指定账户的情况')
 def main(clear=False, export=False, ac=None, tac=None):
     if clear:
         from .analysis import clear_nbzhmb
@@ -45,4 +45,14 @@ def main(clear=False, export=False, ac=None, tac=None):
             if data:
                 tprint(zip(headers, data), format_spec={0: '16'})
     if tac:
-        print(tac)
+        if R / r'\d{9}' == tac:
+            print(*headers, sep='\t')
+            for row in fetch('select b.jglx,a.bz,max(a.sbfsr),max(a.ye) from nbzh a '
+                             'left join ggjbm jg b '
+                             'on a.jgm=b.jgm '
+                             'where substr(zh,13,9)=? '
+                             'group by b.jglx,a.bz ',
+                             [tac]):
+                print(*row, sep='\t')
+        else:
+            print('账号的格式应为999999999')
