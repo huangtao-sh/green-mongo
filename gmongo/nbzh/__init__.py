@@ -49,7 +49,7 @@ def main(clear=False, export=False, ac=None, tac=None):
             print('账号：', tac)
             print('机构类型    币种    最后发生日   最大余额', sep='\t')
             for row in fetch('select b.jglx,a.bz,max(a.sbfsr),max(a.ye) from nbzh a '
-                             'left join ggjbm jg b '
+                             'left join ggjgm jg b '
                              'on a.jgm=b.jgm '
                              'where substr(zh,13,9)=? '
                              'group by b.jglx,a.bz ',
