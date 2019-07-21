@@ -29,7 +29,13 @@ begin_date = f'{now().year - 2:04d}1231'
 @arg('ac', nargs='?', help='查询指定账户')
 @arg('-t', '--tongji', nargs='?', dest='tac', metavar='ac', help='统计指定账户的情况')
 @arg('-v', '--verbose', action='store_true', help='显示详情')
-def main(clear=False, export=False, ac=None, tac=None, verbose=False):
+@arg('-E', '--exportall', action="store_true", help='导出全量模板')
+def main(clear=False,
+         export=False,
+         ac=None,
+         tac=None,
+         verbose=False,
+         exportall=False):
     if verbose:
         set_verbose()
     info(
@@ -39,7 +45,10 @@ def main(clear=False, export=False, ac=None, tac=None, verbose=False):
 
     if clear:
         from .analysis import clear_nbzhmb
-        clear_nbzhmb(begin_date)
+        clear_nbzhmb()
+    if exportall:
+        from .analysis import export_all
+        export_all()
     if export:
         from .clearnbzh import clear_nbzh
         clear_nbzh(begin_date)
