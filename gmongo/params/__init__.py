@@ -7,19 +7,23 @@
 
 from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert, execute,\
     fetch, fetchone, fetchvalue, transaction
-from orange import HOME, Path
+from orange import HOME, Path, now
 from functools import wraps
 
 db_config('params')
 executefile('gmongo', 'sql/params.sql')
 executefile('gmongo', 'sql/nbzh.sql')
 ROOT = HOME / 'OneDrive/工作/参数备份'
+ParamRoot = ROOT.find('运营管理*')
+DefaultPeriod = str(ParamRoot)[-7:]
 
 
 def load_file(path: Path,
               table: str,
+              fields: list = None,
               drop: bool = True,
               proc: callable = None,
+              period: str = DefaultPeriod,
               **kw):
     @loadcheck
     def _(path: Path):
@@ -29,7 +33,10 @@ def load_file(path: Path,
             data = proc(path, **kw)
         else:
             data = path.iter_csv(**kw)
-        insert(table, data)
+        if period:
+            execute('insert or replace into param_period values(?,?,?)',
+                    [table, period, now() % '%F %T'])
+        insert(table, fields=fields, data=data)
         print(f'{path.name} 导入成功')
 
     return _(path)

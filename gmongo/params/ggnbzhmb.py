@@ -9,11 +9,17 @@ from gmongo.params import loadcheck, insert, ROOT, execute, fetch, fetchvalue, t
 from orange import Path, R, extract, arg
 from orange.utils.sqlite import fix_db_name
 
+fields = 'jglx', 'whrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'zhzt', 'jxbz'
+
 
 def loadfile():
     path = ROOT.find('ggnbzhmb.del')
-    return load_file(path, 'ggnbzhmb', drop=True,
-                     encoding='gbk', errors='ignore',
+    return load_file(path,
+                     table='ggnbzhmb',
+                     fields=fields,
+                     drop=True,
+                     encoding='gbk',
+                     errors='ignore',
                      converter={
                          0: str.strip,
                          6: str.strip,
