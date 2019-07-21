@@ -7,8 +7,9 @@
 
 from orange.utils.sqlite import fetch, fetchone, fetchvalue, db_config, execute
 from orange.xlsx import Header
-from orange import HOME, now, datetime
+from orange import HOME, now, datetime, Path
 from . import ZTZC, ZHXH
+from orange.utils.log import info
 
 # db_config('~/OneDrive/db/params.db')
 
@@ -36,25 +37,38 @@ Headers = [
 
 
 def clear_nbzhmb(begin_date):
-    execute(
+    result = execute(
         'update ggnbzhmb set zt=2,memo="已有00模板" '
         'where zt=0 and bz <>"00" and '
         'exists (select jglx from ggnbzhmb b '
         'where ggnbzhmb.jglx=b.jglx and ggnbzhmb.km=b.km and ggnbzhmb.xh=b.xh and b.bz="00") '
     )
-    execute(
+    info('与00模板重复数：%d', result.rowcount)
+    result = execute(
         'update ggnbzhmb set zt=2,memo="已有B1模板" '
         'where zt=0 and bz not in ("00","B1") and '
         'exists (select jglx from ggnbzhmb b '
         'where ggnbzhmb.jglx=b.jglx and ggnbzhmb.km=b.km and ggnbzhmb.xh=b.xh and bz="B1") '
     )
+    info('与B1模板重复数：%d', result.rowcount)
 
     count = fetchvalue('select count(*) from ggnbzhmb where zt=2')
-    with Path('内部账户模板清理.xlsx').write_xlsx(force=True) as book:
-        dump_nbzhmb(book)
-        useless_nbzhmb(book, begin_date)
-        export_mb(book)
-        tingyong_mb(book)
+    if count:
+        with Path('内部账户模板清理.xlsx').write_xlsx(force=True) as book:
+            book.add_table(
+                'A1',
+                '删除模板',
+                data=fetch(
+                    'select jglx,whrq,km,bz,xh,hmgz,hm,tzed,zhzt,jxbz,memo from ggnbzhmb '
+                    'where zt=2 '
+                    'order by km,xh,jglx'),
+                columns=Headers)
+    print(f'导出文件成功，记录数：{count}')
+    return
+    dump_nbzhmb(book)
+    useless_nbzhmb(book, begin_date)
+    export_mb(book)
+    tingyong_mb(book)
 
 
 def tingyong_mb(book):
