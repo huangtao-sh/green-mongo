@@ -119,7 +119,8 @@ def loaddfyj(filename):
             data = sheet._cell_values
             if len(data) > 3 and len(data[2]) == 9:
                 data = tuple(filter(None, map(procline, data[2:])))
-                insert('lzwt', data)
+                if data:
+                    insert('lzwt', data)
     count = fetchvalue('select count(reporter) from lzwt')
     print(f'共导入数据：{count:,d}')
 
