@@ -5,7 +5,8 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-06-29 18:14
 
-from orange.utils.sqlite import fetch, fetchone, fetchvalue, db_config
+import params
+from orange.utils.sqlite import fetch, fetchone, fetchvalue, tran, execute
 from orange.xlsx import Header
 from orange import HOME, now, datetime
 from gmongo.nbzh import ZTZC, ZHXH
@@ -38,6 +39,14 @@ def clear_nbzh(rq=None):
     2、余额为 0 
     3、指定日期之后，无发生
     '''
+    execute('update ggnbzhmb a set zt=2,memo="已有00查模板" '
+            'where zt=0 and bz <>"00" and '
+            'exists (select jglx from ggnbzhmb b '
+            'where a.jglx=b.jglx and a.km=b.km and a.xh=b.xh and b.bz="00" ')
+    count = fetchvalue('select * from ggnbzhmb where zt=2')
+    print(count)
+
+    return
     with (HOME / 'OneDrive/工作/当前工作/20190614内部账户模板清理/内部账户清理.xlsx').write_xlsx(
             force=True) as book:
         book.add_table('A1', '内部账户清理', data=fetch(sql, [rq]), columns=Headers)

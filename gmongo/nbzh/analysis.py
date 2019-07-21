@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-06-27 14:14
 
-from orange.utils.sqlite import fetch, fetchone, fetchvalue, db_config
+from orange.utils.sqlite import fetch, fetchone, fetchvalue, db_config, execute
 from orange.xlsx import Header
 from orange import HOME, now, datetime
 from . import ZTZC, ZHXH
@@ -36,8 +36,21 @@ Headers = [
 
 
 def clear_nbzhmb(begin_date):
-    with (HOME / 'OneDrive/工作/当前工作/20190614内部账户模板清理/内部账户模板清理.xlsx').write_xlsx(
-            force=True) as book:
+    execute(
+        'update ggnbzhmb set zt=2,memo="已有00模板" '
+        'where zt=0 and bz <>"00" and '
+        'exists (select jglx from ggnbzhmb b '
+        'where ggnbzhmb.jglx=b.jglx and ggnbzhmb.km=b.km and ggnbzhmb.xh=b.xh and b.bz="00") '
+    )
+    execute(
+        'update ggnbzhmb set zt=2,memo="已有B1模板" '
+        'where zt=0 and bz not in ("00","B1") and '
+        'exists (select jglx from ggnbzhmb b '
+        'where ggnbzhmb.jglx=b.jglx and ggnbzhmb.km=b.km and ggnbzhmb.xh=b.xh and bz="B1") '
+    )
+
+    count = fetchvalue('select count(*) from ggnbzhmb where zt=2')
+    with Path('内部账户模板清理.xlsx').write_xlsx(force=True) as book:
         dump_nbzhmb(book)
         useless_nbzhmb(book, begin_date)
         export_mb(book)
