@@ -16,10 +16,8 @@ ZHXH = 'substr(zh,13,9) as zhxh'
 
 db_config('params')
 
-headers = '账号', '机构码', '币种', '户名', '科目', '余额方向', '余额', '切换额', '昨日余额', '正常利率', '罚息利率', '浮动系数',\
-    '利息积数', '罚息积数', '起息日期', '开户日期', '销户日期', '上笔发生日期', '明细笔数', '账户状态',\
-    '计息标志', '收息账号', '付息账号', '透支额度', "备注"
-
+headers = '账号', '户名', '余额方向', '余额', '开户日期', '销户日期', '上笔发生日期', '账户状态', '透支额度'
+fields = 'zh,hm,yefx,ye,khrq,xhrq,sbfsr,zhzt,tzed'
 begin_date = f'{now().year - 2:04d}1231'
 #print('开始日期：', begin_date)
 
@@ -54,12 +52,16 @@ def main(clear=False,
         clear_nbzh(begin_date)
     if ac:
         if R / r'\d{9}' == ac:
-            print(*headers, sep='\t')
-            for row in fetch('select * from nbzh where substr(zh,13,9)=?',
-                             [ac]):
-                print(*row, sep='\t')
+            data = fetch(
+                f'select {fields} from nbzh where substr(zh,13,9)=?'
+                'and zhzt like "0%" ', [ac])
+            if data:
+                tprint([headers], format_spec={0: '16'})
+                tprint(data, format_spec={0: '16'})
         elif R / r'\d{22}' == ac:
-            data = fetchone('select * from nbzh where zh=?', [ac])
+            data = fetchone(
+                f'select {fields} from nbzh where zh=? '
+                'and zhzt like "0%" ', [ac])
             if data:
                 tprint(zip(headers, data), format_spec={0: '16'})
     if tac:

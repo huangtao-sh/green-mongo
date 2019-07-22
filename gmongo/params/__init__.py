@@ -40,3 +40,8 @@ def load_file(path: Path,
         print(f'{path.name} 导入成功')
 
     return _(path)
+
+
+def get_param_ver(name):
+    return fetchone('select period,time from param_period where name =?',
+                    [name])
