@@ -35,7 +35,7 @@ def _publish(filename, qc):
         for row in data:
             row.extend([0 if row[1] in hz else 1, qc])
         r = executemany('insert into lzwenti(rpt_branch,rpt_name,content,reply_depart,reply_name,reply,type,period)'
-                        'values(?,?,?,?,?,?,?,?)F', data)
+                        'values(?,?,?,?,?,?,?,?)', data)
         print(f'共导入 {r.rowcount} 条数据')
 
 
