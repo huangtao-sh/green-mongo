@@ -8,6 +8,7 @@
 from . import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction, load_file, HOME
 from orange import Path, R, extract, arg, tprint
 from orange.utils.sqlite import executemany, fetchone
+from orange.xlsx import Header
 
 
 def convert(row):
@@ -183,105 +184,42 @@ def convert_row(row):
 
 
 HEASER = [
-    {
-        'header': '交易名称',
-        'width': 44
-    },
-    {
-        'header': '交易码'
-    },
-    {
-        'header': '交易组'
-    },
-    {
-        'header': '交易组名称',
-        'width': 18.4
-    },
-    {
-        'header': '优先级'
-    },
-    {
-        'header': '网点授权级别',
-        'width': 18.4
-    },
-    {
-        'header': '中心授权级别',
-        'width': 18.4
-    },
-    {
-        'header': '必须网点授权'
-    },
-    {
-        'header': '中心授权机构'
-    },
-    {
-        'header': '必须中心授权'
-    },
-    {
-        'header': '技能级别'
-    },
-    {
-        'header': '现转标志',
-        'width': 22.8
-    },
-    {
-        'header': '是否外包',
-        'width': 13.8
-    },
-    {
-        'header': '大额提示',
-        'width': 13.8
-    },
-    {
-        'header': '是否扫描电子底卡',
-        'width': 13.8
-    },
-    {
-        'header': '是否收手续费',
-        'width': 13.8
-    },
-    {
-        'header': '是否需要后台监测',
-        'width': 13.8
-    },
-    {
-        'header': '事中扫描方式',
-        'width': 13.8
-    },
-    {
-        'header': '补扫的限时时间'
-    },
-    {
-        'header': '是否需要审查',
-        'width': 13.8
-    },
-    {
-        'header': '是否允许抹账',
-        'width': 13.8
-    },
-    {
-        'header': '是否允许超额授权'
-    },
-    {
-        'header': '附加交易组'
-    },
-    {
-        'header': '事后补扫'
-    },
-    {
-        'header': '磁道校验'
-    },
-    {
-        'header': '一级菜单',
-        'width': 16.33
-    },
-    {
-        'header': '二级菜单',
-        'width': 30.67
-    },
+    Header('交易名称', 44),
+    Header('交易码'),
+    Header('交易组'),
+    Header('交易组名称', 18.4),
+    Header('优先级'),
+    Header('网点授权级别', 18.4),
+    Header('中心授权级别', 18.4),
+    Header('必须网点授权'),
+    Header('中心授权机构'),
+    Header('必须中心授权'),
+    Header('技能级别'),
+    Header('现转标志', 22.8),
+    Header('是否外包', 13.8),
+    Header('大额提示', 13.8),
+    Header('是否扫描电子底卡', 13.8),
+    Header('是否收手续费', 13.8),
+    Header('是否需要后台监测', 13.8),
+    Header('事中扫描方式', 13.8),
+    Header('补扫的限时时间'),
+    Header('是否需要审查', 13.8),
+    Header('是否允许抹账', 13.8),
+    Header('是否允许超额授权'),
+    Header('附加交易组'),
+    Header('事后补扫'),
+    Header('磁道校验'),
+    Header('一级菜单', 16.33),
+    Header('二级菜单', 30.67)
 ]
 
 
+@arg('-e', '--export', action='store_true', help='导入参数文件')
+@arg('-j', '--jym', nargs='?', help='查询指定交易码')
+@arg('-z', '--jyz', nargs='?', help='查询指定交易组')
+@arg('-g', '--gw', nargs='?', help='查询指定岗位')
+@arg('-t', '--test', nargs='?', dest='tjym', help='检查指定交易码是否被占用')
+@arg('query', nargs='?', help='查询交易码列表')
 def main(jym=None, gw=None, jyz=None, query=None, tjym=None, export=False):
     if jym:
         row = fetchone(f'{QUERYJYM} where a.jym=?', [jym])
@@ -324,3 +262,17 @@ def main(jym=None, gw=None, jyz=None, query=None, tjym=None, export=False):
                                columns=HEASER)
                 book.add_table("A1", sheet="交易码参数", data=data, columns=HEASER)
             print('导入交易码文件成功！')
+    if query:
+        sql = 'select jym,jymc,jyz,fjjyz from jym'
+        if R / '\d{4}' == query:
+            rows = fetch(f'{sql} where jym={query} order by jym')
+        elif R / '[A-Z]{2}\d{1,3}' / query:
+            rows = fetch(f'{sql} where jyz like "{query}%" order by jym')
+        else:
+            rows = fetch(f'{sql} where jymc like "%{query}%" order by jym')
+        if rows:
+            tprint(rows, format_spec={
+                0: "6",
+                1: '32',
+                2: '8',
+            })

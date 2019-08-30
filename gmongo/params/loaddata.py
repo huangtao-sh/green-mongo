@@ -7,9 +7,13 @@
 
 from gmongo.params import branch, ggnbzhmb
 from gmongo.nbzh.load import loadnbzh
+from gmongo.params import jym
 
 
 def load_files():
     branch.loadfile()  # 导入机构码
     ggnbzhmb.loadfile()  # 导入内部账户模板
     loadnbzh()  # 导入内部账户表
+    jym.loadfile() # 导入交易码参数
+    jym.loadmenu() # 导入交易码菜单
+    jym.loadjyz()  # 导入交易组
