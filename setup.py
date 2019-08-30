@@ -28,6 +28,7 @@ consoles = [
     'lzbg=gmongo.lzbg:lzbg',  # 营业主管履职报告
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
+    'jy=gmongo.params.jym:main' # 交易码
 ]
 
 setup(

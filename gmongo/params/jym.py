@@ -158,7 +158,7 @@ def trans(tp, value):
 
 
 QUERYJYM = (
-    'select a.jym,a.jymc,a.jyz,b.name,a.yxj,a.wdsqjb,zssqjb,wdsq,zssqjg,zssq,jnjb,xzbz,wb,'
+    'select a.jymc,a.jym,a.jyz,b.name,a.yxj,a.wdsqjb,zssqjb,wdsq,zssqjg,zssq,jnjb,xzbz,wb,'
     'dets,dzdk,sxf,htjc,szjd,bssx,sc,mz,cesq,fjjyz,shbs,cdjy,c.yjcd,c.ejcd '
     'from jym a '
     'left join jyz b on a.jyz=b.jyz '
@@ -312,3 +312,15 @@ def main(jym=None, gw=None, jyz=None, query=None, tjym=None, export=False):
                     'select b.jyz,b.name from jyzgw a '
                     'left join jyz b on a.jyz=b.jyz where a.gw=?', [r[0]]):
                 print(*row)
+    if export:
+        data = fetch(f"{QUERYJYM} order by a.jym")
+        if data:
+            period = fetchvalue(
+                'select period from param_period where name="jym" ')
+            with (HOME / f'交易码清单{period}.xlsx').write_xlsx(force=True) as book:
+                book.add_table("A1",
+                               sheet="交易码一览表",
+                               data=[convert_row(x) for x in data],
+                               columns=HEASER)
+                book.add_table("A1", sheet="交易码参数", data=data, columns=HEASER)
+            print('导入交易码文件成功！')
