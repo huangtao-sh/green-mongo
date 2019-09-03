@@ -56,6 +56,7 @@ create table if not exists jyzgw(
     jyz text        -- 交易组
 );
 
+
 CREATE TABLE IF NOT EXISTS jycs(
     jym     text,   --交易码
     jymc    text,   --交易名称
@@ -79,13 +80,14 @@ CREATE TABLE IF NOT EXISTS jycs(
     mz      text,   --抹账
     cesq    text,   --超额授权
     fjjyz   text,   --辅加交易组
-    shbs    text default "TRUE",   --事后补扫
-    cdjy    text default "FALSE",  --磁道校验
+    shbs    text,   --事后补扫
+    cdjy    text,   --磁道校验
     yjcd    text,   --一级菜单
     ejcd    text,   --二级菜单
     operation integer, --操作码 0-新增，1-修改，2-删除
     bz      text,   --备注
-    zt      integer default 0,   --投产标志 0-未投产，1-已投产，2-作废
+    zt      integer default 0,   --状态 0-提出，1-待投产，2-已投产，9-作废
     create_time      text,-- 创建时间
-    validate_time    text-- 投产时间
+    validate_time    text,-- 投产时间
+    primary key(create_time,jym)
 );

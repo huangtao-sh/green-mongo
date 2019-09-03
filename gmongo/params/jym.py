@@ -5,10 +5,17 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-8-30 18:00
 
-from . import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction, load_file, HOME
+from . import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction, load_file, HOME, get_param_ver
 from orange import Path, R, extract, arg, tprint
 from orange.utils.sqlite import executemany, fetchone
 from orange.xlsx import Header
+Version = '0.1'
+
+
+def show_version():
+    print(f'交易码查询程序 Ver {Version}')
+    print(f'当前交易码参数版本：{get_param_ver("jym")[0]}\n')
+
 
 QUERYJYM = (
     'select a.jymc,a.jym,a.jyz,b.name,a.yxj,a.wdsqjb,zssqjb,wdsq,zssqjg,zssq,jnjb,xzbz,wb,'
@@ -50,7 +57,8 @@ Converter = {
 }
 
 
-def convert_row(row):
+def convert_row(row: "iterable") -> list:
+    '对一行为数据进行转换'
     row = list(row)
     for i, d in Converter.items():
         v = row[i]
@@ -93,8 +101,7 @@ def export_jym():
     "导出交易码参数表"
     data = fetch(f"{QUERYJYM} order by a.jym")
     if data:
-        period = fetchvalue(
-            'select period from param_period where name="jym" ')
+        period = get_param_ver('jym')[0]
         with (HOME / f'交易码清单{period}.xlsx').write_xlsx(force=True) as book:
             book.add_table("A1",
                            sheet="交易码一览表",
@@ -110,14 +117,14 @@ def query_jy(query):
     if R / r'\d{4}' == query:
         query_jym(query)
         return
-    elif R / r'[A-Z]{2}\d{1,3}' / query:
+    elif R / r'[A-Z]{2}((\d{3})?[A-Z])?' / query:
         rows = fetch(f'{sql} where jyz like "{query}%" order by jym')
     else:
         rows = fetch(f'{sql} where jymc like "%{query}%" order by jym')
     if rows:
         tprint(rows, format_spec={
             0: "6",
-            1: '32',
+            1: '50',
             2: '8',
         })
 
@@ -168,6 +175,7 @@ def test_jym(jym):
 @arg('-t', '--test', nargs='?', dest='tjym', help='检查指定交易码是否被占用')
 @arg('query', nargs='?', help='查询交易码列表')
 def main(gw=None, jyz=None, query=None, tjym=None, export=False):
+    show_version()
     if tjym:
         test_jym(tjym)
     if jyz:
