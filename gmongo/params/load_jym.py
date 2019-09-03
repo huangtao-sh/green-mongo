@@ -33,9 +33,8 @@ def loadfile():
     return load_file(
         ROOT.find('transactions_output.csv'),
         "jym",
-        fields=
-        "jym,jymc,jyz,yxj,wdsqjb,zssqjb,wdsq,zssqjg,zssq,jnjb,xzbz,wb,dets,dzdk,sxf,htjc,szjd,bssx,sc,mz,cesq,fjjyz"
-        .split(","),
+        fields=("jym,jymc,jyz,yxj,wdsqjb,zssqjb,wdsq,zssqjg,zssq,jnjb,xzbz,wb,"
+                "dets,dzdk,sxf,htjc,szjd,bssx,sc,mz,cesq,fjjyz").split(","),
         encoding='gbk',
         errors='ignore',
         exec=exec,
