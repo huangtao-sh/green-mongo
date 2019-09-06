@@ -9,11 +9,11 @@ from . import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction, 
 from orange import Path, R, extract, arg, tprint
 from orange.utils.sqlite import executemany, fetchone
 from orange.xlsx import Header
-Version = '0.1'
+from gmongo.__version__ import version
 
 
 def show_version():
-    print(f'交易码查询程序 Ver {Version}')
+    print(f'交易码查询程序 Ver {version}')
     print(f'当前交易码参数版本：{get_param_ver("jym")[0]}\n')
 
 
