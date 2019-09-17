@@ -6,7 +6,7 @@
 # 创建：2019-05-14 11:36
 
 from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert, execute,\
-    fetch, fetchone, fetchvalue, transaction
+    fetch, fetchone, fetchvalue, transaction,loadfile
 from orange import HOME, Path, now
 from functools import wraps
 
