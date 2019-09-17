@@ -29,12 +29,9 @@ BranchPattern = R / '(总行|.{2}分行)'
 def get_branches():
     '获取机构对应分行的名称'
     sql = 'select a.jgm,b.mc from ggjgm a left join ggjgm b on a.hzjgm=b.jgm'
+    convert = lambda obj: (obj[0], extract(obj[1], BranchPattern, 1))
     with connect('params') as conn:
-        with closing(conn):
-            return {
-                br: extract(name, BranchPattern, 1)
-                for br, name in conn.execute(sql)
-            }
+        return dict(map(convert, conn.fetch(sql)))
 
 
 @arg('query', help='查询条件')
