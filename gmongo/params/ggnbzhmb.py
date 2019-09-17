@@ -7,7 +7,6 @@
 
 from gmongo.params import loadcheck, insert, ROOT, execute, fetch, fetchvalue, transaction, load_file
 from orange import Path, R, extract, arg
-from orange.utils.sqlite import fix_db_name
 
 fields = 'jglx', 'whrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'zhzt', 'jxbz'
 

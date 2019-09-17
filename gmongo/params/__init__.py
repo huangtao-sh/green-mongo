@@ -9,6 +9,7 @@ from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert
     fetch, fetchone, fetchvalue, transaction,loadfile
 from orange import HOME, Path, now
 from functools import wraps
+from .branch import get_branches
 
 db_config('params')
 executefile('gmongo', 'sql/params.sql')
