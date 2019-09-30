@@ -131,7 +131,7 @@ class LzWenTi(Document):
     def load_file(cls):
         # 从文件中读取收集到的问题
         qc = LzBaogao.cur_qc()
-        fn = ROOT / '一览表'/('营业主管履职报告一览表（%s）.xlsx' % (qc))
+        fn = ROOT / f'一览表/营业主管履职报告一览表（{qc}）.xlsx'
         print('导入文件 %s' % (fn))
         data = fn.sheets(0)[1:]
         data.extend(fn.sheets(1)[1:])
