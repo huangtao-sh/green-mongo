@@ -28,10 +28,13 @@ BranchPattern = R / '(总行|.{2}分行)'
 def get_branches():
     '获取机构对应分行的名称'
     sql = 'select a.jgm,b.mc from ggjgm a left join ggjgm b on a.hzjgm=b.jgm'
-    convert = lambda obj: (obj[0], extract(obj[1], BranchPattern, 1))
+    def convert(obj): return (obj[0], extract(obj[1], BranchPattern, 1))
     conn = connect('~/Onedrive/db/params.db')
     with closing(conn):
-        return dict(map(convert, conn.fetch(sql)))
+        branches = dict(map(convert, conn.fetch(sql)))
+        branches['331000000'] = '总行业务处理中心'
+        branches['331000808'] = '总行营业中心'
+        return branches
 
 
 @arg('query', help='查询条件')
