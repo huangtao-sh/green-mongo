@@ -18,3 +18,11 @@ def branch(jgm: str) -> str:
     if not br or br == '总行':
         br = '总行清算中心'
     return br
+
+
+def split(data: 'iterable', br: int = 0) -> 'iterable':
+    from collections import defaultdict
+    data = defaultdict(lambda: [])
+    for row in data:
+        data[branch(row[br])].append(row)
+    return data.items()
