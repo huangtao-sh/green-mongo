@@ -42,7 +42,7 @@ LoadFiles = (
     (JyJiaoyi, Files.get('transactions_output')),
     (ZhangHu, Files.get('fhnbhzz')),
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
-    (Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
+    #(Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
     (Branch, (ROOT / '分行表').find('分行顺序表.xlsx')),
     (JyGangwei, (ROOT / '岗位与交易组').find('岗位及组*.xls')),
     (EduDengji, (ROOT / '额度登记配置').find('额度登记配置*.xls')),
