@@ -13,7 +13,7 @@ from orange.utils.sqlite import executemany, fetchone
 def convert(row):
     row[0] = row[0].strip()
     row[3] = row[3].strip()
-    row[9] = '%02d' % row[9]
+    row[9] = '%02d' % int(row[9])
     if len(row) < 22:
         row.append(None)
     return row

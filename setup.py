@@ -17,7 +17,8 @@ consoles = [
     # 'fhlz=lvzhi.fhlz:main',                  # 分行运营主管履职报告
     # 'lz=lvzhi:main',                       # 营业主管履职报告 mongo 版的不再使用
     # 'jqb=vacation:Vacation.main',
-    'lxr=params.branch:Contacts.main',  # 查询联系人
+    #'lxr=params.branch:Contacts.main',  # 查询联系人
+    'lxr=gmongo.params.txl:main',  # 查找联系人
     'teller=params.user:Teller.main',  # 柜员表
     'bz=params.bz:GgBzb.main',  # 币种
     'ed=params.dengji:EduDengji.main',  # 额度配置
@@ -28,7 +29,7 @@ consoles = [
     'lzbg=gmongo.lzbg:lzbg',  # 营业主管履职报告
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
-    'jy=gmongo.params.jym:main' # 交易码
+    'jy=gmongo.params.jym:main'  # 交易码
 ]
 
 setup(

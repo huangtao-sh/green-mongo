@@ -8,6 +8,7 @@
 from gmongo.params import branch, ggnbzhmb
 from gmongo.nbzh.load import loadnbzh
 from gmongo.params import load_jym as jym
+from gmongo.params.txl import loadfile as load_txl
 
 
 def load_files():
@@ -17,3 +18,4 @@ def load_files():
     jym.loadfile()  # 导入交易码参数
     jym.loadmenu()  # 导入交易码菜单
     jym.loadjyz()  # 导入交易组
+    load_txl()  # 导入通讯录
