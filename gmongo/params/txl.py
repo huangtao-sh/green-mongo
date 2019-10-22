@@ -8,12 +8,12 @@
 from orange import HOME, arg, R
 from . import load_file, fetch, get_param_ver
 
-path = (HOME / 'OneDrive/工作/参数备份/通讯录').find('通讯录*.xls')
 
-period = path.pname[-10:]
 
 
 def loadfile():
+    path = (HOME / 'OneDrive/工作/参数备份/通讯录').find('通讯录*.xls')
+    period = path.pname[-10:]
     reader = lambda path: path.sheets(0)[1:]
     return load_file(path, 'txl', proc=reader, period=period)
 
