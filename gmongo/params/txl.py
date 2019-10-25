@@ -33,4 +33,5 @@ def main(query):
     else:
         sql = f'select * from txl where name like "%{query}%" or br like "%{query}%"'
     for r in fetch(sql):
-        tprint(zip(header, r), {0: '20'})
+        tprint(zip(header, r), {0: '10'})
+        print('\n')
