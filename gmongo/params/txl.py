@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-10-20 20:23
 
-from orange import HOME, arg, R
+from orange import HOME, arg, R, tprint
 from . import load_file, fetch, get_param_ver
 
 
@@ -18,6 +18,7 @@ def loadfile():
 
 @arg('query', help='输入查询条件')
 def main(query):
+    header='机构','部门','姓名','职务','办公电话','传真','手机','电子邮件'
     ver = get_param_ver('txl')
     ver = ver and ver[0]
     print('Version:', ver)
@@ -32,4 +33,4 @@ def main(query):
     else:
         sql = f'select * from txl where name like "%{query}%" or br like "%{query}%"'
     for r in fetch(sql):
-        print(*r)
+        tprint(zip(header, r), {0: '20'})
