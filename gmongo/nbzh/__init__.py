@@ -69,11 +69,8 @@ def main(clear=False,
             print('账号：', tac)
             print('机构类型    币种    最后发生日   最大余额', sep='\t')
             for row in fetch(
-                    'select b.jglx,a.bz,max(a.sbfsr),max(a.ye) from nbzh a '
-                    'left join ggjgm b '
-                    'on a.jgm = b.jgm '
-                    'where substr(zh,13,9)=? '
-                    'group by b.jglx,a.bz ', [tac]):
+                ('select jglx,bz,sbfsr,ye from nbzhhz where km=? and xh=? '
+                 'order by jglx,bz'), [tac[:6], int(tac[6:])]):
                 print(*row, sep='\t')
         else:
             print('账号的格式应为999999999')
