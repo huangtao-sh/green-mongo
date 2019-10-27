@@ -6,7 +6,7 @@
 # 创建：2019-05-14 11:36
 
 from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert, execute,\
-    fetch, fetchone, fetchvalue, transaction,loadfile
+    fetch, fetchone, fetchvalue, transaction,loadfile,executescript
 from orange import HOME, Path, now
 from functools import wraps
 from .branch import get_branches
@@ -15,7 +15,7 @@ db_config('params')
 executefile('gmongo', 'sql/params.sql')
 executefile('gmongo', 'sql/nbzh.sql')
 executefile('gmongo', 'sql/jym.sql')
-executefile('gmongo','sql/txl.sql')  # 通讯录
+executefile('gmongo', 'sql/txl.sql')  # 通讯录
 ROOT = HOME / 'OneDrive/工作/参数备份'
 ParamRoot = ROOT.find('运营管理*')
 DefaultPeriod = str(ParamRoot)[-7:]

@@ -11,9 +11,7 @@ from .utils import checkload, procdata, loadcheck
 from orange.utils.sqlite import db_config, execute, executemany, executescript, executefile,\
     find, findone, findvalue, trans, transaction, insert
 
-
 executetrans = transaction
-
 
 WORKPATH = Path('~/Documents/工作')
 

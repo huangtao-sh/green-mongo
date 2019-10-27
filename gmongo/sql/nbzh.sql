@@ -49,3 +49,12 @@ jxbz char 2 N.N 计息标志
         tzed real,  -- 透支额度
         memo text -- 备注
 );
+
+create table if not exists nbzhhz (
+        jglx    text,   -- 机构类型
+        bz      text,   -- 币种
+        km      text,   -- 科目
+        xh      int,    -- 序号
+        ye      real,   -- 总余额
+        sbfsr   text    -- 最近的上笔发生额
+    )
