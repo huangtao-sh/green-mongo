@@ -68,9 +68,11 @@ def main(clear=False,
         if R / r'\d{9}' == tac:
             print('账号：', tac)
             print('机构类型    币种    最后发生日   最大余额', sep='\t')
-            for row in fetch(
-                ('select jglx,bz,sbfsr,ye from nbzhhz where km=? and xh=? '
-                 'order by jglx,bz'), [tac[:6], int(tac[6:])]):
-                print(*row, sep='\t')
+            tprint(
+                fetch(
+                    ('select jglx,bz,sbfsr,ye from nbzhhz where km=? and xh=? '
+                     'order by jglx,bz'), [tac[:6], int(tac[6:])]),
+                {3: '13,.2f'},sep='\t')
+
         else:
             print('账号的格式应为999999999')
