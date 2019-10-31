@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-06-27 08:59
 # 修改：使用load_file 来导入文件
-from orange import HOME
+from orange import HOME, R
 from gmongo.params import load_file, transaction, executescript
 
 
@@ -28,3 +28,34 @@ def create_hz():
         'where a.zhzt like "0%" '
         'group by b.jglx,a.km,a.bz,xxh;')
     print('创建内部账户统计表成功！')
+
+
+KEMU = R / r'(?P<_id>\d{4,6})\s*(?P<name>\w*)'
+BLANKS = R / r'第.章。*', R / r'本科目为一级科目.*'
+AcPattern = R / r'\d{1,6}'
+
+
+def proctxt(path):
+    data = {}
+    kemu = None
+    for line in path.lines:
+        line = line.strip()
+        if any([blank.match(line) for blank in BLANKS]):
+            continue
+        elif KEMU.match(line):
+            kemu = KEMU.match(line).groupdict()
+            description = []
+            data[kemu['_id']] = [kemu['_id'], kemu['name'], description]
+        else:
+            if kemu:
+                description.append(line)
+    for km, name, desc in data.values():
+        yield km, name, "\n".join(desc)
+
+
+def loadkemu():
+    path = (HOME / 'OneDrive/工作/参数备份/科目说明').find('会计科目说明*.txt')
+    return load_file(path, 'kemu', proc=proctxt, period=path.pname[-6:])
+
+
+loadkemu()

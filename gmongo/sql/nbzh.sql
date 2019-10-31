@@ -57,4 +57,10 @@ create table if not exists nbzhhz (
         xh      int,    -- 序号
         ye      real,   -- 总余额
         sbfsr   text    -- 最近的上笔发生额
-    )
+    );
+
+create table if not exists kemu(
+        km      text primary key,  -- 科目
+        name    text,              -- 名称
+        description text           -- 说明
+);
