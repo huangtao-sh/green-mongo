@@ -16,7 +16,15 @@ def main(query):
     ver = get_param_ver('kemu')[0]
     print('程序版本：', version)
     print('数据版本：', ver, end='\n\n')
-    if R / r'\d{6}' == query or R / r'\d{4}' == query:
+    if R / r'\d{4}' == query:
+        data = fetchone('select * from kemu where km=?', [query])
+        if data:
+            print('%s\t%s\n%s' % (data))
+            print('\n子科目列表')
+            for row in fetch(
+                    f'select km,name from kemu where km like "{query}__" order by km'):
+                print(*row, sep='\t')
+    elif R / r'\d{6}' == query:
         data = fetchone('select * from kemu where km=?', [query])
         if data:
             print('%s\t%s\n%s' % (data))

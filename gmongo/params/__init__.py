@@ -14,7 +14,6 @@ from .branch import get_branches
 db_config('params')
 sqlfiles = ('params', 'nbzh', 'jym', 'txl', 'teller')
 for file in sqlfiles:
-    print(f'sql/{file}.sql')
     executefile('gmongo', f'sql/{file}.sql')
 ROOT = HOME / 'OneDrive/工作/参数备份'
 ParamRoot = ROOT.find('运营管理*')
