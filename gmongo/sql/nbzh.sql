@@ -64,3 +64,4 @@ create table if not exists kemu(
         name    text,              -- 名称
         description text           -- 说明
 );
+

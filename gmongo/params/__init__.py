@@ -12,10 +12,10 @@ from functools import wraps
 from .branch import get_branches
 
 db_config('params')
-executefile('gmongo', 'sql/params.sql')
-executefile('gmongo', 'sql/nbzh.sql')
-executefile('gmongo', 'sql/jym.sql')
-executefile('gmongo', 'sql/txl.sql')  # 通讯录
+sqlfiles = ('params', 'nbzh', 'jym', 'txl', 'teller')
+for file in sqlfiles:
+    print(f'sql/{file}.sql')
+    executefile('gmongo', f'sql/{file}.sql')
 ROOT = HOME / 'OneDrive/工作/参数备份'
 ParamRoot = ROOT.find('运营管理*')
 DefaultPeriod = str(ParamRoot)[-7:]
