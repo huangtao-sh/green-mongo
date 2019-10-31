@@ -55,6 +55,7 @@ create table if not exists nbzhhz (
         bz      text,   -- 币种
         km      text,   -- 科目
         xh      int,    -- 序号
+        hm      text,   -- 户名
         ye      real,   -- 总余额
         sbfsr   text    -- 最近的上笔发生额
     );

@@ -22,7 +22,7 @@ def create_hz():
     executescript(
         'delete from nbzhhz;'
         'insert into nbzhhz '
-        'select b.jglx,a.bz,a.km,cast(substr(a.zh,19,3)as int) as xxh,sum(abs(a.ye)), '
+        'select b.jglx,a.bz,a.km,cast(substr(a.zh,19,3)as int) as xxh,a.hm,sum(abs(a.ye)), '
         'max(a.sbfsr) from nbzh a '
         'left join ggjgm b on a.jgm=b.jgm '
         'where a.zhzt like "0%" '
