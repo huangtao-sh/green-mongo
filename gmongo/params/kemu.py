@@ -15,7 +15,7 @@ from gmongo.__version__ import version
 def main(query):
     ver = get_param_ver('kemu')[0]
     print('程序版本：', version)
-    print('数据版本：', ver)
+    print('数据版本：', ver, end='\n\n')
     if R / r'\d{6}' == query or R / r'\d{4}' == query:
         data = fetchone('select * from kemu where km=?', [query])
         if data:
