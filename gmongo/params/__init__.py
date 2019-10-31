@@ -20,6 +20,13 @@ ParamRoot = ROOT.find('运营管理*')
 DefaultPeriod = str(ParamRoot)[-7:]
 
 
+def show_version(category=None):
+    from gmongo.__version__ import version
+    print('gmongo', version)
+    if category:
+        print('数据版本', get_param_ver(category)[0])
+
+
 def load_file(path: Path,
               table: str,
               fields: list = None,
