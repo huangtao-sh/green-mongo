@@ -5,8 +5,9 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-10-31 14:37
 
-from gmongo.params import load_file, ROOT, fetchone, fetch
+from gmongo.params import load_file, ROOT, fetchone, fetch, get_param_ver
 from orange import R, arg, tprint
+from gmongo.__version__ import version
 
 
 def read(path):
@@ -26,15 +27,25 @@ def load_teller():
 def show_teller(sql, arg):
     header = '柜员号，姓名，电话，柜员级别，柜组，机构号，员工号，岗位，执行交易组，转账限额，现金限额，认证类型，状态，屏蔽交易，岗位性质，启用日期，停用日期，交易币种，发起交易组，证件种类，证件号码'.split(
         '，')
-    print(sql)
     for tlr in fetch(sql, arg):
         tprint(zip(header, tlr), {0: '15'})
         print()
 
 
+def list_teller(cond, arg=[]):
+    for row in fetch(f'select id,name,userid,branch from teller where {cond}',
+                     arg):
+        print(*row)
+
+
 @arg('query', help='查询条件')
 def main(query=None):
+    ver = get_param_ver('teller')[0]
+    print('程序版本：', version)
+    print('数据版本：', ver, end='\n\n')
     if R / r'\d{5}' == query:
         show_teller('select * from teller where id=?', [query])
-    elif R / r'[A-Z]{1,2}\d{4}'==query:
-        show_teller('select * from teller where userid=?', [query])
+    elif R / r'[A-Z]{1,2}\d{4}' == query:
+        list_teller('userid=?', [query])
+    else:
+        list_teller(f'name like "{query}%"')
