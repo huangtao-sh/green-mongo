@@ -8,7 +8,7 @@ from orange import setup
 
 consoles = [
     'jym=trans:JyJiaoyi.main',  # 交易码表
-    'jycs=trans.jycs:main',  # 交易码参数
+    'jycs=trans.jycs:PmJiaoyi.main',  # 交易码参数
     'sjdr=params.sjdr:sjdr',  # 数据导入
     #'jgm=params.jgm:GgJgm.main',             # 机构码表
     'jgm=gmongo.params.branch:main',  # 机构码
@@ -30,7 +30,7 @@ consoles = [
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
     'jy=gmongo.params.jym:main',  # 交易码
-    'tlr=gmongo.params.teller:main' # 柜员表
+    'tlr=gmongo.params.teller:main'  # 柜员表
 ]
 
 setup(

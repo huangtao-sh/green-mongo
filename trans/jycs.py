@@ -13,6 +13,10 @@ from trans.jy import JyJiaoyi, FORMAT
 from orange.xlsx import Header
 
 profile = Shadow.read('jycs') or {}
+Widths = [
+    40, 9, 9, 27, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+    9, 17, 21, 20, 10, 10, 0.01
+]
 
 
 def save_profile():
@@ -29,6 +33,13 @@ def itos(length=4):
         return f'%0{length}d' % (int(s))
 
     return _
+
+
+def dt(s):
+    try:
+        return datetime(s) % '%F'
+    except:
+        pass
 
 
 def bool_(s):
@@ -74,20 +85,6 @@ JYSX = {
 }
 
 
-@arg('-u', '--update', action='store_true', help='更新参数表')
-@arg('-t', '--touchan', nargs='?', help='投产管理')
-@arg('-n', '--new', action='store_true', help='新增交易码')
-@arg('-d', '--delete', action='store_true', help='删除交易码')
-@arg('-m', '--modify', action='store_true', help='修改交易码')
-@arg('-e', '--export', action='store_true', help='导出交易参数')
-@arg('-v', '--valid', action='store_true', help='生效')
-def main(**option):
-    if option['update']:
-        PmJiaoyi.update_()
-    if option['touchan']:
-        PmJiaoyi.touchan(option['touchan'])
-
-
 def confirm(prompt):
     s = input(prompt, ',请确认? Yes or No')
     return s in ('Y', 'y', 'yes', 'Yes')
@@ -98,10 +95,10 @@ class PmJiaoyi(Document):
     # 交易码，交易名称，交易组，优先级，网点授权级别，中心授权级别，网点授权标志，中心授权机构，中心授权标志，
     # 技能级别，现转标志，外包，大额提示，电子底卡，手续费，后台监测，事中扫描，补扫时限，审查，抹账，
     # 辅助交易组，事后补扫，磁道校验，一级菜单，二级菜单，建立时间，投产时间
-    _projects = 'lb', 'jymc', 'jym', 'jyz','jyzm', 'yxj', 'wdsqjb', 'zxsqjb',\
-        'bxwdsq', 'zxsqjg', 'bxzxsq', 'jnjb', 'xzbz', 'wb',\
-        'dets', 'dzdk', 'sxf', 'htjc', 'jdfs', 'bssx', 'sc', 'mz', 'cesq', 'fjjyz',\
-        'shbs', 'cdjy', 'yjcd', 'ejcd', 'tcrq','cjsj', 'tcsj', 'bz'
+    _projects = ('lb', 'jymc', 'jym', 'jyz', 'jyzm', 'yxj', 'wdsqjb', 'zxsqjb',
+                 'bxwdsq', 'zxsqjg', 'bxzxsq', 'jnjb', 'xzbz', 'wb', 'dets',
+                 'dzdk', 'sxf', 'htjc', 'jdfs', 'bssx', 'sc', 'mz', 'cesq',
+                 'fjjyz', 'shbs', 'cdjy', 'yjcd', 'ejcd', 'bz', 'cjrq', 'tcrq')
 
     @classmethod
     def update_(cls):
@@ -116,21 +113,23 @@ class PmJiaoyi(Document):
     def load(cls):
         data = path.sheets('新增')
         header = data[0]
-        if (not profile.get('header') and len(header) == 29) or True:  # 保存文件头
+        if (not profile.get('header')
+                and len(header) == len(cls._projects)) or True:  # 保存文件头
             profile['header'] = header
             save_profile()
             print('保存表头成功！')
         for row in Data(data[1:],
-                        filter=lambda row: bool(row[2]),
+                        filter=lambda row: bool(row[1]),
                         converter={
-                            2: itos(4),
-                            5: itos(2),
+                            1: itos(4),
+                            4: itos(2),
+                            5: itos(1),
                             6: itos(1),
-                            7: itos(1),
-                            8: bool_,
-                            9: itos(1),
-                            10: bool_,
-                            11: itos(2),
+                            7: bool_,
+                            8: itos(1),
+                            9: bool_,
+                            10: itos(2),
+                            12: itos(1),
                             13: itos(1),
                             14: itos(1),
                             15: itos(1),
@@ -139,18 +138,22 @@ class PmJiaoyi(Document):
                             18: itos(1),
                             19: itos(1),
                             20: itos(1),
-                            21: itos(1),
-                            22: bool_,
+                            21: bool_,
+                            23: bool_,
                             24: bool_,
-                            25: bool_,
+                            -3: dt,
+                            -2: dt
                         }):
-            _id = row[0]
-            row[0] = 0
-            obj = dict(zip(cls._projects, row))
-            if JyJiaoyi.objects.get(row[2]):
-                cls.objects.filter((P.jym == row[2])
-                                   & (P.lb == 0)).update_one(ytc=True)
-                print(f'交易码： {row[2]} 已投产，忽略')
+            _id = row[-1]
+            fields = [*cls._projects[1:], '_id']
+            obj = dict(zip(fields, row))
+            if JyJiaoyi.objects.get(row[1]):
+                cls.objects.filter((P.jym == row[1])
+                                   & (P.lb == 0)
+                                   & ((P.tcrq.exists(False))
+                                      | (P.tcrq >= datetime.now() % '%F'))
+                                   ).update_one(ytc=True)
+                print(f'交易码： {row[1]} 已投产，忽略')
             elif _id:
                 cls.objects.filter(P._id == _id).upsert_one(**obj)
             else:
@@ -159,16 +162,11 @@ class PmJiaoyi(Document):
 
     @classmethod
     def dump(cls):
-        data=cls.objects.filter((P.lb==0) ).scalar('_id','jymc', 'jym', 'jyz','jyzm', 'yxj', 'wdsqjb', 'zxsqjb',\
-        'bxwdsq', 'zxsqjg', 'bxzxsq', 'jnjb', 'xzbz', 'wb',\
-        'dets', 'dzdk', 'sxf', 'htjc', 'jdfs', 'bssx', 'sc', 'mz', 'cesq', 'fjjyz',\
-        'shbs', 'cdjy', 'yjcd', 'ejcd','cjrq','bz','bz','cjrq','tcrq')
+        fields = [*cls._projects[1:], '_id']
+        data = cls.objects.filter((P.lb == 0)
+                                  & (P.ytc.exists(False))).scalar(fields)
         header = profile['header']
-        widths = [
-            0.01, 40, 9, 9, 27, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-            9, 9, 9, 9, 9, 17, 21, 17, 20, 15, 15
-        ]
-        Headers = [Header(h, w) for h, w in zip(header, widths)]
+        Headers = [Header(h, w) for h, w in zip(header, Widths)]
         data = map(lambda x: [str(x[0]), *x[1:]], data)
         with path.write_xlsx(force=True) as book:
             book.add_table('A1', '新增', data=data, columns=Headers)
@@ -246,3 +244,21 @@ class PmJiaoyi(Document):
                 obj.pop('yjcd')
                 obj.pop('ejcd')
                 cls.objects.filter(P.jym == jym).upsert_one(**obj)
+
+    @classmethod
+    @arg('-u', '--update', action='store_true', help='更新参数表')
+    @arg('-t', '--touchan', nargs='?', help='投产管理')
+    @arg('-n', '--new', action='store_true', help='新增交易码')
+    @arg('-d', '--delete', action='store_true', help='删除交易码')
+    @arg('-m', '--modify', action='store_true', help='修改交易码')
+    @arg('-e', '--export', action='store_true', help='导出交易参数')
+    @arg('-v', '--valid', action='store_true', help='生效')
+    def main(cls, **option):
+        from gmongo.__version__ import version
+        print('gmongo version:', version)
+        if option['update']:
+            cls.update_()
+        if option['touchan']:
+            cls.touchan(option['touchan'])
+        if option['export']:
+            cls.export_jymcs()
