@@ -9,19 +9,26 @@ from orange import R, datetime, arg, now
 from itertools import cycle
 from glemon import Document, P, enlist
 
-YEAR = R/r'.*?(\d{4})年'
-Pattern = R/r'\s*(?P<xh>.*?)、(?P<name>.*?)：(?P<fj>.*?)。((?P<sb>.*?)。)?\s*'
+YEAR = R / r'.*?(\d{4})年'
+Pattern = R / r'\s*(?P<xh>.*?)、(?P<name>.*?)：(?P<fj>.*?)。((?P<sb>.*?)。)?\s*'
 Rq = R / (r'((?P<y1>\d{4})年)?(?P<m1>\d{1,2})月(?P<d1>\d{1,2})日'
           r'(?P<flag>至)?'
           r'((((?P<y2>\d{4})年)?(?P<m2>\d{1,2})月)?(?P<d2>\d{1,2})日)?')
 WEEKDAY = {7: "星期日", 6: '星期六'}
 
-HEADERS = [{'header': '日期', },
-           {'header': '假期标志', },
-           {'header': '假期属性', },
-           {'header': '备注', },
-           {'header': 'AB户标志', },
-           {'header': '一户通标志', }]
+HEADERS = [{
+    'header': '日期',
+}, {
+    'header': '假期标志',
+}, {
+    'header': '假期属性',
+}, {
+    'header': '备注',
+}, {
+    'header': 'AB户标志',
+}, {
+    'header': '一户通标志',
+}]
 
 
 def parsedate(s, year):
@@ -34,7 +41,7 @@ def parsedate(s, year):
         d1 = datetime("-".join([y1, m1, d1]))
         if flag:
             d2 = datetime("-".join([y2, m2 or m1, d2]))
-            yield from d1.iter(d2+1)
+            yield from d1.iter(d2 + 1)
         else:
             yield d1
 
@@ -44,8 +51,19 @@ class Holiday(Document):
 
     @classmethod
     @arg('-f', '--fetch', action='store_true', help='从网站获取假期表')
-    @arg('-e', '--export', dest='begindate', default='noset', nargs='?', help='显示假期表')
-    @arg('-s', '--show', dest='year', default='noset', nargs='?', help='显示假期安排')
+    @arg('-e',
+         '--export',
+         dest='begindate',
+         default='noset',
+         nargs='?',
+         help='显示假期表')
+    @arg('-s',
+         '--show',
+         dest='year',
+         default='noset',
+         nargs='?',
+         help='显示假期安排')
+    @arg('-m', '--mailto', action='store_true', help='邮件发送交易码参数')
     def main(cls, **options):
         if options.get('fetch'):
             from .fetch import FetchVacation
@@ -56,6 +74,8 @@ class Holiday(Document):
         year = options.get('year')
         if year != 'noset':
             cls.show(year)
+        if options.get('mailto'):
+            cls.mailto()
 
     @classmethod
     def show(cls, year):
@@ -113,7 +133,7 @@ class Holiday(Document):
         data = []
         begin = datetime(f'{year}-1-1')
         for d in begin.iter(begin.add(years=years)):
-            memo = holidays.get(d)or WEEKDAY.get(d.isoweekday())
+            memo = holidays.get(d) or WEEKDAY.get(d.isoweekday())
             if not memo:
                 flag, sx, memo = '0', '0', ''
             elif memo.startswith('星期') and d in workdays:
@@ -133,12 +153,40 @@ class Holiday(Document):
     @classmethod
     def export(cls, begindate):
         from orange.xlsx import Book
-        begindate = datetime(begindate or now()+5) % '%Y%m%d'
+        begindate = datetime(begindate or now() + 5) % '%Y%m%d'
         data = cls.iter(begindate)
         data = [x for x in data if x[0] >= begindate]
         if data:
             fn = '假期参数表%s.xlsx' % (begindate)
             with Book(fn) as rpt:
-                rpt.add_table('A1', sheet='假期参数表', columns=HEADERS,
+                rpt.add_table('A1',
+                              sheet='假期参数表',
+                              columns=HEADERS,
                               autofilter=False,
                               data=data)
+
+    @classmethod
+    def mailto(cls):
+        from orange.xlsx import Book
+        from params.mail import Mail
+        begindate = datetime(now() + 5) % '%Y%m%d'
+        data = cls.iter(begindate)
+        data = [x for x in data if x[0] >= begindate]
+        if data:
+            filename = '假期参数表%s.xlsx' % (begindate)
+
+            def writer(fn):
+                with Book(fn) as rpt:
+                    rpt.add_table('A1',
+                                  sheet='假期参数表',
+                                  columns=HEADERS,
+                                  autofilter=False,
+                                  data=data)
+
+            mail = Mail(sender='hunto@163.com',
+                        to='huang.t@live.cn',
+                        subject='假期表参数',
+                        body='假期表参数，请审阅！')
+            mail.attach(filename, writer=writer)
+            mail.post()
+            print('发送邮件成功！')
