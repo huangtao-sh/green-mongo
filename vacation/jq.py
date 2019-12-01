@@ -184,7 +184,7 @@ class Holiday(Document):
                                   data=data)
 
             mail = Mail(sender='hunto@163.com',
-                        to='huang.t@live.cn',
+                        to='hunto@163.com',
                         subject='假期表参数',
                         body='假期表参数，请审阅！')
             mail.attach(filename, writer=writer)
