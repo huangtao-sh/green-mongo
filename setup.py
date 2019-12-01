@@ -30,7 +30,8 @@ consoles = [
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
     'jy=gmongo.params.jym:main',  # 交易码
-    'tlr=gmongo.params.teller:main'  # 柜员表
+    'tlr=gmongo.params.teller:main',  # 柜员表
+    'mconf=params.mail:config_mail',  # 配置邮箱服务器
 ]
 
 setup(

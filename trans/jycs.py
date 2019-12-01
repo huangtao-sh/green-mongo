@@ -90,6 +90,20 @@ def confirm(prompt):
     return s in ('Y', 'y', 'yes', 'Yes')
 
 
+HD_Header = (Header('交易名称', 40), Header('交易码', 10), Header('总行审查', 10),
+             Header('分行审查', 10), Header('流水勾对', 10))
+JX_JYM_Headers = (Header('交易名称',
+                         40), Header('交易码',
+                                     10), Header('交易类型\n（内部/外部/其他）', 35))
+JX_ZSXS_Headers = (Header('交易名称', 40), Header('交易码', 10), Header('折算系数', 8))
+
+JX_Header = '交易名称	交易码	账户行打印	附加要素补录	附加要素补录复核	权限管理岗(打印)	后台权限管理授权	后台权限管理录入	后台权限管理审查	后台录入A	后台录入B	后台录入C	后台验印	前台异机授权	业务监测岗	核算中心退票通知	后台授权	同城退票确认	开户网点退票确认录入	客户信息补录	异常授权岗	异常处理岗	退回交易	前台录入A	前台录入B	通知开户网点	返回前台	二维码打印	回单打印	网点打印	核算中心打印	凭证管理	核算中心退票录入	交易发起岗	审查岗（比对）复核	审查岗(比对)	前台授权	数据变更发起岗	数据变更复核岗	放款受理岗	放款审核岗	放款核准岗	放款复核岗	验票与保管岗	辅助录入岗	审查岗	信用卡审核岗'.split(
+    '\t')
+JX_Widths = [10] * len(JX_Header)
+JX_Widths[0] = 40
+JX_HJ_Headers = [Header(h, w) for h, w in zip(JX_Header, JX_Widths)]
+
+
 class PmJiaoyi(Document):
     # 类别：0-新增，1-修改，2-删除
     # 交易码，交易名称，交易组，优先级，网点授权级别，中心授权级别，网点授权标志，中心授权机构，中心授权标志，
@@ -199,9 +213,50 @@ class PmJiaoyi(Document):
                 print('列表显示待投产交易')
 
     @classmethod
-    def export(cls):
-        # for obj in cls.objects((P.tcsj==None)or(P.tcsj>)
-        pass
+    def export_jymcs(cls):
+        tcrq = tuple(
+            cls.objects.filter(P.tcrq >= datetime.now() % '%F').order_by(
+                P.tcrq).limit(1).scalar('tcrq'))
+        if tcrq:
+            tcrq = tcrq[0]
+            print('当前投产日期：', tcrq)
+            data = tuple(
+                cls.objects.filter((P.tcrq == tcrq) & (P.lb == 0)).scalar(
+                    cls._projects[1:26]))
+            header = profile['header'][:25]
+            JY_Headers = [Header(h, w) for h, w in zip(header, Widths)]
+            hd_data = [[*row[:2], None, None, None] for row in data]
+            jx_data = hd_data = [[*row[:2], None] for row in data]
+            zsxs_data = hd_data = [[*row[:2], 1] for row in data]
+            jx_hj = [[
+                *row[:2], 0, 0.63, 0.63, 0.5, 0.8, 0.8, 0.8, 0.55, 0.55, 0.55,
+                0.5, 0.8, 0.4, 0.5, 0.75, 0.5, 0.5, 0.75, 0.63, 0.63, 0, 0.8,
+                0.8, 0.5, 0, 0, 0, 0.1, 0.1, 0.67, 0.5, 1, 0.63, 0.63, 0.8, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0
+            ] for row in jx_data]
+            with (ROOT / f'交易码参数表{tcrq}.xlsx').write_xlsx(force=True) as book:
+                book.add_table('A1', '新增交易码', data=data, columns=JY_Headers)
+                book.add_table('A1', '事后监督参数', data=hd_data, columns=HD_Header)
+                book.add_table('A1',
+                               '绩效-系统交易码',
+                               data=jx_data,
+                               columns=JX_JYM_Headers)
+                book.add_table('A1',
+                               '绩效-机构交易折算系数',
+                               data=zsxs_data,
+                               columns=JX_ZSXS_Headers)
+                book.add_table('A1',
+                               '绩效-柜员交易折算系数',
+                               data=zsxs_data,
+                               columns=JX_ZSXS_Headers)
+                book.add_table('A1',
+                               '绩效-交易环节折算系数',
+                               data=jx_hj,
+                               columns=JX_HJ_Headers)
+                print('导出交易码参数成功')
+
+        else:
+            print('无待投产内容')
 
     @classmethod
     def del__(cls, objs):
