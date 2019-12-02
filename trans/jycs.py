@@ -157,11 +157,11 @@ class PmJiaoyi(Document):
                             24: bool_,
                             -3: dt,
                             -2: dt
-                        }):
+        }):
             _id = row[-1]
             fields = cls._projects[1:]
             obj = dict(zip(fields, row))
-            obj['lb']=0
+            obj['lb'] = 0
             if JyJiaoyi.objects.get(row[1]):
                 cls.objects.filter((P.jym == row[1])
                                    & (P.lb == 0)
@@ -179,7 +179,8 @@ class PmJiaoyi(Document):
     def dump(cls):
         fields = [*cls._projects[1:], '_id']
         data = cls.objects.filter((P.lb == 0)
-                                  & (P.ytc.exists(False))).scalar(fields)
+                                  & (P.ytc.exists(False))
+                                  & ((P.tcrq == "") or P.tcrq >= datetime.now() % "%F")).scalar(fields)
         header = profile['header']
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
         data = map(lambda x: [*x[:-1], str(x[-1])], data)
