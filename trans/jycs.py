@@ -159,8 +159,9 @@ class PmJiaoyi(Document):
                             -2: dt
                         }):
             _id = row[-1]
-            fields = [*cls._projects[1:], '_id']
+            fields = cls._projects[1:]
             obj = dict(zip(fields, row))
+            obj['lb']=0
             if JyJiaoyi.objects.get(row[1]):
                 cls.objects.filter((P.jym == row[1])
                                    & (P.lb == 0)
@@ -181,7 +182,7 @@ class PmJiaoyi(Document):
                                   & (P.ytc.exists(False))).scalar(fields)
         header = profile['header']
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
-        data = map(lambda x: [str(x[0]), *x[1:]], data)
+        data = map(lambda x: [*x[:-1], str(x[-1])], data)
         with path.write_xlsx(force=True) as book:
             book.add_table('A1', '新增', data=data, columns=Headers)
             print('导出文件成功！')
