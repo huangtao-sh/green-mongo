@@ -180,7 +180,7 @@ class PmJiaoyi(Document):
         fields = [*cls._projects[1:], '_id']
         data = cls.objects.filter((P.lb == 0)
                                   & (P.ytc.exists(False))
-                                  & ((P.tcrq == "") or P.tcrq >= datetime.now() % "%F")).scalar(fields)
+                                  & ((P.tcrq == None) or P.tcrq >= datetime.now() % "%F")).scalar(fields)
         header = profile['header']
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
         data = map(lambda x: [*x[:-1], str(x[-1])], data)
