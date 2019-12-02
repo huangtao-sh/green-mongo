@@ -168,7 +168,7 @@ class Holiday(Document):
     @classmethod
     def mailto(cls):
         from orange.xlsx import Book
-        from params.mail import Mail
+        from params.mail import Mail, MailClient
         begindate = datetime(now() + 5) % '%Y%m%d'
         data = cls.iter(begindate)
         data = [x for x in data if x[0] >= begindate]
@@ -184,9 +184,10 @@ class Holiday(Document):
                                   data=data)
 
             mail = Mail(sender='hunto@163.com',
-                        to='hunto@163.com',
+                        to='huangtao@czbank.com',
                         subject='假期表参数',
                         body='假期表参数，请审阅！')
             mail.attach(filename, writer=writer)
-            mail.post()
-            print('发送邮件成功！')
+            with MailClient()as client:
+                mail.post(client)
+                print('发送邮件成功！')
