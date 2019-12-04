@@ -22,21 +22,6 @@ def loadfile():
                      columns=(0, 1, 3, 7, 15, 16, 17))
 
 
-BranchPattern = R / '浙商银行(.*?公司)?(.*?行).*?'
-
-
-def get_branches():
-    '获取机构对应分行的名称'
-    sql = 'select a.jgm,b.mc from ggjgm a left join ggjgm b on a.hzjgm=b.jgm'
-
-    def convert(obj):
-        return (obj[0], extract(obj[1], BranchPattern, 2))
-
-    conn = connect('~/Onedrive/db/params.db')
-    with closing(conn):
-        return dict(map(convert, conn.fetch(sql)))
-
-
 @arg('query', help='查询条件')
 def main(query):
     db = connect('params')
