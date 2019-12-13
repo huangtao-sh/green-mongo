@@ -184,11 +184,8 @@ class PmJiaoyi(Document):
             & ((P.tcrq == None)
                | (P.tcrq >= datetime.now() % "%F"))).scalar(fields)
         header = profile['header']
-        data1 = tuple(data)
-        for r in data1:
-            print(r)
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
-        data = map(lambda x: [*x[:-1], str(x[-1])], data1)
+        data = map(lambda x: [*x[:-1], str(x[-1])], data)
         with path.write_xlsx(force=True) as book:
             book.add_table('A1', '新增', data=data, columns=Headers)
             print('导出文件成功！')
