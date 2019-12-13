@@ -157,7 +157,7 @@ class PmJiaoyi(Document):
                             24: bool_,
                             -3: dt,
                             -2: dt
-        }):
+                        }):
             _id = row[-1]
             fields = cls._projects[1:]
             obj = dict(zip(fields, row))
@@ -178,12 +178,17 @@ class PmJiaoyi(Document):
     @classmethod
     def dump(cls):
         fields = [*cls._projects[1:], '_id']
-        data = cls.objects.filter((P.lb == 0)
-                                  & (P.ytc.exists(False))
-                                  & ((P.tcrq == None) or P.tcrq >= datetime.now() % "%F")).scalar(fields)
+        data = cls.objects.filter(
+            (P.lb == 0)
+            & (P.ytc.exists(False))
+            & ((P.tcrq == None)
+               | (P.tcrq >= datetime.now() % "%F"))).scalar(fields)
         header = profile['header']
+        data1 = tuple(data)
+        for r in data1:
+            print(r)
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
-        data = map(lambda x: [*x[:-1], str(x[-1])], data)
+        data = map(lambda x: [*x[:-1], str(x[-1])], data1)
         with path.write_xlsx(force=True) as book:
             book.add_table('A1', '新增', data=data, columns=Headers)
             print('导出文件成功！')
