@@ -181,8 +181,9 @@ class PmJiaoyi(Document):
     @classmethod
     def dump(cls):
         fields = [*cls._projects[1:], '_id']
-        data = cls.objects.filter(Nor(P.lb != 0, P.ytc == True,
-                                      P.tcrq < today)).scalar(fields)
+        data = cls.objects.filter(
+            Nor(P.lb != 0, P.ytc == True, And(P.tcrq != "",
+                                              P.tcrq < today))).scalar(fields)
         header = profile['header']
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
         data = map(lambda x: [*x[:-1], str(x[-1])], data)
