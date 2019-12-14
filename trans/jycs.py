@@ -232,7 +232,7 @@ class PmJiaoyi(Document):
             JY_Headers = [Header(h, w) for h, w in zip(header, Widths)]
             hd_data = [[*row[:2], None, None, None] for row in data]
             jx_data = hd_data = [[*row[:2], None] for row in data]
-            zsxs_data = hd_data = [[*row[:2], 1] for row in data]
+            zsxs_data = [[*row[:2], 1] for row in data]
             jx_hj = [[
                 *row[:2], 0, 0.63, 0.63, 0.5, 0.8, 0.8, 0.8, 0.55, 0.55, 0.55,
                 0.5, 0.8, 0.4, 0.5, 0.75, 0.5, 0.5, 0.75, 0.63, 0.63, 0, 0.8,
