@@ -6,12 +6,14 @@
 # 创建：2018-05-29 15:18
 # 修订：2019-01-02 20:42 新增命令行处理模块
 # 修订：2019-12-01 11:58 新增相关功能
+# 修订：2019-12-13 17:53 修正导出数据不正确的问题
 
 from orange import Path, R, now, arg, HOME, Data, datetime, R
-from glemon import Document, P, Shadow
+from glemon import Document, P, Shadow, Nor, Or, And
 from trans.jy import JyJiaoyi, FORMAT
 from orange.xlsx import Header
 
+today = datetime.now() % '%F'
 profile = Shadow.read('jycs') or {}
 Widths = [
     40, 9, 9, 27, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
@@ -39,7 +41,7 @@ def dt(s):
     try:
         return datetime(s) % '%F'
     except:
-        pass
+        return s
 
 
 def bool_(s):
@@ -132,6 +134,7 @@ class PmJiaoyi(Document):
             profile['header'] = header
             save_profile()
             print('保存表头成功！')
+        print('Hello')
         for row in Data(data[1:],
                         filter=lambda row: bool(row[1]),
                         converter={
@@ -163,14 +166,16 @@ class PmJiaoyi(Document):
             obj = dict(zip(fields, row))
             obj['lb'] = 0
             if JyJiaoyi.objects.get(row[1]):
-                cls.objects.filter((P.jym == row[1])
-                                   & (P.lb == 0)
-                                   & ((P.tcrq.exists(False))
-                                      | (P.tcrq >= datetime.now() % '%F'))
-                                   ).update_one(ytc=True)
+                cls.objects.filter(
+                    And(P.jym == row[1], P.lb == 0,
+                        Or(P.tcrq.exists(False),
+                           P.tcrq >= today))).update_one(ytc=True)
                 print(f'交易码： {row[1]} 已投产，忽略')
             elif _id:
-                cls.objects.filter(P._id == _id).upsert_one(**obj)
+                if obj['trcq'] == '删除':
+                    cls.objects.filter(P._id == _id).delete()
+                else:
+                    cls.objects.filter(P._id == _id).upsert_one(**obj)
             else:
                 cls(obj).save()
         print('导入文件成功！')
@@ -178,11 +183,8 @@ class PmJiaoyi(Document):
     @classmethod
     def dump(cls):
         fields = [*cls._projects[1:], '_id']
-        data = cls.objects.filter(
-            (P.lb == 0)
-            & (P.ytc.exists(False))
-            & ((P.tcrq == None)
-               | (P.tcrq >= datetime.now() % "%F"))).scalar(fields)
+        data = cls.objects.filter(Nor(P.lb != 0, P.ytc == True,
+                                      P.tcrq < today)).scalar(fields)
         header = profile['header']
         Headers = [Header(h, w) for h, w in zip(header, Widths)]
         data = map(lambda x: [*x[:-1], str(x[-1])], data)
