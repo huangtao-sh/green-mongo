@@ -134,7 +134,6 @@ class PmJiaoyi(Document):
             profile['header'] = header
             save_profile()
             print('保存表头成功！')
-        print('Hello')
         for row in Data(data[1:],
                         filter=lambda row: bool(row[1]),
                         converter={
@@ -166,14 +165,13 @@ class PmJiaoyi(Document):
             obj = dict(zip(fields, row))
             obj['lb'] = 0
             if JyJiaoyi.objects.get(row[1]):
-                cls.objects.filter(
-                    And(P.jym == row[1], P.lb == 0,
-                        Or(P.tcrq.exists(False),
-                           P.tcrq >= today))).update_one(ytc=True)
+                cls.objects.filter(P.jym == row[1], P.lb == 0,
+                                   Or(P.tcrq.exists(False),
+                                      P.tcrq >= today)).update_one(ytc=True)
                 print(f'交易码： {row[1]} 已投产，忽略')
             elif _id:
-                if obj['trcq'] == '删除':
-                    cls.objects.filter(P._id == _id).delete()
+                if obj.get('tcrq') == '删除':
+                    cls.objects.filter(P._id == _id).delete_one()
                 else:
                     cls.objects.filter(P._id == _id).upsert_one(**obj)
             else:
