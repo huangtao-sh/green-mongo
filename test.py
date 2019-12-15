@@ -71,7 +71,6 @@ Test.load1(create_data())
 t1 = datetime.now() - s1
 print('load1', t1)
 
-'''
 s1 = datetime.now()
 Test.load2(create_data())
 t2 = datetime.now() - s1
@@ -82,10 +81,10 @@ asyncio.run(Test.load4(create_data()))
 t2 = datetime.now() - s1
 print('load4', ":", t2)
 exit()
-'''
 
 s1 = datetime.now()
 asyncio.run(Test.load3(create_data()))
 t2 = datetime.now() - s1
 print('load3', ":", t2)
 '''
+
