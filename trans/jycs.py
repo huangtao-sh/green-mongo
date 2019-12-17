@@ -11,6 +11,7 @@ from orange import Path, R, now, arg, HOME, Data, datetime, R
 from glemon import Document, P, Shadow
 from trans.jy import JyJiaoyi, FORMAT
 from orange.xlsx import Header
+from bson import ObjectId
 
 profile = Shadow.read('jycs') or {}
 Widths = [
@@ -170,7 +171,7 @@ class PmJiaoyi(Document):
                                    ).update_one(ytc=True)
                 print(f'交易码： {row[1]} 已投产，忽略')
             elif _id:
-                cls.objects.filter(P._id == _id).upsert_one(**obj)
+                cls.objects.filter(P._id == ObjectId(_id)).upsert_one(**obj)
             else:
                 cls(obj).save()
         print('导入文件成功！')
