@@ -4,6 +4,7 @@
 # License: GPL
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-10-31 14:37
+# 修订：2019-12-13 16:51 更新个别字段的显示
 
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
@@ -31,6 +32,14 @@ def show_teller(sql, arg):
         '，')
     for tlr in fetch(sql, arg):
         tlr = list(tlr)
+        tlr[-10] = {'0': '0-密码', '1': '1-指纹'}.get(tlr[-10])
+        tlr[-7] = {
+            '0': '0-非管库员',
+            '1': '1-管库员',
+            '2': '2-机器柜员',
+            '3': '3-行外人员'
+        }.get(tlr[-7])
+        tlr[-2] = {'1': '1-身份证'}.get(tlr[-2], tlr[-2])
         gw = tlr.pop(7)
         tprint(zip(header, tlr), {0: '20'})
         g = []
