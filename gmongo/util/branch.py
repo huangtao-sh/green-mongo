@@ -31,4 +31,6 @@ def branch(jg):
     br = branches.get(jg)
     if not br or br == '总行':
         br = '总行清算中心'
+    elif br == '义乌分行':
+        br = '金华分行'
     return br
