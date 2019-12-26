@@ -23,13 +23,14 @@ from .jszh import GgJszh
 from .dengji import EduDengji
 from .zhxxbm import Zhxxbm
 from gmongo.params.loaddata import load_files
+from .load import main as sync_load
 
 ROOT = Path('~/OneDrive/工作/参数备份')
 CANSHU = ROOT.find('运营管理*')
 Files = {x.pname: x for x in CANSHU.rglob('*.*')}  # 列出参数文件清单
 LoadFiles = (
-    (JyShbs, Files.get('是否需要事后补扫')),
-    (JyCdjy, Files.get('是否校验磁道信息')),
+    #(JyShbs, Files.get('是否需要事后补扫')),
+    #(JyCdjy, Files.get('是否校验磁道信息')),
     (GgBzb, Files.get('ggbzb')),
     (GgQzb, Files.get('ggqzb')),
     (Teller, Files.get('users_output')),
@@ -39,10 +40,10 @@ LoadFiles = (
     (GgKmzd, Files.get('ggkmzd')),
     (Pzzl, Files.get('ggpzzl')),
     (GgJszh, Files.get('ggjszh')),
-    (JyJiaoyi, Files.get('transactions_output')),
+    #(JyJiaoyi, Files.get('transactions_output')),
     (ZhangHu, Files.get('fhnbhzz')),
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
-    #(Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
+    (Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
     (Branch, (ROOT / '分行表').find('分行顺序表.xlsx')),
     (JyGangwei, (ROOT / '岗位与交易组').find('岗位及组*.xls')),
     (EduDengji, (ROOT / '额度登记配置').find('额度登记配置*.xls')),
@@ -66,6 +67,7 @@ def sjdr():
                 print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
 
     load_files()
+    sync_load()
 
 
 if __name__ == "__main__":

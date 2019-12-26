@@ -1,6 +1,7 @@
 from orange import HOME
-from trans import JyJiaoyi, JyShbs, JyCdjy
+from trans import JyJiaoyi, JyShbs, JyCdjy, JyMenu
 from asyncio import run, wait
+from glemon import P
 
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
@@ -10,6 +11,7 @@ FileList = (
     (JyJiaoyi, path.find('transactions_output.*')),
     (JyShbs, path.find('stg_teller_scanvoucher.*')),
     (JyCdjy, path.find('stg_teller_transcontrols.*')),
+    (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
 )
 
 

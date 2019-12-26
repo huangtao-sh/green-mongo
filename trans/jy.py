@@ -23,20 +23,37 @@ class JyShbs(Document):
             'filter': lambda row: row[2] == '8',
             'columns': (1, )
         },
-        'dupcheck': True,
     }
 
 
 class JyCdjy(JyShbs):
     '''需要校验磁道信息的交易'''
-    load_options = {
-        'dupcheck': True,
-    }
     pass
+
+
+def read_menu(path):
+    datas = []
+    for child in path:
+        menu = child.attrib['DisplayName']
+        trans = []
+        for node in child:
+            if node.tag == 'SubMenu':
+                trs = [n.attrib['Code'] for n in node if n.tag == 'Trade']
+                datas.append((menu, node.attrib['DisplayName'], trs))
+            elif node.tag == 'Trade':
+                trans.append(node.attrib['Code'])
+        if trans:
+            datas.append((menu, None, trans))
+    return datas
 
 
 class JyMenu(Document):
     _projects = 'menu', 'submenu', 'trans'
+    load_options={
+        'file':{
+            'reader':read_menu,
+        }
+    }
 
     @classproperty
     def menus(self):
@@ -60,22 +77,6 @@ class JyMenu(Document):
         d = cls.find(trans=code).first()
         if d:
             return d.menu, d.submenu
-
-    @classmethod
-    def procdata(cls, data, options):
-        datas = []
-        for child in data:
-            menu = child.attrib['DisplayName']
-            trans = []
-            for node in child:
-                if node.tag == 'SubMenu':
-                    trs = [n.attrib['Code'] for n in node if n.tag == 'Trade']
-                    datas.append((menu, node.attrib['DisplayName'], trs))
-                elif node.tag == 'Trade':
-                    trans.append(node.attrib['Code'])
-            if trans:
-                datas.append((menu, None, trans))
-        return datas
 
 
 SHAMA = (
@@ -280,8 +281,6 @@ class JyJiaoyi(Document):
         'file': {
             'converter': conv,
         },
-        'dupcheck': True,
-        'drop': True
     }
     _profile = {
         '交易码': '_id',
