@@ -49,9 +49,9 @@ def read_menu(path):
 
 class JyMenu(Document):
     _projects = 'menu', 'submenu', 'trans'
-    load_options={
-        'file':{
-            'reader':read_menu,
+    load_options = {
+        'file': {
+            'reader': read_menu,
         }
     }
 
@@ -312,6 +312,8 @@ class JyJiaoyi(Document):
 
     @classmethod
     def export(cls, fn=None):
+        ver = cls.get_ver()
+
         def trans(obj, a):
             v = getattr(obj, a)
             if a in TRANSFER:
@@ -329,8 +331,7 @@ class JyJiaoyi(Document):
             d1.extend(menus)
             data.append(d1)
             data2.append(d2)
-        d = now().add(months=-1) % ('%Y-%m')
-        fn = fn or str(Path('~/Documents/交易码表（%s）.xlsx' % (d)))
+        fn = fn or str(Path(f'~/Documents/交易码表（{ver}）.xlsx'))
         from orange.xlsx import Book
         with Book(fn) as book:
             book.add_table('A1', columns=FORMAT, data=data, sheet='交易码表')
@@ -353,6 +354,7 @@ class JyJiaoyi(Document):
     @arg('-e', '--export', action='store_true', help='导出交易码文件')
     @arg('query', nargs='?', help='查询交易信息')
     def main(cls, export=False, query=None):
+        print('Data Version:', cls.get_ver())
         if export:
             cls.export()
             print('导出交易码表成功！')
