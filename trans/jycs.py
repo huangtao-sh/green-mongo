@@ -171,11 +171,11 @@ class PmJiaoyi(Document):
                                       P.tcrq >= today)).update_one(ytc=True)
                 print(f'交易码： {row[1]} 已投产，忽略')
             elif _id:
-                _id == ObjectId(_id)
+                _id = ObjectId(_id)
                 if obj.get('tcrq') == '删除':
-                    cls.objects.filter(P._id == _id).delete_one()
+                    cls.find(P._id == _id).delete_one()
                 else:
-                    cls.objects.filter(P._id == _id).upsert_one(**obj)
+                    cls.find(P._id == _id).upsert_one(**obj)
             else:
                 cls(obj).save()
         print('导入文件成功！')
