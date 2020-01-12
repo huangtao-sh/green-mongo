@@ -174,6 +174,7 @@ class PmJiaoyi(Document):
                 _id = ObjectId(_id)
                 if obj.get('tcrq') == '删除':
                     cls.find(P._id == _id).delete_one()
+                    print(f'{obj["jym"]} 已删除')
                 else:
                     cls.find(P._id == _id).upsert_one(**obj)
             else:
