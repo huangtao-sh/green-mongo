@@ -245,6 +245,7 @@ class PmJiaoyi(Document):
             with (ROOT / f'交易码参数表{tcrq}.xlsx').write_xlsx(force=True) as book:
                 book.add_table('A1', '新增交易码', data=data, columns=JY_Headers)
                 book.add_table('A1', '事后监督参数', data=hd_data, columns=HD_Header)
+                '''
                 book.add_table('A1',
                                '绩效-系统交易码',
                                data=jx_data,
@@ -262,6 +263,7 @@ class PmJiaoyi(Document):
                                data=jx_hj,
                                columns=JX_HJ_Headers)
                 print('导出交易码参数成功')
+                '''
 
         else:
             print('无待投产内容')
