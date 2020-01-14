@@ -41,4 +41,4 @@ class JyGangwei(Document):
     @classproperty
     def jyzs(self):
         ''' 获取交易组清单'''
-        return {obj._id: obj.name for obj in self.objects if obj._id}
+        return {obj._id: obj.name for obj in self.find() if obj._id}

@@ -234,14 +234,16 @@ class PmJiaoyi(Document):
             header = profile['header'][:25]
             JY_Headers = [Header(h, w) for h, w in zip(header, Widths)]
             hd_data = [[*row[:2], None, None, None] for row in data]
-            jx_data = hd_data = [[*row[:2], None] for row in data]
-            zsxs_data = [[*row[:2], 1] for row in data]
+            #jx_data = hd_data = [[*row[:2], None] for row in data]
+            #zsxs_data = [[*row[:2], 1] for row in data]
+            '''
             jx_hj = [[
                 *row[:2], 0, 0.63, 0.63, 0.5, 0.8, 0.8, 0.8, 0.55, 0.55, 0.55,
                 0.5, 0.8, 0.4, 0.5, 0.75, 0.5, 0.5, 0.75, 0.63, 0.63, 0, 0.8,
                 0.8, 0.5, 0, 0, 0, 0.1, 0.1, 0.67, 0.5, 1, 0.63, 0.63, 0.8, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0
             ] for row in jx_data]
+            '''
             with (ROOT / f'交易码参数表{tcrq}.xlsx').write_xlsx(force=True) as book:
                 book.add_table('A1', '新增交易码', data=data, columns=JY_Headers)
                 book.add_table('A1', '事后监督参数', data=hd_data, columns=HD_Header)
