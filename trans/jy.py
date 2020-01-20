@@ -280,6 +280,7 @@ class JyJiaoyi(Document):
     load_options = {
         'file': {
             'converter': conv,
+            'encoding': 'utf8',
         },
     }
     _profile = {
