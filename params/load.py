@@ -13,16 +13,18 @@ FileList = (
     (JyShbs, path.find('stg_teller_scanvoucher.*')),
     (JyCdjy, path.find('stg_teller_transcontrols.*')),
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
-    (GgJgm, path.find('str_zsrun_ggjgm.*')),
+    (GgJgm, path.find('stg_zsrun_ggjgm.*')),
 )
 
 
 async def load(Doc, path, *args):
-    result = await Doc.sync_load_file(path, *args)
-    if result:
-        print(f'{path.name} 导入完成！')
-        print(result)
-
+    try:
+        result = await Doc.sync_load_file(path, *args)
+        if result:
+            print(f'{path.name} 导入完成！')
+            print(result)
+    except Exception as e:
+        print(e)
 
 def main(dry=False):
     run(wait([load(*row) for row in FileList]))

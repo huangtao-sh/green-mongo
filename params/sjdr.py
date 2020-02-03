@@ -34,7 +34,7 @@ LoadFiles = (
     (GgBzb, Files.get('ggbzb')),
     (GgQzb, Files.get('ggqzb')),
     (Teller, Files.get('users_output')),
-    (GgJgm, Files.get('ggjgm')),
+    #(GgJgm, Files.get('ggjgm')),
     (GgDzzz, Files.get('DZZZCSB')),
     (AcTemplate, Files.get('ggnbzhmb')),
     (GgKmzd, Files.get('ggkmzd')),
