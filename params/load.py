@@ -2,6 +2,7 @@ from orange import HOME
 from trans import JyJiaoyi, JyShbs, JyCdjy, JyMenu
 from asyncio import run, wait
 from glemon import P
+from .jgm import GgJgm
 
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
@@ -12,6 +13,7 @@ FileList = (
     (JyShbs, path.find('stg_teller_scanvoucher.*')),
     (JyCdjy, path.find('stg_teller_transcontrols.*')),
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
+    (GgJgm, path.find('str_zsrun_ggjgm.*')),
 )
 
 

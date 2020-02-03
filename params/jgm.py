@@ -20,16 +20,11 @@ JGLX = {
 class GgJgm(Document):
     _projects = '_id', 'jgmc', 'dz', 'dh', 'zfhh', 'lx', 'kbrq', 'hzjgm'
     load_options = {
-        'mapper': {
-            '_id': 0,
-            'jgmc': 1,
-            'dz': 4,
-            'dh': 5,
-            'zfhh': 7,
-            'lx': 15,
-            'kbrq': 16,
-            'hzjgm': 17
-        },
+        'encoding': 'utf8',
+        'sep': ',',
+        'include': (0, 1, 4-43, 5-43, 7-43, 15-43, 16-43, 17-43),
+        'drop': True,
+        'dupcheck': True
     }
     _profile = {
         '机构号': '_id',
