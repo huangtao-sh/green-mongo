@@ -52,19 +52,19 @@ def get(d, lst):
 
 async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
     options = doc.load_options or {}
-    data = read(
-        z, name, **get(options, ['pipelines', 'encoding', 'errors', 'sep']))
-    blk = BulkWrite(doc, data=data, **options)
+    blk = BulkWrite(doc, data=read(
+        z, name, **get(options, ['pipelines', 'encoding', 'errors', 'sep'])), **options)
 
     if dry:
         for obj in limit(blk, 10):
             print(obj)
     else:
         try:
+            # checker = dup_check(z.filename, doc.__name__) if options.pop(
+            #    'dupcheck', True) else None
+            checker = None
             if options.pop('drop', True):
                 doc.objects.delete()
-            checker = dup_check(z.filename, doc.__name__) if options.pop(
-                'dupcheck', True) else None
             result = await blk.sync_execute()
             if checker:
                 checker.done()

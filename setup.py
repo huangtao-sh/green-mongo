@@ -29,7 +29,7 @@ consoles = [
     'lzbg=gmongo.lzbg:lzbg',  # 营业主管履职报告
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
-    'jy=gmongo.params.jym:main',  # 交易码
+    #'jy=gmongo.params.jym:main',  # 交易码，不再使用sql
     'tlr=gmongo.params.teller:main',  # 柜员表
     'mconf=params.mail:config_mail',  # 配置邮箱服务器
 ]
