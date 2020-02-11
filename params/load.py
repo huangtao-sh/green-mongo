@@ -60,8 +60,8 @@ async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
             print(obj)
     else:
         try:
-            # checker = dup_check(z.filename, doc.__name__) if options.pop(
-            #    'dupcheck', True) else None
+            checker = dup_check(z.filename, doc.__name__) if options.pop(
+                'dupcheck', True) else None
             checker = None
             if options.pop('drop', True):
                 doc.objects.delete()
