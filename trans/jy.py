@@ -18,17 +18,16 @@ from .gangwei import JyGangwei
 class JyShbs(Document):
     '''不需要事后补扫交易清单'''
     _projects = ('_id', )
-    load_options = {
-        'file': {
-            'filter': lambda row: row[2] == '8',
-            'columns': (1, )
-        },
-    }
 
 
 class JyCdjy(JyShbs):
     '''需要校验磁道信息的交易'''
-    pass
+    load_options = {
+        'pipelines': (
+            ('filter', lambda row: row[2] == '8'),
+            ('include', (1, )),
+        )
+    }
 
 
 def read_menu(path):
@@ -277,12 +276,14 @@ class JyJiaoyi(Document):
         'bxwdsq', 'zxsqjg', 'bxzxsq', 'jnjb', 'xzbz', 'wb',\
         'dets', 'dzdk', 'sxf', 'htjc', 'jdfs', 'bssx', 'sc', 'mz', 'cesq', 'fjjyz'
     _textfmt = '{self._id}\t{self.jyz}\t{self.jyzm}\t{self.jymc}'
+    '''
     load_options = {
         'file': {
             'converter': conv,
             'encoding': 'utf8',
         },
     }
+    '''
     _profile = {
         '交易码': '_id',
         '交易名称': 'jymc',

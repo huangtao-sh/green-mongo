@@ -20,11 +20,9 @@ JGLX = {
 class GgJgm(Document):
     _projects = '_id', 'jgmc', 'dz', 'dh', 'zfhh', 'lx', 'kbrq', 'hzjgm'
     load_options = {
-        'encoding': 'utf8',
-        'sep': ',',
-        'include': (0, 1, 4-43, 5-43, 7-43, 15-43, 16-43, 17-43),
-        'drop': True,
-        'dupcheck': True
+        'pipelines': (
+            ('include', (0, 1, 4-43, 5-43, 7-43, 15-43, 16-43, 17-43)),
+        ),
     }
     _profile = {
         '机构号': '_id',
