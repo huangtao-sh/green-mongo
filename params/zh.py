@@ -16,15 +16,15 @@ from orange import R, arg, Path, tprint
 
 
 class AcTemplate(Document):
-    _projects = 'jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'
+    _projects = 'bz1', 'jglx', 'sxrq', 'km', 'bz', 'xh', 'hmgz', 'hm', 'tzed', 'cszt', 'jxbz'
     load_options = {
         'encoding': 'gbk',
         'errors': 'ignore',
-        'converter': {
-            'tzed': float,
-            'jglx': str.strip,
-            'xh': int,
-        },
+        'pipelines': [
+            ('converter', {2: lambda s: s[:10],
+                           8: float,
+                           5: int}),
+        ]
     }
 
     _profile = {

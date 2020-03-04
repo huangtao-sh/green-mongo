@@ -4,6 +4,7 @@ from trans import JyJiaoyi, JyShbs, JyCdjy, JyMenu
 from asyncio import run, wait
 from glemon import P
 from .jgm import GgJgm
+from .zh import AcTemplate
 from orange.datautil import Data
 from glemon import Document, dup_check
 from glemon.bulk import BulkWrite
@@ -56,7 +57,7 @@ async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
         z, name, **get(options, ['pipelines', 'encoding', 'errors', 'sep'])), **options)
 
     if dry:
-        for obj in limit(blk, 10):
+        for obj in limit(blk, 100):
             print(obj)
     else:
         try:
@@ -79,6 +80,7 @@ ParamList = {
     'stg_teller_scanvoucher': JyShbs,
     'stg_teller_transcontrols': JyCdjy,
     'stg_zsrun_ggjgm': GgJgm,
+    'stg_zsrun_ggnbzhmb': AcTemplate,
 }
 
 
@@ -109,6 +111,8 @@ def test(name):
                         'cp437').decode('gbk')
                     z.NameToInfo[fileinfo.filename] = fileinfo
                 files[Path(fileinfo.filename).pname] = fileinfo
-            run(loadfile(z, doc, files.get(name), dry=True))
+            if files.get(name):
+                run(loadfile(z, doc, files.get(name), dry=True))
 
-# test('stg_zsrun_ggjgm')
+
+test('stg_zsrun_ggnbzhmb')

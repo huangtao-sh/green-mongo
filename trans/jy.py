@@ -368,6 +368,6 @@ class JyJiaoyi(Document):
                         print(n, v, sep=' ' * (20 - wlen(n)))
             else:
                 cls.find(P.jymc.contains(query)).order_by(P._id).show(
-                    '_id', 'jyz', 'jyzm', 'jymc', format_spec={
+                    '_id', 'jyz', 'jymc', format_spec={
                         2: '20',
                     })
