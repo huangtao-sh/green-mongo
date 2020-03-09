@@ -11,7 +11,7 @@ consoles = [
     'jycs=trans.jycs:PmJiaoyi.main',  # 交易码参数
     'sjdr=params.load:main',  # 数据导入
     # 'jgm=params.jgm:GgJgm.main',             # 机构码表
-    # 'jgm=gmongo.params.branch:main',  # 机构码
+    'jgm=gmongo.params.branch:main',  # 机构码
     'ac=params.zh:main',  # 内部账户
     'km=gmongo.params.kemu:main',  # 科目表
     # 'fhlz=lvzhi.fhlz:main',                  # 分行运营主管履职报告
@@ -29,7 +29,7 @@ consoles = [
     'lzbg=gmongo.lzbg:lzbg',  # 营业主管履职报告
     'fhlz=gmongo.lzbg:fhlz',  # 分行运营主管履职报告'
     'nbzh=gmongo.nbzh:main',  # 内部账户
-    #'jy=gmongo.params.jym:main',  # 交易码，不再使用sql
+    # 'jy=gmongo.params.jym:main',  # 交易码，不再使用sql
     'tlr=gmongo.params.teller:main',  # 柜员表
     'mconf=params.mail:config_mail',  # 配置邮箱服务器
 ]

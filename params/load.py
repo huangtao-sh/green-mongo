@@ -77,10 +77,10 @@ async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
 
 ParamList = {
     'transactions_output': JyJiaoyi,
-    'stg_teller_scanvoucher': JyShbs,
-    'stg_teller_transcontrols': JyCdjy,
-    'stg_zsrun_ggjgm': GgJgm,
-    'stg_zsrun_ggnbzhmb': AcTemplate,
+    'YUNGUAN_MONTH_STG_TELLER_SCANVOUCHER': JyShbs,
+    'YUNGUAN_MONTH_STG_TELLER_TRANSCONTROLS': JyCdjy,
+    'YUNGUAN_MONTH_STG_ZSRUN_GGJGM': GgJgm,
+    'YUNGUAN_MONTH_STG_ZSRUN_GGNBZHMB': AcTemplate,
 }
 
 
