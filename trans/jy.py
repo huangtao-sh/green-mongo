@@ -338,6 +338,8 @@ class JyJiaoyi(Document):
         with Book(fn) as book:
             book.add_table('A1', columns=FORMAT, data=data, sheet='交易码表')
             book.add_table("A1", columns=FORMAT, data=data2, sheet='交易码参数')
+            print(f'导出文件 {fn} 成功')
+
 
     @property
     def jyzm(self):
@@ -359,7 +361,6 @@ class JyJiaoyi(Document):
         print('Data Version:', cls.get_ver())
         if export:
             cls.export()
-            print('导出交易码表成功！')
         if query:
             if R / r'\d{4}' == query:
                 obj = cls.get_item(query)

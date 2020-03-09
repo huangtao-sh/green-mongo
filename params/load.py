@@ -1,13 +1,17 @@
 import zipfile
 from orange import HOME, Path, limit
-from trans import JyJiaoyi, JyShbs, JyCdjy, JyMenu
+from trans import JyJiaoyi, JyShbs, JyCdjy, JyMenu, JyGangwei
 from asyncio import run, wait
-from glemon import P
+from glemon import P, FileImported
 from .jgm import GgJgm
 from .zh import AcTemplate
 from orange.datautil import Data
 from glemon import Document, dup_check
 from glemon.bulk import BulkWrite
+from .branch import Branch, Contacts
+from .dengji import EduDengji
+from .accounting import Accounting
+from contextlib import suppress
 
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
@@ -20,6 +24,24 @@ FileList = (
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
     # (GgJgm, path.find('stg_zsrun_ggjgm.*')),
 )
+LoadFiles = (
+    (Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
+    (Branch, (ROOT / '分行表').find('分行顺序表.xlsx')),
+    (JyGangwei, (ROOT / '岗位与交易组').find('岗位及组*.xls')),
+    (EduDengji, (ROOT / '额度登记配置').find('额度登记配置*.xls')),
+    (Accounting, (ROOT / '科目说明').find('*.txt')),
+)
+
+
+def sjdr():
+    for cls, filename in LoadFiles:
+        if filename:
+            try:
+                print(f'开始处理 {cls.__name__}')
+                result = cls.loadfile(filename)
+                print(f'{cls.__name__} 处理成功，共导入数据 {result.inserted_count}条')
+            except Exception as e:
+                print(e)
 
 
 async def load(Doc, path, *args):
@@ -33,7 +55,8 @@ async def load(Doc, path, *args):
 
 
 def main(dry=False):
-    coros = [load(*row) for row in FileList]
+    sjdr()          # 原数据导入模块
+    coros = [load(*row) for row in FileList]  # 新的异步导入模块
     coros.append(load_param())
     run(wait(coros))
 
@@ -114,4 +137,4 @@ def test(name):
                 run(loadfile(z, doc, files.get(name), dry=True))
 
 
-#test('stg_zsrun_ggnbzhmb')
+# test('stg_zsrun_ggnbzhmb')
