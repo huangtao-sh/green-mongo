@@ -44,7 +44,7 @@ def load_teller2(path, z, file):
                         row[-25], *row[-23:-20], *row[-10:-3], *row[-2:]
                     ]))
 
-    return load_file(path, 'teller', proc=read)
+    return load_file(path, 'teller', proc=read, period=path.pname[-7:])
 
 
 def show_teller(sql, arg):
