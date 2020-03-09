@@ -12,17 +12,14 @@ from .branch import Branch, Contacts
 from .dengji import EduDengji
 from .accounting import Accounting
 from contextlib import suppress
+from gmongo.params.teller import load_teller2
 
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
 path = ROOT.find('运营参数*')
 
 FileList = (
-    # (JyJiaoyi, path.find('transactions_output.*')),
-    # (JyShbs, path.find('stg_teller_scanvoucher.*')),
-    # (JyCdjy, path.find('stg_teller_transcontrols.*')),
     (JyMenu, (ROOT / '交易菜单').find('menu*.xml')),
-    # (GgJgm, path.find('stg_zsrun_ggjgm.*')),
 )
 LoadFiles = (
     (Contacts, (ROOT / '通讯录').find('通讯录*.xls')),
@@ -116,6 +113,7 @@ async def load_param():
                     'cp437').decode('gbk')
                 z.NameToInfo[fileinfo.filename] = fileinfo
             files[Path(fileinfo.filename).pname] = fileinfo
+        load_teller2(path, z, files.get("users_output"))
         coros = [loadfile(z, doc, files.get(name))
                  for name, doc in ParamList.items()]
         await wait(coros)
