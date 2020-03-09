@@ -63,7 +63,6 @@ async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
         try:
             checker = dup_check(z.filename, doc.__name__) if options.pop(
                 'dupcheck', True) else None
-            checker = None
             if options.pop('drop', True):
                 doc.objects.delete()
             result = await blk.sync_execute()
@@ -115,4 +114,4 @@ def test(name):
                 run(loadfile(z, doc, files.get(name), dry=True))
 
 
-test('stg_zsrun_ggnbzhmb')
+#test('stg_zsrun_ggnbzhmb')
