@@ -24,8 +24,8 @@ class JyCdjy(JyShbs):
     '''需要校验磁道信息的交易'''
     load_options = {
         'pipelines': (
-            ('filter', lambda row: row[2] == '8'),
-            ('include', (1, )),
+            ('filter', lambda row: row[1] == '8'),
+            ('include', (0, )),
         )
     }
 

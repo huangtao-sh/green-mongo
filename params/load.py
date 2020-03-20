@@ -72,7 +72,7 @@ def get(d, lst):
 
 
 async def loadfile(z: zipfile.ZipFile, doc: Document, name, dry: bool = False):
-    options = doc.load_options or {}
+    options = doc.load_options.copy() or {}
     blk = BulkWrite(doc, data=read(
         z, name, **get(options, ['pipelines', 'encoding', 'errors', 'sep'])), **options)
 
