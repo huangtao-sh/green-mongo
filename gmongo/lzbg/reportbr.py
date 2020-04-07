@@ -24,13 +24,13 @@ def get_qc():
 def report(qc=None):
     qc = qc or get_qc()
     print(f'当前期次 {qc}')
-    print('序号     分行       分管行长      运营主管')
+    print('序号     分行           分管行长      运营主管')
     data = []
     for i, row in enumerate(fetch(rpt_sql, [qc, qc]),1):
         data.append([i, *[x if x else "" for x in row]])
     tprint(data, format_spec={
         0: '2d',
-        1: '10',
+        1: '15',
         2: '10',
         3: '10',
     }, sep='    ')
