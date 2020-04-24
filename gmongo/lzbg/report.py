@@ -69,7 +69,7 @@ def export_ylb(qc=None, fn=None):
     print('需总行解决问题：%d条' % (len(zh_data)))
     sbwt = ROOT/'设备问题'
     sbwt.ensure()
-    (sbwt/f'设备问题-{qc}.xlsx').write_tables(
+    (sbwt/f'设备问题（{qc}）.xlsx').write_tables(
         {'sheet': '机具问题', 'columns': SBFORMAT, 'data': sb_data},
         formats=FORMATS, force=True
     )
