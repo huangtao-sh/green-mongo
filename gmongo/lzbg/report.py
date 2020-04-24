@@ -5,7 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018-05-25 20:48
 # 修改：2018-07-29 增加问题转换功能
-
+# 修订：2020-04-24 15:05 设备问题导出独立的 Excel 文件
 from .lzbg import ROOT
 from orange import Path, extract
 import json
@@ -63,11 +63,16 @@ def export_ylb(qc=None, fn=None):
     fn.write_tables(
         {'sheet': '问题及建议', 'columns': YLBFORMAT, 'data': wt_data},
         {'sheet': '需总行解决问题', 'columns': YLBFORMAT, 'data': zh_data},
-        {'sheet': '机具问题', 'columns': SBFORMAT, 'data': sb_data},
         formats=FORMATS, force=True
     )
     print('导出问题：%d条' % (len(wt_data)))
     print('需总行解决问题：%d条' % (len(zh_data)))
+    sbwt = ROOT/'设备问题'
+    sbwt.ensure()
+    (sbwt/f'设备问题-{qc}.xlsx').write_tables(
+        {'sheet': '机具问题', 'columns': SBFORMAT, 'data': sb_data},
+        formats=FORMATS, force=True
+    )
     print('设备问题：%d条' % (len(sb_data)))
 
 
