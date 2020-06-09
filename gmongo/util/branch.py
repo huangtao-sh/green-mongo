@@ -19,7 +19,7 @@ def get_branches():
 
     with db('~/Onedrive/db/params.db') as d:
         branches = dict(map(convert, d.fetch(sql)))
-        branches['331000000'] = '总行业务中心'
+        branches['331000000'] = '总行清算中心'
         branches['331000808'] = '总行营业中心'
         return branches
 
@@ -30,7 +30,7 @@ branches = get_branches()
 def branch(jg):
     br = branches.get(jg)
     if not br or br == '总行':
-        br = '总行清算中心'
+        br = '总行业务中心'
     elif br == '义乌分行':
         br = '金华分行'
     return br
