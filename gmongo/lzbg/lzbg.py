@@ -66,5 +66,5 @@ def load_file():
         executemany(sql, data2)
         print(f'已导入数据：{cur.rowcount}')
         execute('delete from yyzg')
-        executemany(f'insert or replace into yyzg {Values(11)}', read_yyzg())
+        executemany(f'insert into yyzg {Values(11)}', read_yyzg())
         executemany(f'insert or replace into bg {Values(6)}', bg)

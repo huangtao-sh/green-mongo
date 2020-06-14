@@ -97,7 +97,7 @@ if not exists lzwt
     status      text
 );
 create table if not exists yyzg(
-	gyh		text primary key, -- 柜员号
+	gyh		text,       -- 柜员号
 	ygh		text,		-- 员工号
 	xm		text,		-- 姓名
 	js		text,		-- 角色
