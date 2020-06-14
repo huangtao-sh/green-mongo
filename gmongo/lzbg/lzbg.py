@@ -6,9 +6,10 @@
 # 创建：2018/07/20
 # 修订：2018/07/29 程序调整
 
+from collections import defaultdict
 from orange import Path, R, arg, cstr, datetime, now
 from orange.utils.sqlite import connect, execute, executemany, find, findone,\
-    executescript, trans
+    executescript, trans, Values
 import json
 
 ROOT = Path('~/OneDrive/工作/工作档案/履职报告')
@@ -16,12 +17,20 @@ if not ROOT:
     ROOT.ensure()
 
 
-def _get_period(date: str)->str:
+def _get_period(date: str) -> str:
     date = datetime(date).add(days=-25)
     return date % ('%Y-%m')
 
 
+def read_yyzg():
+    path = ROOT.find('营业主管信息.*')
+    print(f'导入营业主管文件 {path}')
+    for row in path.sheets(0)[1:]:
+        yield *row[:8], row[9], row[11], row[10]
+
+
 def load_file():
+    bg = []
     files = ROOT.glob('会计履职报告*.xls')
     if not files:
         print('当前目录无文件')
@@ -42,6 +51,8 @@ def load_file():
                         data.append([title, _get_period(row[5]), row[2], row[4]+row[3], row[5],
                                      row[6], row[7], row[8], row[10], row[11], row[12], row[13], row[14],
                                      row[16], row[17], nr])
+                        bg.append([title, _get_period(row[5]),
+                                   row[2], row[4], row[5], row[18]])
                     else:
                         nr.append(row[19:])
         data2 = []
@@ -54,3 +65,6 @@ def load_file():
         sql = 'insert or ignore into branch values(?,?)'
         executemany(sql, data2)
         print(f'已导入数据：{cur.rowcount}')
+        execute('delete from yyzg')
+        executemany(f'insert or replace into yyzg {Values(11)}', read_yyzg())
+        executemany(f'insert or replace into bg {Values(6)}', bg)
