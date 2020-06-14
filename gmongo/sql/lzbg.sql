@@ -22,6 +22,7 @@ create table if not exists report(          -- 营业主管履职报告
     primary key(title,br)
 );
 
+drop table if exists bg;
 
 create table if not exists bg(  -- 报告情况
     title text, -- 报告标题
