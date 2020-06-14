@@ -21,7 +21,7 @@ def do_report():
     period = fetch_period()
     print('当前期次：%s' % (period))
     print(
-        f'报告数量：{fetchvalue("select count(distinct title)from report where period=?",[period])}')
+        f'报告数量：{fetchvalue("select count(distinct title||br)from report where period=?",[period])}')
     hd_sql = ('select brorder,brname from brorder a '
               'left join bg b '
               'on instr(b.br,a.brname)>0 and period =? and b.lx="事后监督" '
@@ -43,16 +43,15 @@ def do_report():
             print(f'{xm} ,应报：{count} 实报：{x}')
             fprint("select * from bg where name=? and period=?", [xm, period])
     zg_sql = (
-        'select xm,jgmc from yyzg  a '
+        'select jgmc,xm from yyzg  a '
         'left join bg b on a.xm=b.name and period=? and lx="营业主管" '
         'where  a.js like "a%" and b.name is null'
     )
-    fprintf('{0:15s} {1:25s}', zg_sql, [period])
+    fprintf('{0:20s} {1:25s}', zg_sql, [period])
     print(' - '*10)
     zg_sql = (
         'select br,name from bg  b '
-        'left join yyzg a on a.xm=b.name   '
+        'left join yyzg a on a.xm=b.name and a.js like "a%"  '
         'where  a.xm is null and lx="营业主管" and period=? '
     )
-    for r in fetch(zg_sql, [period]):
-        print(*r)
+    fprintf('{0:20s} {1:25s}', zg_sql, [period])
