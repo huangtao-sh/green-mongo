@@ -4,6 +4,8 @@
 # License: GPL
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-12-04 21:45
+# 修订：2020-06-15 19:21 和 go 语言的 grape 共享数据库
+
 from orange.utils.sqlite import db
 from orange import extract, R
 
@@ -17,7 +19,7 @@ def get_branches():
     def convert(obj):
         return (obj[0], extract(obj[1], BranchPattern, 2))
 
-    with db('~/Onedrive/db/params.db') as d:
+    with db('~/.data/params.db') as d:
         branches = dict(map(convert, d.fetch(sql)))
         branches['331000000'] = '总行业务中心'
         branches['331000808'] = '总行营业中心'
