@@ -6,6 +6,7 @@
 # 创建：2019-10-31 14:37
 # 修订：2019-12-13 16:51 更新个别字段的显示
 
+from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
 
@@ -18,35 +19,6 @@ POST = (
     'R21:审查岗 R22:信用卡审查岗 R41:放款受理人 R42:放款审核人 R43:放款核准人 '
     'R44:放款复核人 R45:业务审核岗'
 ).split()
-
-
-def read(path):
-    for row in path.iter_csv():
-        yield tuple(
-            map(str.strip, [
-                *row[:3], *row[4:8], ','.join(map(str.strip, row[8:-25])),
-                row[-25], *row[-23:-20], *row[-10:-3], *row[-2:]
-            ]))
-
-
-def load_teller():
-    path = ROOT.find('users_output.csv')
-    return load_file(path, 'teller', proc=read)
-
-
-def load_teller2(path, z, file):
-    def read(s=None):
-        with z.open(file)as f:
-            for row in f:
-                row = row.decode('gbk').split(',')
-                yield tuple(
-                    map(str.strip, [
-                        *row[:3], *
-                        row[4:8], ','.join(map(str.strip, row[8:-25])),
-                        row[-25], *row[-23:-20], *row[-10:-3], *row[-2:]
-                    ]))
-
-    return load_file(path, 'teller', proc=read, period=path.pname[-7:])
 
 
 def show_teller(sql, arg):
@@ -137,7 +109,7 @@ def teller_check():
 @arg('query', nargs='?', help='查询条件')
 @arg('-c', '--check', action='store_true', help='柜员表校验')
 def main(query=None, check=False):
-    show_version('teller')
+    print(f'数据版本：{get_ver("teller")}')
     if query:
         if R / r'\d{5}' == query:
             show_teller('select * from teller where id=?', [query])
