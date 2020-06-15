@@ -1,6 +1,7 @@
 /*
     营业主管问题一览表
 */
+drop table if exists  report;
 
 create table if not exists report(          -- 营业主管履职报告
     title text ,                             -- 标题
@@ -18,19 +19,8 @@ create table if not exists report(          -- 营业主管履职报告
     zhjj text,                              -- 总行解决
     shryj text,                             -- 审核人意见
     fzryj text,                             -- 负责人意见
+    lx    text,                             -- 报告类型
     content text,                           -- 内容，包括 类别、重要性、内容
-    primary key(title,br)
-);
-
-drop table if exists bg;
-
-create table if not exists bg(  -- 报告情况
-    title text, -- 报告标题
-    period  text,-- 报告期次
-    name text,  -- 报告人
-    br   text,  -- 机构
-    date text,  -- 报告日期
-    lx  text,    -- 报告类型 
     primary key(title,br)
 );
 
@@ -96,6 +86,8 @@ if not exists lzwt
     reply       text,
     status      text
 );
+
+drop table if exists yyzg;
 create table if not exists yyzg(
 	gyh		text,       -- 柜员号
 	ygh		text,		-- 员工号
@@ -107,5 +99,6 @@ create table if not exists yyzg(
 	bz		text,		-- 备注
 	jg		text,		-- 机构号
 	jgmc	text,		-- 机构名称
-	whrq	text		-- 维护日期
+	whrq	text,		-- 维护日期
+    primary key(gyh,jg)
 );

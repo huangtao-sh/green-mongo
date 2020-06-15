@@ -23,34 +23,34 @@ def do_report():
     print(
         f'报告数量：{fetchvalue("select count(distinct title||br)from report where period=?",[period])}')
     hd_sql = ('select brorder,brname from brorder a '
-              'left join bg b '
+              'left join report b '
               'on instr(b.br,a.brname)>0 and period =? and b.lx="事后监督" '
               'where b.br is null  '
               'order by brorder'
               )
     print('事后监督报告漏报清单')
     print('应报：', fetchvalue('select count(*) from brorder where brname not like "%总行%" and brname not in ("香港分行","义乌分行")'),
-          "实报：", fetchvalue("select count(*)from bg where lx='事后监督' and period=?", [period]))
+          "实报：", fetchvalue("select count(*)from report where lx='事后监督' and period=?", [period]))
     fprintf("{0:2d}  {1:20s}", hd_sql, [period])
     yyzgs = fetchvalue('select count(*)from yyzg where js like "a%"')
     bss = fetchvalue(
-        'select count(*)from bg where period=? and lx="营业主管"', [period])
+        'select count(*)from report where period=? and lx="营业主管"', [period])
     print(f'营业主管数：{yyzgs},实报：{bss}')
     for xm, count in fetch('select xm,count(xm)as sl from yyzg where js like "a%" group by xm having sl>1'):
         x = fetchvalue(
-            'select count(*)from bg where name=? and period=? and lx="营业主管" ', [xm, period])
+            'select count(*)from report where name=? and period=? and lx="营业主管" ', [xm, period])
         if x < count:
             print(f'{xm} ,应报：{count} 实报：{x}')
-            fprint("select * from bg where name=? and period=?", [xm, period])
+            fprint("select * from report where name=? and period=?", [xm, period])
     zg_sql = (
         'select jgmc,xm from yyzg  a '
-        'left join bg b on a.xm=b.name and period=? and lx="营业主管" '
+        'left join report b on a.xm=b.name and period=? and lx="营业主管" '
         'where  a.js like "a%" and b.name is null'
     )
     fprintf('{0:20s} {1:25s}', zg_sql, [period])
     print(' - '*10)
     zg_sql = (
-        'select br,name from bg  b '
+        'select br,name from report  b '
         'left join yyzg a on a.xm=b.name and a.js like "a%"  '
         'where  a.xm is null and lx="营业主管" and period=? '
     )

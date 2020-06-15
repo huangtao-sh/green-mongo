@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2018/07/20
 # 修订：2018/07/29 程序调整
+# 修订：2020-06-15 08:15 调整未及时报送统计功能
 
 from collections import defaultdict
 from orange import Path, R, arg, cstr, datetime, now
@@ -30,7 +31,6 @@ def read_yyzg():
 
 
 def load_file():
-    bg = []
     files = ROOT.glob('会计履职报告*.xls')
     if not files:
         print('当前目录无文件')
@@ -50,9 +50,7 @@ def load_file():
                         nr = [row[19:]]
                         data.append([title, _get_period(row[5]), row[2], row[4]+row[3], row[5],
                                      row[6], row[7], row[8], row[10], row[11], row[12], row[13], row[14],
-                                     row[16], row[17], nr])
-                        bg.append([title, _get_period(row[5]),
-                                   row[2], row[4], row[5], row[18]])
+                                     row[16], row[17], row[18], nr])
                     else:
                         nr.append(row[19:])
         data2 = []
@@ -60,11 +58,11 @@ def load_file():
             r[-1] = json.dumps(r[-1])
             data2.append((r[3], r[2]))
     with trans():
-        sql = f'insert or replace into report values({",".join(["?"]*16)})'
+        sql = f'insert or replace into report {Values(17)}'
         cur = executemany(sql, data)
         sql = 'insert or ignore into branch values(?,?)'
         executemany(sql, data2)
         print(f'已导入数据：{cur.rowcount}')
         execute('delete from yyzg')
         executemany(f'insert into yyzg {Values(11)}', read_yyzg())
-        executemany(f'insert or replace into bg {Values(6)}', bg)
+        print('已导入营业主管数据')
