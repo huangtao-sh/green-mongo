@@ -5,26 +5,18 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-05-14 14:01
 # 修订：2019-09-17 21:06 调整调用方式
+# 修订：2020-06-15 19:21 和 go 语言的 grape 共享数据库
 
 from orange import R, extract, arg, tprint
 from orange.utils.sqlite import connect
 from contextlib import closing
-
-
-def loadfile():
-    from . import load_file, ROOT
-    return load_file(ROOT.find('ggjgm.del'),
-                     'ggjgm',
-                     drop=True,
-                     encoding='gbk',
-                     errors='ignore',
-                     converter={1: str.strip},
-                     columns=(0, 1, 3, 7, 15, 16, 17))
+from gmongo.params import get_ver
 
 
 @arg('query', help='查询条件')
 def main(query):
-    db = connect('params')
+    db = connect('~/.data/params.db')
+    print(f'数据版本：{get_ver("ggjgm")}')
     with closing(db):
         if R / r'\d{2}' == query:
             data = db.fetch('select * from ggjgm where jglx=?', [query])

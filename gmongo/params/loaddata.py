@@ -13,7 +13,6 @@ from gmongo.params.teller import load_teller
 
 
 def load_files():
-    branch.loadfile()  # 导入机构码
     ggnbzhmb.loadfile()  # 导入内部账户模板
     loadnbzh()  # 导入内部账户表
     create_hz()  # 创建内部账户汇总表

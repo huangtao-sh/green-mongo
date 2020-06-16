@@ -4,17 +4,16 @@
 # License: GPL
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-05-14 11:36
+# 修订：2020-06-15 19:22 和 grape 共享数据库
 
 from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert, execute,\
-    fetch, fetchone, fetchvalue, transaction,loadfile,executescript
+    fetch, fetchone, fetchvalue, transaction, loadfile, executescript
 from orange import HOME, Path, now
 from functools import wraps
 from gmongo.util.branch import get_branches
 
-db_config('params')
-sqlfiles = ('params', 'nbzh', 'jym', 'txl', 'teller')
-for file in sqlfiles:
-    executefile('gmongo', f'sql/{file}.sql')
+db_config('~/.data/params.db')
+
 ROOT = HOME / 'OneDrive/工作/参数备份'
 ParamRoot = ROOT.find('运营管理*')
 DefaultPeriod = str(ParamRoot)[-7:]
@@ -58,3 +57,7 @@ def load_file(path: Path,
 def get_param_ver(name):
     return fetchone('select period,time from param_period where name =?',
                     [name])
+
+
+def get_ver(name):
+    return fetchvalue("select ver from loadfile where name=?", [name])

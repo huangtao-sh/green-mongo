@@ -5,11 +5,12 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-18 20:39
 
-from orange.utils.sqlite import findone, findvalue, find, execute, executemany, trans
+from orange.utils.sqlite import findone, findvalue, find, execute, executemany, trans, fetchvalue,\
+    fprint, fprintf, fetch
 from orange import cstr, R
 
 
-def fetch_period()-> str:
+def fetch_period() -> str:
     d = findvalue('select period from report order by date desc limit 1')
     if not d:
         raise Exception('无数据记录')
@@ -19,48 +20,38 @@ def fetch_period()-> str:
 def do_report():
     period = fetch_period()
     print('当前期次：%s' % (period))
-    d = findone(
-        'select count(br) as count from report where period=?', [period])
-    if d:
-        print(f'报告数量：{d[0]}')
-    print('报送数据错误清单')
-    print('-'*30)
-    sql = ('select br,count(name) as count,group_concat(name)as names '
-           'from report where period= ? '
-           'group by br '
-           'having count>1 order by br')
-    for no, (jg, count, names) in enumerate(find(sql, [period]), 1):
-        print(no, cstr(jg, 30), names, sep='\t')
-    print(f'共计：{no}')
-    print('\n未报送机构清单')
-    print('-'*30)
-    sql = ('select rowid,br,name from branch '
-           'where br not in (select br from report where period=?) '
-           'and name not in (select name from report where period=?)'
-           'order by br')
-    no = 0
-    for no, (rowid, br, name) in enumerate(find(sql, [period, period]), 1):
-        print(no, cstr("%03d-%s" % (rowid, br), 35), name, sep='\t')
-    print(f'共计：{no}')
-
-
-def delete_branchs(brs: list):
-    period = fetch_period()
-    branchs, ids = set(), set()
-    Number = R / r'\d{1,4}'
-    for br in brs:
-        if Number == br:
-            ids.add(br)
-        else:
-            branchs.add(br)
-    brs = ",".join([f'"{x}"' for x in branchs])
-    ids = ",".join(ids)
-    sql = f'''select rowid,br from branch where (rowid in ({ids}) or br in ({brs}))
-    and br not in (select br from report where period =?) order by br'''
-    print('以下机构将被删除：')
-    ids = []
-    for row in find(sql, [period]):
-        print(*row)
-        ids.append([row[0]])
-    with trans():
-        executemany(f'delete from branch where rowid=?', ids)
+    print(
+        f'报告数量：{fetchvalue("select count(distinct title||br)from report where period=?",[period])}')
+    hd_sql = ('select brorder,brname from brorder a '
+              'left join report b '
+              'on instr(b.br,a.brname)>0 and period =? and b.lx="事后监督" '
+              'where b.br is null  '
+              'order by brorder'
+              )
+    print('事后监督报告漏报清单')
+    print('应报：', fetchvalue('select count(*) from brorder where brname not like "%总行%" and brname not in ("香港分行","义乌分行")'),
+          "实报：", fetchvalue("select count(*)from report where lx='事后监督' and period=?", [period]))
+    fprintf("{0:2d}  {1:20s}", hd_sql, [period])
+    yyzgs = fetchvalue('select count(*)from yyzg where js like "a%"')
+    bss = fetchvalue(
+        'select count(*)from report where period=? and lx="营业主管"', [period])
+    print(f'营业主管数：{yyzgs},实报：{bss}')
+    for xm, count in fetch('select xm,count(xm)as sl from yyzg where js like "a%" group by xm having sl>1'):
+        x = fetchvalue(
+            'select count(*)from report where name=? and period=? and lx="营业主管" ', [xm, period])
+        if x < count:
+            print(f'{xm} ,应报：{count} 实报：{x}')
+            fprint("select * from report where name=? and period=?", [xm, period])
+    zg_sql = (
+        'select jgmc,xm from yyzg  a '
+        'left join report b on a.xm=b.name and period=? and lx="营业主管" '
+        'where  a.js like "a%" and b.name is null'
+    )
+    fprintf('{0:20s} {1:25s}', zg_sql, [period])
+    print(' - '*10)
+    zg_sql = (
+        'select br,name from report  b '
+        'left join yyzg a on a.xm=b.name and a.js like "a%"  '
+        'where  a.xm is null and lx="营业主管" and period=? '
+    )
+    fprintf('{0:20s} {1:25s}', zg_sql, [period])
