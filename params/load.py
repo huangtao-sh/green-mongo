@@ -12,7 +12,6 @@ from .branch import Branch, Contacts
 from .dengji import EduDengji
 from .accounting import Accounting
 from contextlib import suppress
-from gmongo.params.teller import load_teller2
 
 ROOT = HOME / 'OneDrive/工作/参数备份'
 
@@ -98,7 +97,7 @@ ParamList = {
     'transactions_output': JyJiaoyi,
     'YUNGUAN_MONTH_STG_TELLER_SCANVOUCHER': JyShbs,
     'YUNGUAN_MONTH_STG_TELLER_TRANSCONTROLS': JyCdjy,
-    'YUNGUAN_MONTH_STG_ZSRUN_GGJGM': GgJgm,
+    #'YUNGUAN_MONTH_STG_ZSRUN_GGJGM': GgJgm,
     'YUNGUAN_MONTH_STG_ZSRUN_GGNBZHMB': AcTemplate,
 }
 
@@ -113,7 +112,7 @@ async def load_param():
                     'cp437').decode('gbk')
                 z.NameToInfo[fileinfo.filename] = fileinfo
             files[Path(fileinfo.filename).pname] = fileinfo
-        load_teller2(path, z, files.get("users_output"))
+        #load_teller2(path, z, files.get("users_output"))
         coros = [loadfile(z, doc, files.get(name))
                  for name, doc in ParamList.items()]
         await wait(coros)
