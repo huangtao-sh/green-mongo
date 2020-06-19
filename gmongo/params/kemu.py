@@ -37,8 +37,8 @@ def khqk(km):
 
 def nbzhmb(km):
     print('\n内部账户模板')
-    fprintf('{:2s}  {:10s}  {:6s}  {:2s}  {:3d}  {:50s}',
-            'select jglx,whrq,km,bz,xh,hm from nbzhmb where km=?', [km])
+    fprintf('{:2s}  {:10s}  {:6s}  {:2s}  {:3d}  {:19,.2f}  {:50s}',
+            'select jglx,whrq,km,bz,xh,tzed,hm from nbzhmb where km=?', [km])
 
 
 @arg('query', help='查询科目信息')
