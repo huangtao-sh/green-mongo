@@ -69,15 +69,6 @@ def teller_check():
     for r in fetch(sql):
         print(*r)
 
-    print('\n同一机构多个柜员号（证件号）')
-    sql = (
-        'select zjlx,zjhm,branch,group_concat(name),group_concat(id)from teller '
-        'where substr(zt,1,1) not in ("3","4") and gwxz <> "2"'
-        'group by zjlx,zjhm,branch '
-        'having count(id)>1')
-    for r in fetch(sql):
-        print(*r)
-
     print('\n同一员工号多个姓名')
     sql = (
         'select userid,group_concat(name) from '
@@ -86,16 +77,6 @@ def teller_check():
         'having count(name)>1')
     for r in fetch(sql):
         print(*r)
-
-    print('\n同一证件号多个姓名')
-    sql = (
-        'select zjlx,zjhm,group_concat(name) from '
-        '(select distinct zjlx,zjhm,name from teller where substr(zt,1,1) not in ("3","4") and gwxz <> "2")'
-        'group by zjlx,zjhm '
-        'having count(name)>1')
-    for r in fetch(sql):
-        print(*r)
-
 
 
 @arg('query', nargs='?', help='查询条件')
