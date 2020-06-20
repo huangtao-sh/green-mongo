@@ -96,14 +96,6 @@ def teller_check():
     for r in fetch(sql):
         print(*r)
 
-    print('\n身份证号码错')
-    from orange.utils.checksum import id_card
-    for r in fetch(
-            'select id,name,branch,zjhm from teller '
-            ' where substr(zt,1,1) not in ("3","4") and gwxz <> "2" and zjlx="1" '
-    ):
-        if r[-1] != id_card(r[-1]):
-            print(*r)
 
 
 @arg('query', nargs='?', help='查询条件')
