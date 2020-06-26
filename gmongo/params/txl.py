@@ -6,7 +6,7 @@
 # 创建：2019-10-20 20:23
 
 from orange import HOME, arg, R, tprint
-from . import load_file, fetch, get_param_ver
+from . import load_file, fetch, get_ver
 
 
 def loadfile():
@@ -18,14 +18,13 @@ def loadfile():
 
 @arg('query', help='输入查询条件')
 def main(query):
-    header='机构','部门','姓名','职务','办公电话','传真','手机','电子邮件'
-    ver = get_param_ver('txl')
-    ver = ver and ver[0]
-    print('Version:', ver)
+    header = '机构', '部门', '姓名', '职务', '办公电话', '传真', '手机', '电子邮件'
+    ver = get_ver('txl')
+    print('数据版本:', ver)
     if R / r'1[3578]\d{1,9}' == query:
         sql = f'select * from txl where mobile like "{query}%" '
     elif R / r'9\d{3}' == query:
-        sql = f'select * from txl where tel like "%8765{query}" '
+        sql = f'select * from txl where tel like "%8765{query}"  or tel like "%8826{query}" or tel like "%5719{query}"'
     elif R / r'\d{1,}' == query:
         sql = f'select * from txl where tel like "%{query}%" '
     elif R / r'[A-Za-z].*' == query:
