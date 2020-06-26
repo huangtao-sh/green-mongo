@@ -24,7 +24,10 @@ def main(query):
     if R / r'1[3578]\d{1,9}' == query:
         sql = f'select * from txl where mobile like "{query}%" '
     elif R / r'\d{4}' == query:
-        sql = f'select * from txl where tel like "%8765{query}"  or tel like "%8826{query}" or tel like "%5719{query}"'
+        sql = (f'select * from txl where (tel like "%8765{query}" '
+               f' or tel like "%8826{query}" or tel like "%5719{query}")'
+               f'and br="浙商银行股份有限公司"'
+               )
     elif R / r'\d{1,}' == query:
         sql = f'select * from txl where tel like "%{query}%" '
     elif R / r'[A-Za-z].*' == query:
