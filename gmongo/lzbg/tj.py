@@ -31,21 +31,29 @@ def do_report():
     print('事后监督报告漏报清单')
     print('应报：', fetchvalue('select count(*) from brorder where brname not like "%总行%" and brname not in ("香港分行","义乌分行")'),
           "实报：", fetchvalue("select count(*)from report where lx='事后监督' and period=?", [period]))
-    fprintf("{0:2d}  {1:20s}", hd_sql, [period])
-    yyzgs = fetchvalue('select count(*)from yyzg where js like "a%"')
+    fprintf("{0:2d}            {1:20s}", hd_sql, [period])
+    yyzgs = fetchvalue('select count(distinct jg)from yyzg  '
+                       'where jg not like "331000%" and jg not in '
+                       '("191000000","342002000","361000000","421000000","551000000")')
     bss = fetchvalue(
         'select count(*)from report where period=? and lx="营业主管"', [period])
     print(f'营业主管数：{yyzgs},实报：{bss}')
-    for xm, count in fetch('select xm,count(xm)as sl from yyzg where js like "a%" group by xm having sl>1'):
+    for xm, count in fetch('select xm,count(xm)as sl from yyzg where js like "a%" '
+                           'and jg not like "331000%" and jg not in '
+                           '("191000000","342002000","361000000","421000000","551000000")'
+                           'group by xm having sl>1'):
         x = fetchvalue(
             'select count(*)from report where name=? and period=? and lx="营业主管" ', [xm, period])
         if x < count:
             print(f'{xm} ,应报：{count} 实报：{x}')
-            fprint("select * from report where name=? and period=?", [xm, period])
+            fprint("select * from report where name=? and period=?",
+                   [xm, period])
     zg_sql = (
         'select jgmc,xm from yyzg  a '
         'left join report b on a.xm=b.name and period=? and lx="营业主管" '
-        'where  a.js like "a%" and b.name is null'
+        'where  a.js like "a%" and b.name is null '
+        'and a.jg not like "331000%" and a.jg not in '
+        '("191000000","342002000","361000000","421000000","551000000")'
     )
     fprintf('{0:20s} {1:25s}', zg_sql, [period])
     print(' - '*10)
