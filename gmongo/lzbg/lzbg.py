@@ -44,7 +44,7 @@ def load_file():
                 continue
             title = None
             for row in rows[1:]:
-                if row[0]:
+                if row[18]:  # 防止空行出现
                     if title != row[0]:
                         title = row[0]
                         nr = [row[19:]]
