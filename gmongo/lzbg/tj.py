@@ -6,8 +6,9 @@
 # 创建：2019-01-18 20:39
 
 from orange.utils.sqlite import findone, findvalue, find, execute, executemany, trans, fetchvalue,\
-    fprint, fprintf, fetch
+    fprint, fprintf, fetch, Path
 from orange import cstr, R
+from orange.xlsx import Header
 
 
 def fetch_period() -> str:
@@ -38,28 +39,40 @@ def do_report():
     bss = fetchvalue(
         'select count(*)from report where period=? and lx="营业主管"', [period])
     print(f'营业主管数：{yyzgs},实报：{bss}')
-    for xm, count in fetch('select xm,count(xm)as sl from yyzg where js like "a%" '
-                           'and jg not like "331000%" and jg not in '
-                           '("191000000","342002000","361000000","421000000","551000000")'
-                           'group by xm having sl>1'):
-        x = fetchvalue(
-            'select count(*)from report where name=? and period=? and lx="营业主管" ', [xm, period])
-        if x < count:
-            print(f'{xm} ,应报：{count} 实报：{x}')
-            fprint("select * from report where name=? and period=?",
-                   [xm, period])
-    zg_sql = (
+
+    zgwb_sql = (
         'select jgmc,xm from yyzg  a '
-        'left join report b on a.xm=b.name and period=? and lx="营业主管" '
-        'where  a.js like "a%" and b.name is null '
+        'left join report b on a.ygh=b.ygh and period=? and lx="营业主管" '
+        'where  a.js like "a%" and b.ygh is null '
         'and a.jg not like "331000%" and a.jg not in '
         '("191000000","342002000","361000000","421000000","551000000")'
     )
-    fprintf('{0:20s} {1:25s}', zg_sql, [period])
+    fprintf('{0:20s} {1:25s}', zgwb_sql, [period])
     print(' - '*10)
-    zg_sql = (
+    zgyc_sql = (
         'select br,name from report  b '
-        'left join yyzg a on a.xm=b.name and a.js like "a%"  '
-        'where  a.xm is null and lx="营业主管" and period=? '
+        'left join yyzg a on a.ygh=b.ygh and a.js like "a%"  '
+        'where  a.ygh is null and lx="营业主管" and period=? '
     )
-    fprintf('{0:20s} {1:25s}', zg_sql, [period])
+    fprintf('{0:20s} {1:25s}', zgyc_sql, [period])
+
+    with Path("~/Downloads/当期履职报告报送情况统计表.xlsx").write_xlsx(force=True)as book:
+        period = '2020-09'
+        book.add_table(sheet="事后监督未报送", data=fetch(hd_sql, [period]),
+                       columns=[
+            Header("分行序号", 8),
+            Header("分行名称", 45)
+        ])
+        book.add_table(sheet="营业主管履职报告未报送清单", data=fetch(zgwb_sql, [period]),
+                       columns=[
+            Header("机构", 40),
+            Header("姓名", 20)
+        ])
+        print(f"当期履职报告报送情况统计表已生成")
+
+        book.add_table(sheet="营业主管履职报告异常报送清单", data=fetch(zgyc_sql, [period]),
+                       columns=[
+            Header("机构", 40),
+            Header("姓名", 20)
+        ])
+        print(f"当期履职报告报送情况统计表已生成")

@@ -4,9 +4,10 @@
 drop table if exists  report;
 
 create table if not exists report(          -- 营业主管履职报告
-    title text ,                             -- 标题
+    title text ,                            -- 标题
     period text,                            -- 期次
     name text,                              -- 报告人
+    ygh     text,                           -- 员工号
     br text,                                -- 机构 
     date text,                              -- 报告日期
     cc text,                                -- 抄送
@@ -21,7 +22,7 @@ create table if not exists report(          -- 营业主管履职报告
     fzryj text,                             -- 负责人意见
     lx    text,                             -- 报告类型
     content text,                           -- 内容，包括 类别、重要性、内容
-    primary key(title,br)
+    primary key(ygh,date)
 );
 
 create table

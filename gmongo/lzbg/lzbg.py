@@ -31,7 +31,7 @@ def read_yyzg():
 
 
 def load_file():
-    files = ROOT.glob('会计履职报告*.xls')
+    files = Path("~/Downloads").glob('会计履职报告????-??.xls?')
     if not files:
         print('当前目录无文件')
     else:
@@ -44,21 +44,21 @@ def load_file():
                 continue
             title = None
             for row in rows[1:]:
-                if row[18]:  # 防止空行出现
+                if row[0]:  # 防止空行出现
                     if title != row[0]:
                         title = row[0]
-                        nr = [row[19:]]
-                        data.append([title, _get_period(row[5]), row[2], row[4]+row[3], row[5],
-                                     row[6], row[7], row[8], row[10], row[11], row[12], row[13], row[14],
-                                     row[16], row[17], row[18], nr])
+                        nr = [row[20:]]
+                        data.append([title, _get_period(row[6]), row[2], row[3], row[5]+row[4], row[6],
+                                     row[7], row[8], row[9], row[11], row[12], row[13], row[14], row[15],
+                                     row[17], row[18], row[19], nr])
                     else:
-                        nr.append(row[19:])
+                        nr.append(row[20:])
         data2 = []
         for r in data:
             r[-1] = json.dumps(r[-1])
             data2.append((r[3], r[2]))
     with trans():
-        sql = f'insert or replace into report {Values(17)}'
+        sql = f'insert or replace into report {Values(18)}'
         cur = executemany(sql, data)
         sql = 'insert or ignore into branch values(?,?)'
         executemany(sql, data2)
