@@ -6,7 +6,7 @@
 # 创建：2018/07/20
 
 from orange import Path, arg, HOME
-from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans, fetch
+from orange.utils.sqlite import db_config, execute, findone, find, executefile, trans, fetch, fprint
 from gmongo import checkload
 from .db import init_db, drop_tables
 
@@ -47,21 +47,18 @@ def fhlz(init_=False, tables=None, config=False, load=False,
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')
 @arg('-l', '--loadfile', action='store_true', help='导入文件')
-@arg('-d', '--delete', metavar='branch', dest='branchs', nargs='*', help='删除机构')
 @arg('-r', '--report', action='store_true', help='报告上报情况')
 @arg('-w', '--wenti', action='store_true', help='收集问题')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
 @arg('-p', '--publish', action='store_true', help='发布文档')
+@arg('-q', '--query', nargs='?', dest='sql', metavar='sql', default='NOSET', help='执行查询语句')
 def lzbg(init_=False, loadfile=False, branchs=None, report=False,
-         export_qc=None, wenti=False, show=False, publish=False):
+         export_qc=None, wenti=False, show=False, publish=False, sql=''):
     if init_:
         init_db()
     if loadfile:
         from .lzbg import load_file
         load_file()
-    if branchs:
-        from .tj import delete_branchs
-        delete_branchs(branchs)
     if report:
         from .tj import do_report
         do_report()
@@ -74,3 +71,5 @@ def lzbg(init_=False, loadfile=False, branchs=None, report=False,
     if publish:
         from .publish import publish_wt
         publish_wt()
+    if sql != 'NOSET':
+        fprint(sql)
