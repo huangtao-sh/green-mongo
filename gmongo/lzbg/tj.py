@@ -57,7 +57,6 @@ def do_report():
     fprintf('{0:20s} {1:25s}', zgyc_sql, [period])
 
     with Path("~/Downloads/当期履职报告报送情况统计表.xlsx").write_xlsx(force=True)as book:
-        period = '2020-09'
         book.add_table(sheet="事后监督未报送", data=fetch(hd_sql, [period]),
                        columns=[
             Header("分行序号", 8),
