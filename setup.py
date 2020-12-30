@@ -32,6 +32,7 @@ consoles = [
     # 'jy=gmongo.params.jym:main',  # 交易码，不再使用sql
     'tlr=gmongo.params.teller:main',  # 柜员表
     'mconf=params.mail:config_mail',  # 配置邮箱服务器
+    'nkwg=nkwg:main',  # 内控违规
 ]
 
 setup(
