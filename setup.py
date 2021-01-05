@@ -4,7 +4,7 @@
 #  创建：2018-3-15
 #  修改：2018-05-25 20:50 删除lzwt
 
-from orange import setup
+from orange.pykit.setup import setup
 
 consoles = [
     'jym=trans:JyJiaoyi.main',  # 交易码表
