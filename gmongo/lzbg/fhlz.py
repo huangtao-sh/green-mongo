@@ -207,7 +207,7 @@ def GenBan():
                 Header('分行', 20, format='normal'),
                 Header('姓名', 15, format='normal'),
                 Header('类别', 15, format='ccnormal'),
-                Header('内容', 50, format='normal')
+                Header('内容', 75, format='normal')
             ]
         )
         print('导出文件成功！')
