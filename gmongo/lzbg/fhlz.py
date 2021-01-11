@@ -6,7 +6,7 @@
 # 创建：2019-01-23 10:16
 
 from orange.xlsx import Header
-from yaml import load
+from yaml import load, CLoader
 from gmongo import executemany, procdata, HOME, R, execute, loadcheck,\
     fetch, transaction, fetchvalue
 from orange import extract, Path
@@ -191,7 +191,7 @@ def GenBan():
 
     def data():
         for period, typ, branch, name, content in fetch(sql):
-            content = load(content)
+            content = load(content, CLoader)
             for k, v in content['content']:
                 if '跟班' in k:
                     yield period, typ, branch, name, k, v
@@ -202,12 +202,12 @@ def GenBan():
             sheet='跟班情况统计',
             data=data(),
             columns=[
-                Header('期次', 12),
-                Header('类型', 12),
-                Header('分行', 20),
-                Header('姓名', 15),
-                Header('类别', 10),
-                Header('内容', 15, format='normal')
+                Header('期次', 12, format='normal'),
+                Header('类型', 12, format='normal'),
+                Header('分行', 20, format='normal'),
+                Header('姓名', 15, format='normal'),
+                Header('类别', 15, format='ccnormal'),
+                Header('内容', 50, format='normal')
             ]
-
         )
+        print('导出文件成功！')
