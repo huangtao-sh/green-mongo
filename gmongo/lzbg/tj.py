@@ -47,7 +47,7 @@ def do_report():
 
         yyzgs = fetchvalue('select count(distinct jg)from yyzg  '
                            'where jg not like "331000%" and jg not in '
-                           '("191000000","342002000","361000000","421000000","551000000")')
+                           '("191000000","342002000","361000000","421000000","551000000","338702000")')
         bss = fetchvalue(
             'select count(*)from report where period=? and lx="营业主管"', [period])
         print(f'营业主管数：{yyzgs},实报：{bss}')

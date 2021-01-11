@@ -203,10 +203,10 @@ def GenBan():
             data=data(),
             columns=[
                 Header('期次', 12, format='normal'),
-                Header('类型', 12, format='normal'),
+                Header('类型', 15, format='normal'),
                 Header('分行', 20, format='normal'),
                 Header('姓名', 15, format='normal'),
-                Header('类别', 15, format='ccnormal'),
+                Header('类别', 15, format='cnormal'),
                 Header('内容', 75, format='normal')
             ]
         )
