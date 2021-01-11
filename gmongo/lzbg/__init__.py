@@ -21,8 +21,9 @@ brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 @arg('-r', '--report', nargs='?', default='NOSET', metavar='period', dest='rptqc', help='报告上报情况')
 @arg('-p', '--publish', action='store_true', help='发布报告')
 @arg('-e', '--export', nargs="?", metavar='period', default='NOSET', dest='export_qc', help='导出一览表')
+@arg('-g', '--genban', action='store_true', help='导出跟班情况')
 def fhlz(init_=False, tables=None, config=False, load=False,
-         rptqc=None, publish=False, restore=False,
+         rptqc=None, publish=False, restore=False, genban=False,
          export_qc=None):
     if tables:
         drop_tables(*tables)
@@ -43,6 +44,9 @@ def fhlz(init_=False, tables=None, config=False, load=False,
     if publish:
         from .fhlz import publish_reply
         publish_reply()
+    if genban:
+        from .fhlz import GenBan
+        GenBan()
 
 
 @arg('-i', '--init', dest='init_', action='store_true', help='初始化')

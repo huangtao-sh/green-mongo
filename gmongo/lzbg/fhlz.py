@@ -5,10 +5,11 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-01-23 10:16
 
+from orange.xlsx import Header
 from yaml import load
 from gmongo import executemany, procdata, HOME, R, execute, loadcheck,\
     fetch, transaction, fetchvalue
-from orange import extract
+from orange import extract, Path
 SAVEPATH = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
 
@@ -176,3 +177,37 @@ def export_ylb(qc):
             book.F = '', 'normal'
             book + 1
         print('共导出问题 %d 条' % (len(wentis)))
+
+
+def GenBan():
+    year = fetchvalue('select max(substr(period,1,4)) from brreport')
+    print(f"当前年份：{year}")
+    sql = (
+        'select period,case [type] when "0" then "分管行长" else "运营部负责人" end as typ,branch,name,content from brreport '
+        f'where period like "{year}%" '
+        'order by period,typ,branch'
+
+    )
+
+    def data():
+        for period, typ, branch, name, content in fetch(sql):
+            content = load(content)
+            for k, v in content['content']:
+                if '跟班' in k:
+                    yield period, typ, branch, name, k, v
+
+    with Path(f'~/Downloads/{year}年跟班情况统计.xlsx').write_xlsx(force=True)as book:
+        book.add_formats(FORMATS2)
+        book.add_table(
+            sheet='跟班情况统计',
+            data=data(),
+            columns=[
+                Header('期次', 12),
+                Header('类型', 12),
+                Header('分行', 20),
+                Header('姓名', 15),
+                Header('类别', 10),
+                Header('内容', 15, format='normal')
+            ]
+
+        )
