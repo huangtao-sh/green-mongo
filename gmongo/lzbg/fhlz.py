@@ -193,6 +193,7 @@ def GenBan():
         for period, typ, branch, name, content in fetch(sql):
             content = load(content, CLoader)
             for k, v in content['content']:
+                v = v.strip()
                 if '跟班' in k and v != "":
                     yield period, typ, branch, name, k, v
 
