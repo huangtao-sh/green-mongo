@@ -193,7 +193,7 @@ def GenBan():
         for period, typ, branch, name, content in fetch(sql):
             content = load(content, CLoader)
             for k, v in content['content']:
-                if '跟班' in k:
+                if '跟班' in k and v <> "":
                     yield period, typ, branch, name, k, v
 
     with Path(f'~/Downloads/{year}年跟班情况统计.xlsx').write_xlsx(force=True)as book:
