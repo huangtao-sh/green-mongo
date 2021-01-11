@@ -6,5 +6,4 @@
 # 创建：2018-10-14 16:22
 
 import unittest
-from .testload import TestLoadFile
 from .testprocdata import *
