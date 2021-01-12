@@ -184,11 +184,10 @@ def GenBan():
     year = fetchvalue('select max(substr(period,1,4)) from brreport')
     print(f"当前年份：{year}")
     sql = (
-        'select period,case [type] when "0" then "分管行长" else "运营部负责人" end as typ,branch,name,content from brreport '
+        'select period,case [type] when "0" then "分管行长" else "运营部负责人" end as typ,'
+        'branch,name,content from brreport '
         f'where period like "{year}%" '
-        'order by period,typ,branch'
-
-    )
+        'order by period,typ,branch')
 
     def data():
         for period, typ, branch, name, content in fetch(sql):
