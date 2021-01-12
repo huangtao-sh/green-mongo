@@ -6,7 +6,8 @@
 # 创建：2019-01-23 10:16
 
 from orange.xlsx import Header
-from yaml import load, CLoader
+# from yaml import load, CLoader
+import json
 from gmongo import executemany, procdata, HOME, R, execute, loadcheck,\
     fetch, transaction, fetchvalue
 from orange import extract, Path
@@ -142,7 +143,7 @@ def export_ylb(qc):
                 print("%-10s%s" % (br, name))
                 book.worksheet = br
                 book.set_widths(WIDTHS)
-                content = load(content)
+                content = json.loads(content)
                 header = content['header']
                 book.A1_B1 = header[0], 'bt'
                 book.A2_B2 = header[1], 'normal'
@@ -191,7 +192,7 @@ def GenBan():
 
     def data():
         for period, typ, branch, name, content in fetch(sql):
-            content = load(content, CLoader)
+            content = json.loads(content)
             for k, v in content['content']:
                 v = v.strip()
                 if '跟班' in k and v != "":

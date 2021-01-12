@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-23 20:14
 from orange import now
-import yaml
+import json
 from gmongo import execute, R, HOME, loadcheck, transaction
 
 ROOT = HOME/'OneDrive/工作/工作档案/分行履职报告'
@@ -73,7 +73,7 @@ def loaddata(date, period, rows):
         raise Exception('报告格式不正确')
     header = [rows[i][0]for i in range(3)]
     contents = [(row[:2])for row in rows[3:]]
-    content = yaml.dump({
+    content = json.dumps({
         'header': header,
         'content': contents
     })
