@@ -9,6 +9,7 @@
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
+from orange.utils.sqlite import fetchvalue
 
 POST = (
     'R01:交易发起岗 R02:前台授权岗 R03:凭证管理岗 R04:分中心授权岗 '
@@ -39,18 +40,20 @@ def show_teller(sql, arg):
         g = []
         for x, y in zip(POST, gw.split(',')):
             if y:
-                g.append((x, y))
+                v = fetchvalue(
+                    f"select group_concat(memo,'，') from eddj where code in ('{y[:2]}','{y[2:]}')")
+                g.append((x, v))
         tprint(g, {0: '20'})
         print()
 
 
 def list_teller(cond, arg=[]):
-    print('柜员号  姓名                   用户号     机构    状态')
+    print('柜员号    姓名                员工号     机构    状态')
     tprint(
         fetch(f'select id,name,userid,branch,zt from teller where {cond}',
               arg), {
                   0: '8',
-                  1: '30',
+                  1: '20',
                   2: '8',
                   3: '10'
         })
@@ -88,6 +91,8 @@ def main(query=None, check=False):
             show_teller('select * from teller where id=?', [query])
         elif R / r'[A-Z]{1,2}\d{4}' == query:
             list_teller('userid=?', [query])
+        elif R / r'\d{9}' == query:
+            list_teller(f'branch={query} and substr(zt,1,1) not in("3","4")')
         else:
             list_teller(f'name like "{query}%"')
     if check:
