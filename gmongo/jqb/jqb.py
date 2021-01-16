@@ -26,12 +26,12 @@ def show(year):
 
 
 Headers = [
-    Header('日期'),
-    Header('假期标志'),
-    Header("假期属性"),
-    Header('备注'),
-    Header('AB户标志'),
-    Header('一户通标志')]
+    Header('日期', 10),
+    Header('假期标志', 10),
+    Header("假期属性", 10),
+    Header('备注', 10),
+    Header('AB户标志', 10),
+    Header('一户通标志', 12)]
 
 
 def parsedate(s, year):
