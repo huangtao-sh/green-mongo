@@ -1,10 +1,9 @@
 from orange.xlsx import Header
 from orange.utils.sqlite import fetchone, fetch, tran, execute, connect
 from orange import now
-
 from orange import R, datetime, arg, now
 from itertools import cycle
-from glemon import Document, P, enlist
+
 
 YEAR = R / r'.*?(\d{4})年'
 Pattern = R / r'\s*(?P<xh>.*?)、(?P<name>.*?)：(?P<fj>.*?)。((?P<sb>.*?)。)?\s*'
