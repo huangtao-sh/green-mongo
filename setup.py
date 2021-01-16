@@ -22,7 +22,9 @@ consoles = [
     # 'teller=params.user:Teller.main',  # 柜员表
     'bz=params.bz:GgBzb.main',  # 币种
     'ed=params.dengji:EduDengji.main',  # 额度配置
-    'jq=vacation:Holiday.main',  # 假期表
+    # 'jq=vacation:Holiday.main',  # 假期表
+    'jqb=gmongo.jqb:main',  # 假期表参数
+
     'wh=params.paijia:PaiJia.main',  # 外汇
     'xxbm=gmongo.params.zhxxbm:main',  # 性质编码
     'zfbb=gmongo.zfbb:main',  # 支付报表
