@@ -17,7 +17,6 @@ db_config('~/.data/jqb.db')
 @arg('-e', '--export', dest='begindate', default='noset', nargs='?', help='显示假期表')
 @arg('-s', '--show', dest='year', default='noset', nargs='?', help='显示假期安排')
 @arg('-m', '--mailto', action='store_true', help='邮件发送交易码参数')
-@arg('-c', '--config', action='store_true', help='配置邮箱服务器')
 def main(**options):
     executefile('gmongo', 'sql/jqb.sql')
     if options.get('fetch'):
@@ -34,6 +33,3 @@ def main(**options):
     if options.get('mailto'):
         from .jqb import mailto
         mailto()
-    if options.get('config'):
-        from .mail import conf
-        conf()

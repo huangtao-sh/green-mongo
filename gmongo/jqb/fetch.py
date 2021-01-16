@@ -5,7 +5,7 @@
 '''
 from orange.utils.hclient import Crawler, wait
 from orange import R
-from orange.utils.sqlite import tran, execute
+from orange.utils.sqlite import tran, execute, connect
 
 URL = 'http://sousuo.gov.cn/list.htm'
 values = {'searchfield': 'title',  # 搜索标题
