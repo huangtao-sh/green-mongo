@@ -1,3 +1,8 @@
+'''
+项目：假期表参数程序
+作者：黄涛
+日期：2021-01-16  数据库从 MongoDB 迁移至 SQLite
+'''
 from orange.xlsx import Header
 from orange.utils.sqlite import fetchone, fetch, tran, execute, connect
 from orange import now
@@ -112,7 +117,7 @@ def export(begindate):
 
 def mailto():
     from orange.xlsx import Book
-    from params.mail import Mail
+    from orange.mail import Mail
     begindate = datetime(now() + 5) % '%Y%m%d'
     data = iter_(begindate)
     data = [x for x in data if x[0] >= begindate]

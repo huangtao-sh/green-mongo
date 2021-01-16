@@ -1,3 +1,9 @@
+'''
+项目：假期表参数程序
+作者：黄涛
+日期：2021-01-16  数据库从 MongoDB 迁移至 SQLite
+'''
+
 from .fetch import FetchVacation
 from gmongo import executefile
 from orange.utils.sqlite import db_config, fetch, fetchvalue

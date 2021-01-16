@@ -1,4 +1,8 @@
-
+'''
+项目：假期表参数程序
+作者：黄涛
+日期：2021-01-16  数据库从 MongoDB 迁移至 SQLite
+'''
 from orange.utils.hclient import Crawler, wait
 from orange import R
 from orange.utils.sqlite import tran, execute
