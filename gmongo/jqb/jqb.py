@@ -37,7 +37,7 @@ def parsedate(s, year):
     for r in Rq.finditer(s):
         r = r.groupdict()
         flag, y1, m1, d1, y2, m2, d2 = tuple(
-            map(r.__getitem__, enlist('flag,y1,m1,d1,y2,m2,d2')))
+            map(r.__getitem__, 'flag,y1,m1,d1,y2,m2,d2'.split(',')))
         y1 = y1 or year
         y2 = y2 or y1 or year
         d1 = datetime("-".join([y1, m1, d1]))
