@@ -24,7 +24,7 @@ def _get_period(date: str) -> str:
 
 
 def read_yyzg():
-    path = ROOT.find('营业主管信息.*')
+    path = Path("~/Documents/参数备份/营业主管").find('营业主管信息*.*')
     print(f'导入营业主管文件 {path}')
     for row in path.sheets(0)[1:]:
         yield *row[:8], row[9], row[11], row[10]
@@ -54,15 +54,11 @@ def load_file():
                                      row[17], row[18], row[19], nr])
                     else:
                         nr.append(row[20:])
-        data2 = []
         for r in data:
             r[-1] = json.dumps(r[-1])
-            data2.append((r[3], r[2]))
     with trans():
         sql = f'insert or replace into report {Values(18)}'
         cur = executemany(sql, data)
-        sql = 'insert or ignore into branch values(?,?)'
-        executemany(sql, data2)
         print(f'已导入数据：{cur.rowcount}')
         execute('delete from yyzg')
         executemany(f'insert into yyzg {Values(11)}', read_yyzg())

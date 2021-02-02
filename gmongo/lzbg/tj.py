@@ -17,6 +17,7 @@ def fetch_period() -> str:
         raise Exception('无数据记录')
     return d
 
+Excluders='("191000000","342002000","361000000","421000000","551000000","338702000")'
 
 def do_report():
     period = fetch_period()
@@ -46,8 +47,7 @@ def do_report():
             ])
 
         yyzgs = fetchvalue('select count(distinct jg)from yyzg  '
-                           'where jg not like "331000%" and jg not in '
-                           '("191000000","342002000","361000000","421000000","551000000","338702000")')
+                           f'where jg not like "331000%" and jg not in {Excluders}')
         bss = fetchvalue(
             'select count(*)from report where period=? and lx="营业主管"', [period])
         print(f'营业主管数：{yyzgs},实报：{bss}')
@@ -56,8 +56,7 @@ def do_report():
             'select jgmc,xm from yyzg  a '
             'left join report b on upper(a.ygh)=upper(b.ygh) and period=? and lx="营业主管" '
             'where  a.js like "a%" and b.ygh is null '
-            'and a.jg not like "331000%" and a.jg not in '
-            '("191000000","342002000","361000000","421000000","551000000","338702000")'
+            'and a.jg not like "331000%" and a.jg not in {Excluders}'
         )
         data = list(fetch(zgwb_sql, [period]))
         if len(data):
