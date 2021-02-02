@@ -31,7 +31,7 @@ def read_yyzg():
 
 
 def load_file():
-    files = Path("~/Downloads").glob('会计履职报告????-??.xls?')
+    files = Path("~/Downloads").glob('会计履职报告????-??.xls*')
     if not files:
         print('当前目录无文件')
     else:
@@ -48,7 +48,7 @@ def load_file():
                     if title != row[0]:
                         title = row[0]
                         nr = [row[20:]]
-                        gh = extract(row[3], r"[A-Z]{1,2}\d{4}")
+                        gh = extract(row[3], r"[a-zA-Z]{1,2}\d{4}")
                         data.append([title, _get_period(row[6]), row[2], gh, row[5]+row[4], row[6],
                                      row[7], row[8], row[9], row[11], row[12], row[13], row[14], row[15],
                                      row[17], row[18], row[19], nr])
