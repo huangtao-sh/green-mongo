@@ -8,7 +8,7 @@
 # 修订：2020-06-15 08:15 调整未及时报送统计功能
 
 from collections import defaultdict
-from orange import Path, R, arg, cstr, datetime, now
+from orange import Path, R, arg, cstr, datetime, now, extract
 from orange.utils.sqlite import connect, execute, executemany, find, findone,\
     executescript, trans, Values
 import json
@@ -48,7 +48,8 @@ def load_file():
                     if title != row[0]:
                         title = row[0]
                         nr = [row[20:]]
-                        data.append([title, _get_period(row[6]), row[2], row[3], row[5]+row[4], row[6],
+                        gh = extract(row[3], r"[A-Z]{1,2}\d{4}")
+                        data.append([title, _get_period(row[6]), row[2], gh, row[5]+row[4], row[6],
                                      row[7], row[8], row[9], row[11], row[12], row[13], row[14], row[15],
                                      row[17], row[18], row[19], nr])
                     else:
