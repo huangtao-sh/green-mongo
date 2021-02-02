@@ -57,7 +57,7 @@ def do_report():
             'left join report b on upper(a.ygh)=upper(b.ygh) and period=? and lx="营业主管" '
             'where  a.js like "a%" and b.ygh is null '
             'and a.jg not like "331000%" and a.jg not in '
-            '("191000000","342002000","361000000","421000000","551000000")'
+            '("191000000","342002000","361000000","421000000","551000000","338702000")'
         )
         data = list(fetch(zgwb_sql, [period]))
         if len(data):
