@@ -56,7 +56,7 @@ def do_report():
             'select jgmc,xm from yyzg  a '
             'left join report b on upper(a.ygh)=upper(b.ygh) and period=? and lx="营业主管" '
             'where  a.js like "a%" and b.ygh is null '
-            'and a.jg not like "331000%" and a.jg not in {Excluders}'
+            f'and a.jg not like "331000%" and a.jg not in {Excluders}'
         )
         data = list(fetch(zgwb_sql, [period]))
         if len(data):
