@@ -27,7 +27,7 @@ def read_yyzg():
     path = Path("~/Documents/参数备份/营业主管").find('营业主管信息*.*')
     print(f'导入营业主管文件 {path}')
     for row in path.sheets(0)[1:]:
-        yield *row[:8], row[9], row[11], row[10]
+        yield *row[2:10], *row[:2], row[11]
 
 
 def load_file():

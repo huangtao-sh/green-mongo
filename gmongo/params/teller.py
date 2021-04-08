@@ -9,7 +9,7 @@
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
-from orange.utils.sqlite import fetchvalue
+from orange.utils.sqlite import fetchvalue, fprint
 
 POST = (
     'R01:交易发起岗 R02:前台授权岗 R03:凭证管理岗 R04:分中心授权岗 '
@@ -50,7 +50,7 @@ def show_teller(sql, arg):
 def list_teller(cond, arg=[]):
     print('柜员号    姓名                员工号     机构    状态')
     tprint(
-        fetch(f'select id,name,userid,branch,zt from teller where {cond}',
+        fetch(f'select id,name,userid,branch,zt from teller where {cond} order by id',
               arg), {
                   0: '8',
                   1: '20',
@@ -82,9 +82,27 @@ def teller_check():
         print(*r)
 
 
+query_sql = '''
+select id,name,telephone,
+case grade when "0" then "0-经办" when "1" then "1-主办" when "2" then "2-主管" end,
+[group],
+userid,post,zxjyz,zzxe,xjxe,
+case rzlx when "0" then "0-密码" when "1" then "1-指纹" end,
+case substr(zt,1,1) when "1" then "1-签到" when "2" then "2-签退" when "3" then "3-临时停用" 
+when "4" then "4-永久停用" when "5" then "5-轧账" when "6" then "6-临时签退" end,
+pbjy,
+case gwxz when "1" then "1-非管库员" when "2" then "2-管库员" when "3" then "3-机器柜员" when "4" then "4-行外人员" end,
+qyrq,zzrq,jybz,fqjyz,zjlx,zjhm
+from teller 
+where branch=?
+order by id
+'''
+
+
 @arg('query', nargs='?', help='查询条件')
 @arg('-c', '--check', action='store_true', help='柜员表校验')
-def main(query=None, check=False):
+@arg('-e', '--export', nargs='?', dest='branchs', help='导出指定机构柜员，格式为')
+def main(query=None, check=False, branchs=None):
     print(f'数据版本：{get_ver("teller")}')
     if query:
         if R / r'\d{5}' == query:
@@ -97,3 +115,7 @@ def main(query=None, check=False):
             list_teller(f'name like "{query}%"')
     if check:
         teller_check()
+    if branchs:
+        for br in branchs.split(','):
+            print('导出机构号:', br)
+            fprint(query_sql, [br])
