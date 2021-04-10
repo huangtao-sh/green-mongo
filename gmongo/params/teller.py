@@ -38,22 +38,19 @@ def show_teller(sql, arg):
         gw = tlr.pop(7)
         tprint(zip(header, tlr), {0: '20'})
         g = []
-        '''
-        for x, y in zip(POST, gw.split(',')):
-            if y:
-                v = fetchvalue(
-                    f"select group_concat(memo,'，') from eddj where code in ('{y[:2]}','{y[2:]}')")
-                g.append((x, v))
-                '''
+        jndj = set()
         for i, y in enumerate(gw.split(',')):
             if i % 2 == 0 and y:
                 x = POST[i//2]
                 v = fetchvalue(
                     f"select group_concat(memo,'，') from eddj where code in ('{y[:2]}','{y[2:]}')")
                 g.append((x, v))
+            elif i % 2 == 1:
+                jndj.add(y)
 
         tprint(g, {0: '20'})
-        print()
+        jndj.remove('')
+        print('技能等级：     ', *jndj)
 
 
 def list_teller(cond, arg=[]):
