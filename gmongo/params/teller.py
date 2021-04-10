@@ -18,31 +18,40 @@ POST = (
     'R13:异常授权岗 R14:异常处理岗 R15:权限管理授权岗 R16:审查复核岗 '
     'R17:附加要素复核岗 R18:数据录入岗 R19:数据复核岗 R20:验票与保管岗 '
     'R21:审查岗 R22:信用卡审查岗 R41:放款受理人 R42:放款审核人 R43:放款核准人 '
-    'R44:放款复核人 R45:业务审核岗'
+    'R44:放款复核人 R45:业务审核岗 R51：审计岗'
 ).split()
 
 
 def show_teller(sql, arg):
-    header = '柜员号，姓名，电话，柜员级别，柜组，机构号，员工号，执行交易组，转账限额，现金限额，认证类型，状态，屏蔽交易，岗位性质，启用日期，停用日期，交易币种，发起交易组，证件种类，证件号码'.split(
+    header = '柜员号，姓名，电话，柜员级别，柜组，机构号，员工号，执行交易组，转账限额，现金限额，认证类型，状态，屏蔽交易，岗位性质，启用日期，停用日期，交易币种，发起交易组，证件种类，证件号码，是否运营人员'.split(
         '，')
     for tlr in fetch(sql, arg):
         tlr = list(tlr)
-        tlr[-10] = {'0': '0-密码', '1': '1-指纹'}.get(tlr[-10])
-        tlr[-7] = {
+        tlr[-11] = {'0': '0-密码', '1': '1-指纹'}.get(tlr[-11])
+        tlr[-8] = {
             '0': '0-非管库员',
             '1': '1-管库员',
             '2': '2-机器柜员',
             '3': '3-行外人员'
-        }.get(tlr[-7])
-        tlr[-2] = {'1': '1-身份证'}.get(tlr[-2], tlr[-2])
+        }.get(tlr[-8])
+        tlr[-3] = {'1': '1-身份证'}.get(tlr[-3], tlr[-3])
         gw = tlr.pop(7)
         tprint(zip(header, tlr), {0: '20'})
         g = []
+        '''
         for x, y in zip(POST, gw.split(',')):
             if y:
                 v = fetchvalue(
                     f"select group_concat(memo,'，') from eddj where code in ('{y[:2]}','{y[2:]}')")
                 g.append((x, v))
+                '''
+        for i, y in enumerate(gw.split(',')):
+            if i % 2 == 0 and y:
+                x = POST[i//2]
+                v = fetchvalue(
+                    f"select group_concat(memo,'，') from eddj where code in ('{y[:2]}','{y[2:]}')")
+                g.append((x, v))
+
         tprint(g, {0: '20'})
         print()
 
