@@ -50,7 +50,7 @@ def show_teller(sql, arg):
 
         tprint(g, {0: '20'})
         jndj.remove('')
-        print('技能等级：     ', *jndj)
+        print('技能等级：          ', *jndj)
 
 
 def list_teller(cond, arg=[]):
