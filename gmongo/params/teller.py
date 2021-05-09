@@ -134,7 +134,7 @@ def main(query=None, check=False, branchs=None):
                     continue
                 book.add_table(
                     sheet=name,
-                    data=(query_sql, [br]),
+                    data=fetch(query_sql, [br]),
                     columns=[
                         Header('柜员号',12),
                         Header('姓名',20),
