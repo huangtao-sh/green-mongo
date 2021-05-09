@@ -6,6 +6,8 @@
 # 创建：2019-10-31 14:37
 # 修订：2019-12-13 16:51 更新个别字段的显示
 
+from orange.xlsx import Header
+from orange import Path
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
@@ -123,9 +125,34 @@ def main(query=None, check=False, branchs=None):
         teller_check()
     if branchs:
         captial = ""
-        for br in branchs.split(','):
-            if captial and len(br) < 9:
-                br = captial[:-len(br)]+br
-            print('导出机构号:', br)
-            fprint(query_sql, [br])
-            captial = br
+        with Path('~/Documents/柜员表导出.xlsx').write_xlsx(force=True)as book:
+            for br in branchs.split(','):
+                if captial and len(br) < 9:
+                    br = captial[:-len(br)]+br
+                name = fetchvalue('select mc from ggjgm where jgm=?', br)
+                if not name:
+                    continue
+                book.add_table(
+                    sheet=name,
+                    data=(query_sql, [br]),
+                    columns=[
+                        Header('柜员号',12),
+                        Header('姓名',20),
+                        Header('电话',20),
+                        Header('级别',20),
+                        Header('工号',10),
+                        Header('岗位',40),
+                        Header('执行交易组',40),
+                        Header('转账限额',12),
+                        Header('现金限额',12),
+                        Header('认证类型',10),
+                        Header('状态',10),
+                        Header('岗位性质',10),
+                        Header('启用日期',12),
+                        Header('终止日期',12),
+                        Header('发起交易组',15),
+                        Header('证件类型',8),
+                        Header('证件号码',21)
+                    ]
+                )
+                captial = br
