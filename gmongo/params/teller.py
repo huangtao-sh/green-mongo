@@ -129,7 +129,7 @@ def main(query=None, check=False, branchs=None):
             for br in branchs.split(','):
                 if captial and len(br) < 9:
                     br = captial[:-len(br)]+br
-                name = fetchvalue('select mc from ggjgm where jgm=?', br)
+                name = fetchvalue('select mc from ggjgm where jgm=?', [br])
                 if not name:
                     continue
                 book.add_table(
