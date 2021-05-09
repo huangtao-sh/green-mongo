@@ -7,7 +7,7 @@
 # 修订：2019-12-13 16:51 更新个别字段的显示
 
 from orange.xlsx import Header
-from orange import Path
+from orange import Path, Data
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
@@ -96,15 +96,72 @@ case grade when "0" then "0-经办" when "1" then "1-主办" when "2" then "2-�
 [group],
 userid,post,zxjyz,zzxe,xjxe,
 case rzlx when "0" then "0-密码" when "1" then "1-指纹" end,
-case substr(zt,1,1) when "1" then "1-签到" when "2" then "2-签退" when "3" then "3-临时停用" 
+case substr(zt,1,1) when "1" then "1-签到" when "2" then "2-签退" when "3" then "3-临时停用"
 when "4" then "4-永久停用" when "5" then "5-轧账" when "6" then "6-临时签退" end,
 pbjy,
 case gwxz when "1" then "1-非管库员" when "2" then "2-管库员" when "3" then "3-机器柜员" when "4" then "4-行外人员" end,
-qyrq,zzrq,jybz,fqjyz,zjlx,zjhm
-from teller 
+qyrq,zzrq,jybz,fqjyz,
+case zjlx when "1" then "1-居民身份证" else "2-其他" end,
+zjhm
+from teller
 where branch=?
 order by id
 '''
+
+
+def conv(row):
+    posts = []
+    jn = ""
+    row = list(row)
+    for i, post in enumerate(row[6].split(',')):
+        if post:
+            if i % 2 == 0:
+                posts.append(f"{POST[i//2]}：{post}")
+            else:
+                jn = post[2:]
+        row[6] = "；".join(posts)
+    return [*row, jn]
+
+
+def export_teller(branchs):
+    captial = ""
+    Ver = fetchvalue('select ver from LoadFile where name="teller" ')
+    with Path(f'~/Documents/业务检查用柜员表（截至{Ver}）.xlsx').write_xlsx(force=True)as book:
+        for br in branchs.split(','):
+            if captial and len(br) < 9:
+                br = captial[:-len(br)]+br
+            name = fetchvalue('select mc from ggjgm where jgm=?', [br])
+            if not name:
+                continue
+            book.add_table(
+                sheet=name,
+                data=Data(fetch(query_sql, [br]), converter=conv),
+                columns=[
+                    Header('柜员号', 10),
+                    Header('姓名', 20),
+                    Header('电话', 20),
+                    Header('柜员级别', 20),
+                    Header('柜组', 12),
+                    Header('工号', 10),
+                    Header('岗位', 40),
+                    Header('执行交易组', 40),
+                    Header('转账限额', 12),
+                    Header('现金限额', 12),
+                    Header('认证类型', 10),
+                    Header('状态', 10),
+                    Header('屏蔽交易', 30),
+                    Header('岗位性质', 10),
+                    Header('启用日期', 12),
+                    Header('终止日期', 12),
+                    Header('交易币种', 20),
+                    Header('发起交易组', 30),
+                    Header('证件类型', 15),
+                    Header('证件号码', 19),
+                    Header('技能等级', 8),
+                ]
+            )
+            captial = br
+        print('导出文件成功！')
 
 
 @arg('query', nargs='?', help='查询条件')
@@ -124,36 +181,4 @@ def main(query=None, check=False, branchs=None):
     if check:
         teller_check()
     if branchs:
-        captial = ""
-        with Path('~/Documents/柜员表导出.xlsx').write_xlsx(force=True)as book:
-            for br in branchs.split(','):
-                if captial and len(br) < 9:
-                    br = captial[:-len(br)]+br
-                name = fetchvalue('select mc from ggjgm where jgm=?', [br])
-                if not name:
-                    continue
-                book.add_table(
-                    sheet=name,
-                    data=fetch(query_sql, [br]),
-                    columns=[
-                        Header('柜员号', 12),
-                        Header('姓名', 20),
-                        Header('电话', 20),
-                        Header('级别', 20),
-                        Header('柜组', 12),
-                        Header('工号', 10),
-                        Header('岗位', 40),
-                        Header('执行交易组', 40),
-                        Header('转账限额', 12),
-                        Header('现金限额', 12),
-                        Header('认证类型', 10),
-                        Header('状态', 10),
-                        Header('岗位性质', 10),
-                        Header('发起交易组', 15),
-                        Header('启用日期', 12),
-                        Header('终止日期', 12),
-                        Header('证件类型', 8),
-                        Header('证件号码', 21)
-                    ]
-                )
-                captial = br
+        export_teller(branchs)
