@@ -122,6 +122,10 @@ def main(query=None, check=False, branchs=None):
     if check:
         teller_check()
     if branchs:
+        captial = ""
         for br in branchs.split(','):
+            if captial and len(br) < 9:
+                br = captial[:-len(br)]+br
             print('导出机构号:', br)
             fprint(query_sql, [br])
+            captial = br
