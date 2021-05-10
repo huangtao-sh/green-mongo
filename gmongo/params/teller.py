@@ -99,8 +99,8 @@ case rzlx when "0" then "0-密码" when "1" then "1-指纹" end,
 case substr(zt,1,1) when "1" then "1-签到" when "2" then "2-签退" when "3" then "3-临时停用"
 when "4" then "4-永久停用" when "5" then "5-轧账" when "6" then "6-临时签退" end,
 pbjy,
-case gwxz when "1" then "1-非管库员" when "2" then "2-管库员" when "3" then "3-机器柜员" when "4" then "4-行外人员" end,
-qyrq,zzrq,jybz,fqjyz,
+case gwxz when "0" then "0-非管库员" when "1" then "1-管库员" when "2" then "2-机器柜员" when "3" then "3-行外人员" end,
+qyrq,zzrq,jybz,fqjyz,sfyy,
 case zjlx when "1" then "1-居民身份证" else "2-其他" end,
 zjhm
 from teller
@@ -134,7 +134,7 @@ def export_teller(branchs):
             if not name:
                 continue
             book.add_table(
-                sheet=name,
+                sheet=f'{br}-{name}',
                 data=Data(fetch(query_sql, [br]), converter=conv),
                 columns=[
                     Header('柜员号', 11, 'normal'),
@@ -148,13 +148,14 @@ def export_teller(branchs):
                     Header('转账限额', 12, 'normal'),
                     Header('现金限额', 12, 'normal'),
                     Header('认证类型', 10, 'normal'),
-                    Header('状态', 10, 'normal'),
+                    Header('状态', 11, 'normal'),
                     Header('屏蔽交易', 30, 'normal'),
-                    Header('岗位性质', 10, 'normal'),
+                    Header('岗位性质', 12, 'normal'),
                     Header('启用日期', 12, 'normal'),
                     Header('终止日期', 12, 'normal'),
                     Header('交易币种', 20, 'normal'),
                     Header('发起交易组', 45, 'normal'),
+                    Header('是否运营人员', 12, 'normal'),
                     Header('证件类型', 15, 'normal'),
                     Header('证件号码', 19, 'normal'),
                     Header('技能等级', 8, 'normal'),
