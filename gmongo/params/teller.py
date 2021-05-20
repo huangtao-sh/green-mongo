@@ -124,34 +124,36 @@ def conv(row):
 
 
 def add_table(book: Workbook, br, name):
-    book.add_table(
-        sheet=f'{br}-{name}',
-        data=Data(fetch(query_sql, [br]), converter=conv),
-        columns=[
-            Header('柜员号', 11, 'normal'),
-            Header('姓名', 15, 'normal'),
-            Header('电话', 12, 'normal'),
-            Header('柜员级别', 12, 'normal'),
-            Header('柜组', 9, 'normal'),
-            Header('工号', 9, 'normal'),
-            Header('岗位', 25, 'normal'),
-            Header('执行交易组', 80, 'normal'),
-            Header('转账限额', 12, 'normal'),
-            Header('现金限额', 12, 'normal'),
-            Header('认证类型', 10, 'normal'),
-            Header('状态', 11, 'normal'),
-            Header('屏蔽交易', 30, 'normal'),
-            Header('岗位性质', 12, 'normal'),
-            Header('启用日期', 12, 'normal'),
-            Header('终止日期', 12, 'normal'),
-            Header('交易币种', 20, 'normal'),
-            Header('发起交易组', 45, 'normal'),
-            Header('是否运营人员', 12, 'normal'),
-            Header('证件类型', 15, 'normal'),
-            Header('证件号码', 19, 'normal'),
-            Header('技能等级', 8, 'normal'),
-        ]
-    )
+    data = tuple(Data(fetch(query_sql, [br]), converter=conv))
+    if data:
+        book.add_table(
+            sheet=f'{br}-{name}',
+            data=data,
+            columns=[
+                Header('柜员号', 11, 'normal'),
+                Header('姓名', 15, 'normal'),
+                Header('电话', 12, 'normal'),
+                Header('柜员级别', 12, 'normal'),
+                Header('柜组', 9, 'normal'),
+                Header('工号', 9, 'normal'),
+                Header('岗位', 25, 'normal'),
+                Header('执行交易组', 80, 'normal'),
+                Header('转账限额', 12, 'normal'),
+                Header('现金限额', 12, 'normal'),
+                Header('认证类型', 10, 'normal'),
+                Header('状态', 11, 'normal'),
+                Header('屏蔽交易', 30, 'normal'),
+                Header('岗位性质', 12, 'normal'),
+                Header('启用日期', 12, 'normal'),
+                Header('终止日期', 12, 'normal'),
+                Header('交易币种', 20, 'normal'),
+                Header('发起交易组', 45, 'normal'),
+                Header('是否运营人员', 12, 'normal'),
+                Header('证件类型', 15, 'normal'),
+                Header('证件号码', 19, 'normal'),
+                Header('技能等级', 8, 'normal'),
+            ]
+        )
 
 
 def export_teller(branchs):
@@ -169,7 +171,7 @@ def export_teller(branchs):
                 add_table(book, br, name)
                 captial = br
         else:
-            for br, name in fetch('select jgm,mc from ggjgm where jgm like ?', f"{branchs}%"):
+            for br, name in fetch('select jgm,mc from ggjgm where jgm like ?', [f"{branchs}%"]):
                 add_table(book, br, name)
         print('导出文件成功！')
 
