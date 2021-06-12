@@ -7,10 +7,16 @@
 
 from orange import Path, HOME, R, extract
 from gmongo import db_config, fetch, fetchone, fetchvalue, executescript, transaction, execute,\
-    loadcheck
-from orange.utils.sqlite import insert
+    loadcheck, executemany
+from orange.utils.sqlite import insert, tran, fprint
+from hashlib import md5
 
 PeriodPattern = R / r'.*?(?P<year>\d{4}).*?(?P<month>\d{1,2})'
+
+
+def get_md5(s: str) -> str:
+    md = md5(s.encode('utf8'))
+    return md.hexdigest()
 
 
 class Period(object):  # 期次
@@ -89,14 +95,68 @@ def publish_wt():  # 发布履职报告问题
     export_file()  # 导出文件
 
 
+def restore():
+    @tran
+    def loadfile(filename):
+        def read():
+            for sheet in filename.worksheets:
+                if sheet.name.endswith('年汇总'):
+                    data = sheet._cell_values
+                    if len(data) > 3 and len(data[2]) == 9:
+                        for row in data[2:]:
+                            yield [get_md5(row[4]), f'{row[0][:4]}-{row[0][5:7]}', *row[1:]]
+        execute('delete from lzwt')
+        sql = (
+            'insert or replace into lzwt(bh,period,importance,category,branch,content,reporter,'
+            'reply_dept,reply,status)values(?,?,?,?,?,?,?,?,?,?)'
+        )
+        executemany(sql, read())
+
+    @tran
+    def update():
+        for path in Path('~/OneDrive/工作/工作档案/履职报告/处理完成').glob('营业主管*.*'):
+            data = path.sheets(0)
+            period = data[0][0][-8:-1]
+            for row in data[2:]:
+                name = row[4]
+                if name and not(name.endswith('部') or name.endswith('中心')):
+                    r = execute('update lzwt set reply_person=? where period=? and bh=?',
+                                [name, period, get_md5(row[2])])
+                    if r.rowcount == 0:
+                        print(name, period, get_md5(row[2]))
+
+    path = ROOT.find('营业主管履职报告重点问题与答复意见*.xlsx')
+    if path:  # 导入最新履职报告
+        loadfile(path)
+        update()
+        fprint("select '导入数量：' || count(*)from lzwt ")
+
+
 @loadcheck
 def loaddfyj(filename):
     print(f'导入基准文件：{filename.name}')
-    execute('delete from lzwt')
-    print('清理已导入的数据')
-    excludes = set()
+    # execute('delete from lzwt')
+    # print('清理已导入的数据')
+    # excludes = set()
+    sql = (
+        'update lzwt set reply_dept=?,reply=?,status=?,importance=? where period=? and bh=?'
+    )
+    s = 0
     for sheet in filename.worksheets:
         if sheet.name in ('重点问题', '一般问题'):
+            data = sheet._cell_values
+            if len(data) > 3 and len(data[2]) == 8:
+                for row in data[2:]:
+                    if row:
+                        bh = get_md5(row[3])
+                        period = f'{row[0][:4]}-{row[0][5:7]}'
+                        r = execute(sql, [*row[5:8], sheet.name, period, bh])
+                        s += r.rowcount
+                        if not r.rowcount:
+                            print("Error", [*row[5:8], sheet.name, period, bh])
+    print(f'{s} 条记录被更新')
+
+    '''
 
             def procline(x):
                 x = [l.strip() for l in x]
@@ -123,6 +183,7 @@ def loaddfyj(filename):
                     insert('lzwt', data)
     count = fetchvalue('select count(reporter) from lzwt')
     print(f'共导入数据：{count:,d}')
+    '''
 
 
 @loadcheck
@@ -142,16 +203,23 @@ def loadwt(filename):
             print('存量数据已删除')
 
         def procline(line):
+            print(line)
             line = [x.strip() for x in line]
+            bh = get_md5(line[2])
             importance = '重点问题' if '重点' in line[6] else '一般问题'
+            dfr = ""
             if not (line[4].endswith('部') or line[4].endswith('中心')):
+                dfr = line[4]
                 line[4] = '运营管理部'
-            nline = [rq, importance]
-            nline.extend(line[:7])
+            nline = [bh, rq, importance, *line[:7], dfr]
             return nline
 
         data = filter(None, map(procline, data[2:]))
-        insert('lzwt', data)
+        sql = (
+            'insert or replace into lzwt(bh,period,importance,category,branch,content,reporter,'
+            'reply_dept,reply,status,reply_person)values(?,?,?,?,?,?,?,?,?,?,?)'
+        )
+        executemany(sql, data)
         s = 0
         for r in fetch(
                 'select importance,count(period) from lzwt '
@@ -163,7 +231,7 @@ def loadwt(filename):
 
 def write_curpriod(book, period, importance):
     data = fetch(
-        'select * from lzwt '
+        'select period,importance,category,branch,content,reporter,reply_dept,reply,status from lzwt '
         'where period=? and importance =? '
         'order by rowid ', [period, importance])
     if not data:
@@ -185,7 +253,7 @@ def write_curpriod(book, period, importance):
 
 def write_year(book, year):
     data = fetch(
-        'select * from lzwt '
+        'select period,importance,category,branch,content,reporter,reply_dept,reply,status from lzwt '
         'where  period like ? '
         'order by period,importance desc,rowid ', [f'{year}%'])
     if not data:

@@ -74,6 +74,7 @@ if not exists brorder
     state   bool                     -- 状态
 );
 
+/*
 create table
 if not exists lzwt
 (
@@ -87,8 +88,9 @@ if not exists lzwt
     reply       text,
     status      text
 );
+*/
 
-drop table if exists yyzg;
+-- drop table if exists yyzg;
 create table if not exists yyzg(
 	gyh		text,       -- 柜员号
 	ygh		text,		-- 员工号
@@ -102,4 +104,20 @@ create table if not exists yyzg(
 	jgmc	text,		-- 机构名称
 	whrq	text,		-- 维护日期
     primary key(gyh,jg)
+);
+
+create table if not exists lzwt(
+    bh          text,   -- 编号，内容的 MD5编码
+    period      text,   -- 期次
+    importance  text,   -- 重要性
+    category    text,   -- 类别
+    branch      text,   -- 机构
+    content     text,   -- 内容
+    reporter    text,   -- 报送人
+    reply_dept  text,   -- 答复部门
+    reply       text,   -- 答复内容
+    status      text,   -- 状态，待提交需求，已提交需求，已解决
+    reply_person text,  -- 答复人
+    ywxq        text,   -- 需求名称、编号
+    primary key(bh,period)
 );

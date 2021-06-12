@@ -6,7 +6,7 @@
 # 创建：2019-10-31 14:37
 # 修订：2019-12-13 16:51 更新个别字段的显示
 
-from orange.xlsx import Header, Workbook
+from orange.xlsx import Header
 from orange import Path, Data
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
@@ -123,56 +123,45 @@ def conv(row):
     return [*row, jn]
 
 
-def add_table(book: Workbook, br, name):
-    data = tuple(Data(fetch(query_sql, [br]), converter=conv))
-    if data:
-        book.add_table(
-            sheet=f'{br}-{name}',
-            data=data,
-            columns=[
-                Header('柜员号', 11, 'normal'),
-                Header('姓名', 15, 'normal'),
-                Header('电话', 12, 'normal'),
-                Header('柜员级别', 12, 'normal'),
-                Header('柜组', 9, 'normal'),
-                Header('工号', 9, 'normal'),
-                Header('岗位', 25, 'normal'),
-                Header('执行交易组', 80, 'normal'),
-                Header('转账限额', 12, 'normal'),
-                Header('现金限额', 12, 'normal'),
-                Header('认证类型', 10, 'normal'),
-                Header('状态', 11, 'normal'),
-                Header('屏蔽交易', 30, 'normal'),
-                Header('岗位性质', 12, 'normal'),
-                Header('启用日期', 12, 'normal'),
-                Header('终止日期', 12, 'normal'),
-                Header('交易币种', 20, 'normal'),
-                Header('发起交易组', 45, 'normal'),
-                Header('是否运营人员', 12, 'normal'),
-                Header('证件类型', 15, 'normal'),
-                Header('证件号码', 19, 'normal'),
-                Header('技能等级', 8, 'normal'),
-            ]
-        )
-
-
 def export_teller(branchs):
+    captial = ""
     Ver = fetchvalue('select ver from LoadFile where name="teller" ')
     with Path(f'~/Documents/业务检查用柜员表（截至{Ver}）.xlsx').write_xlsx(force=True)as book:
-        brs = branchs.split(',')
-        if len(brs) > 1:
-            captial = ""
-            for br in brs:
-                if captial and len(br) < 9:
-                    br = captial[:-len(br)]+br
-                name = fetchvalue('select mc from ggjgm where jgm=?', [br])
-                if not name:
-                    continue
-                add_table(book, br, name)
-                captial = br
-        else:
-            for br, name in fetch('select jgm,mc from ggjgm where jgm like ?', [f"{branchs}%"]):
-                add_table(book, br, name)
+        for br in branchs.split(','):
+            if captial and len(br) < 9:
+                br = captial[:-len(br)]+br
+            name = fetchvalue('select mc from ggjgm where jgm=?', [br])
+            if not name:
+                continue
+            book.add_table(
+                sheet=f'{br}-{name}',
+                data=Data(fetch(query_sql, [br]), converter=conv),
+                columns=[
+                    Header('柜员号', 11, 'normal'),
+                    Header('姓名', 15, 'normal'),
+                    Header('电话', 12, 'normal'),
+                    Header('柜员级别', 12, 'normal'),
+                    Header('柜组', 9, 'normal'),
+                    Header('工号', 9, 'normal'),
+                    Header('岗位', 25, 'normal'),
+                    Header('执行交易组', 80, 'normal'),
+                    Header('转账限额', 12, 'normal'),
+                    Header('现金限额', 12, 'normal'),
+                    Header('认证类型', 10, 'normal'),
+                    Header('状态', 11, 'normal'),
+                    Header('屏蔽交易', 30, 'normal'),
+                    Header('岗位性质', 12, 'normal'),
+                    Header('启用日期', 12, 'normal'),
+                    Header('终止日期', 12, 'normal'),
+                    Header('交易币种', 20, 'normal'),
+                    Header('发起交易组', 45, 'normal'),
+                    Header('是否运营人员', 12, 'normal'),
+                    Header('证件类型', 15, 'normal'),
+                    Header('证件号码', 19, 'normal'),
+                    Header('技能等级', 8, 'normal'),
+                ]
+            )
+            captial = br
         print('导出文件成功！')
 
 

@@ -10,7 +10,7 @@
 from collections import defaultdict
 from orange import Path, R, arg, cstr, datetime, now, extract
 from orange.utils.sqlite import connect, execute, executemany, find, findone,\
-    executescript, trans, Values
+    executescript, trans, Values, fprint
 import json
 
 ROOT = Path('~/OneDrive/工作/工作档案/履职报告')
