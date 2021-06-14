@@ -5,6 +5,7 @@
 # Email:huangtao.sh@icloud.com
 # 创建：2019-03-22 16:36
 
+from orange.xlsx import Header
 from orange import Path, HOME, R, extract
 from gmongo import db_config, fetch, fetchone, fetchvalue, executescript, transaction, execute,\
     loadcheck, executemany
@@ -93,6 +94,62 @@ def publish_wt():  # 发布履职报告问题
     if path:  # 导入最新处理的问题
         loadwt(path)
     export_file()  # 导出文件
+    update_wenti()  # 更新问题跟踪文件
+
+
+@loadcheck
+def load_wenti(filename):
+    s = 0
+    if filename:
+        for sheet in filename.worksheets:
+            for row in sheet._cell_values[1:]:
+                r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
+                            *row[7:10], row[0]])
+                s += r.rowcount
+                if r.rowcount == 0:
+                    print('Error:', row)
+    print(f'已更新数据：{s}条')
+
+
+def update_wenti():
+    path = Path('~/OneDrive/工作/工作档案/履职报告/系统问题/履职报告系统问题处理情况表.xlsx')
+    load_wenti(path) # 先导入问题跟踪情况表
+    sql = (
+        'select bh,period,category,branch,content,reporter,'
+        'reply,reply_person,status,ywxq '
+        'from lzwt where reply_dept="运营管理部" and %s and substr(period,1,4)>"2018" '
+        'order by period '
+    )
+    Headers = [
+        Header('编号', 37.73, 'Text'),
+        Header('提出时间', 13.8, 'Text'),
+        Header('问题分类', 13.8, 'Text'),
+        Header('机构', 30.73, 'Text'),
+        Header('具体内容', 50, 'Text'),
+        Header('报告人', 11.6, 'Text'),
+        Header('答复意见', 50, 'Text'),
+        Header('答复人', 11.6, 'Text'),
+        Header('状态', 10, 'Text'),
+        Header('备注', 40, 'Text'),
+    ]
+    with path.write_xlsx(force=True) as book:
+        book.add_formats(FORMATS)
+        book.add_table(
+            sheet='待提交需求问题',
+            columns=Headers,
+            data=fetch(sql % ('status in ("待提交需求","待优化")'))
+        )
+        book.add_table(
+            sheet='已提交需求问题',
+            columns=Headers,
+            data=fetch(sql % ('status in ("已提交需求","待投产")'))
+        )
+        book.add_table(
+            sheet='其他问题',
+            columns=Headers,
+            data=fetch(sql % ('status in ("待研究","待解决","部分解决")'))
+        )
+        print('导出待解决问题成功')
 
 
 def restore():
@@ -116,7 +173,7 @@ def restore():
     def update():
         for path in Path('~/OneDrive/工作/工作档案/履职报告/处理完成').glob('营业主管*.*'):
             data = path.sheets(0)
-            period = data[0][0][-8:-1]
+            period = path.pname[9:16]
             for row in data[2:]:
                 name = row[4]
                 if name and not(name.endswith('部') or name.endswith('中心')):

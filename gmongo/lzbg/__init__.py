@@ -10,7 +10,7 @@ from orange.utils.sqlite import db_config, execute, findone, find, executefile, 
 from gmongo import checkload
 from .db import init_db, drop_tables
 
-db_config('lzbg')
+db_config('~/OneDrive/db/lzbg.db')
 brfile = HOME/'OneDrive/工作/参数备份/分行表/分行顺序表.xlsx'
 
 
@@ -57,7 +57,8 @@ def fhlz(init_=False, tables=None, config=False, load=False,
 @arg('-p', '--publish', action='store_true', help='发布文档')
 @arg('-q', '--query', nargs='?', dest='sql', metavar='sql', default='NOSET', help='执行查询语句')
 @arg('-R', '--Restore', action='store_true', help='恢复数据')
-def lzbg(init_=False, loadfile=False, branchs=None, report=False, Restore=False,
+@arg('-U', '--update', action='store_true', help='更新进度')
+def lzbg(init_=False, loadfile=False, branchs=None, report=False, Restore=False, update=False,
          export_qc=None, wenti=False, show=False, publish=False, sql=''):
     if init_:
         init_db()
@@ -81,3 +82,6 @@ def lzbg(init_=False, loadfile=False, branchs=None, report=False, Restore=False,
     if Restore:
         from .publish import restore
         restore()
+    if update:
+        from .publish import update_wenti
+        update_wenti()
