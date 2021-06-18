@@ -101,20 +101,20 @@ def publish_wt():  # 发布履职报告问题
 @loadcheck
 def load_wenti(filename):
     s = 0
-    if filename:
-        for sheet in filename.worksheets:
-            for row in sheet._cell_values[1:]:
-                r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
-                            *row[7:10], row[0]])
-                s += r.rowcount
-                if r.rowcount == 0:
-                    print('Error:', row)
+    for sheet in filename.worksheets:
+        for row in sheet._cell_values[1:]:
+            r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
+                        *row[7:10], row[0]])
+            s += r.rowcount
+            if r.rowcount == 0:
+                print('Error:', row)
     print(f'已更新数据：{s}条')
 
 
 def update_wenti():
     path = Path('~/OneDrive/工作/工作档案/履职报告/系统问题/履职报告系统问题处理情况表.xlsx')
-    load_wenti(path) # 先导入问题跟踪情况表
+    if path:
+        load_wenti(path) # 先导入问题跟踪情况表
     sql = (
         'select bh,period,category,branch,content,reporter,'
         'reply,reply_person,status,ywxq '
