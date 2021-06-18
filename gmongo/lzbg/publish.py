@@ -130,7 +130,7 @@ def update_wenti():
         Header('报告人', 11.6, 'Text'),
         Header('答复意见', 50, 'Text'),
         Header('答复人', 11.6, 'Text'),
-        Header('状态', 10, 'Text'),
+        Header('状态', 11, 'Text'),
         Header('备注', 40, 'Text'),
     ]
     with path.write_xlsx(force=True) as book:
