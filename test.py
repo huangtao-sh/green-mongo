@@ -29,5 +29,6 @@ def update_zt():
                     if r.rowcount == 0:
                         print(zt, period, bh)
 
+from setuptools import find_packages
 
-update_wenti()
+
