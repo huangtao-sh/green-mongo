@@ -7,6 +7,15 @@
 
 from setuptools import setup, find_packages
 from gmongo.__version__ import version
+from pathlib import Path
+
+
+def read_requires():
+    path = Path('requirements.txt')
+    if path.exists():
+        requires = [x for x in path.read_text().splitlines() if x.strip()
+                    and not x.startswith('#')]
+        return requires
 
 consoles = [
     # 'jym=trans:JyJiaoyi.main',  # 交易码表
@@ -45,6 +54,7 @@ setup(
     package_data={
         '': ['sql/*.sql'],
     },
+    install_requires=read_requires(),
     author='huangtao',
     author_email='hunto@163.com',
     platforms='any',
