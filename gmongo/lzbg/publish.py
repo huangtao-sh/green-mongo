@@ -107,7 +107,7 @@ def load_wenti(filename):
         for row in sheet._cell_values[1:]:
             if get_md5("".join(row[7:10])) != row[10]:
                 r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
-                        *row[7:10], row[0]])
+                    *row[7:10], row[0]])
                 s += r.rowcount
                 if r.rowcount == 0:
                     print('Error:', row)
@@ -126,7 +126,7 @@ def update_wenti():
         'order by period '
     )
     Headers = [
-        Header('编号', 0.01),
+        Header('编号', 0.01, 'Text'),
         Header('提出时间', 13.8, 'Text'),
         Header('问题分类', 13.8, 'Text'),
         Header('机构', 30.73, 'Text'),
@@ -136,7 +136,7 @@ def update_wenti():
         Header('答复人', 11.6, 'Text'),
         Header('状态', 11, 'Text'),
         Header('业务需求', 50, 'Text'),
-        Header('校验位', 0.01)
+        Header('校验位', 0.01, 'Text')
     ]
 
     def conv(row):
