@@ -11,6 +11,7 @@ from orange import Path, HOME, R, extract
 from gmongo import db_config, fetch, fetchone, fetchvalue, executescript, transaction, execute,\
     loadcheck, executemany
 from orange.utils.sqlite import insert, tran, fprint
+from orange import Data
 from hashlib import md5
 
 PeriodPattern = R / r'.*?(?P<year>\d{4}).*?(?P<month>\d{1,2})'
@@ -100,21 +101,24 @@ def publish_wt():  # 发布履职报告问题
 
 @loadcheck
 def load_wenti(filename):
+    print('处理文件：', filename.pname)
     s = 0
     for sheet in filename.worksheets:
         for row in sheet._cell_values[1:]:
-            r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
+            if get_md5("".join(row[7:10])) != row[10]:
+                r = execute('update lzwt set reply_person=?,status=?,ywxq=? where bh=?', [
                         *row[7:10], row[0]])
-            s += r.rowcount
-            if r.rowcount == 0:
-                print('Error:', row)
+                s += r.rowcount
+                if r.rowcount == 0:
+                    print('Error:', row)
     print(f'已更新数据：{s}条')
 
 
 def update_wenti():
-    path = Path('~/OneDrive/工作/工作档案/履职报告/系统问题/履职报告系统问题处理情况表.xlsx')
-    if path:
-        load_wenti(path) # 先导入问题跟踪情况表
+    for path in Path('~/OneDrive/工作/工作档案/履职报告/系统问题').glob('*.xlsx'):
+        load_wenti(path)
+
+    path = Path('~/OneDrive/工作/工作档案/履职报告/系统问题/履职报告问题处理情况表.xlsx')
     sql = (
         'select bh,period,category,branch,content,reporter,'
         'reply,reply_person,status,ywxq '
@@ -122,7 +126,7 @@ def update_wenti():
         'order by period '
     )
     Headers = [
-        Header('编号', 37.73, 'Text'),
+        Header('编号', 0.01),
         Header('提出时间', 13.8, 'Text'),
         Header('问题分类', 13.8, 'Text'),
         Header('机构', 30.73, 'Text'),
@@ -131,24 +135,33 @@ def update_wenti():
         Header('答复意见', 50, 'Text'),
         Header('答复人', 11.6, 'Text'),
         Header('状态', 11, 'Text'),
-        Header('备注', 40, 'Text'),
+        Header('业务需求', 50, 'Text'),
+        Header('校验位', 0.01)
     ]
+
+    def conv(row):
+        s = get_md5("".join(row[7:10]))
+        return (*row, s)
+
     with path.write_xlsx(force=True) as book:
         book.add_formats(FORMATS)
         book.add_table(
             sheet='待提交需求问题',
             columns=Headers,
-            data=fetch(sql % ('status in ("待提交需求","待优化")'))
+            data=Data(fetch(sql % ('status in ("待提交需求","待优化")')),
+                      converter=conv),
         )
         book.add_table(
             sheet='已提交需求问题',
             columns=Headers,
-            data=fetch(sql % ('status in ("已提交需求","待投产")'))
+            data=Data(fetch(sql % ('status in ("已提交需求","待投产")')),
+                      converter=conv),
         )
         book.add_table(
             sheet='其他问题',
             columns=Headers,
-            data=fetch(sql % ('status in ("待研究","待解决","部分解决")'))
+            data=Data(fetch(sql % ('status in ("待研究","待解决","部分解决")')),
+                      converter=conv),
         )
         print('导出待解决问题成功')
 
