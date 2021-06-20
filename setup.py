@@ -57,7 +57,6 @@ setup(
     install_requires=read_requires(),
     author='huangtao',
     author_email='hunto@163.com',
-    platforms='any',
     description='work platform',
     long_description='work platform',
     entry_points={
