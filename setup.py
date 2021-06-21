@@ -17,6 +17,7 @@ def read_requires():
                     and not x.startswith('#')]
         return requires
 
+
 consoles = [
     # 'jym=trans:JyJiaoyi.main',  # 交易码表
     # 'jycs=trans.jycs:PmJiaoyi.main',  # 交易码参数
@@ -43,6 +44,7 @@ consoles = [
     'nbzh=gmongo.nbzh:main',  # 内部账户
     # 'jy=gmongo.params.jym:main',  # 交易码，不再使用sql
     'tlr=gmongo.params.teller:main',  # 柜员表
+    'lzwt=gmongo.lzwt:main',  # 履职问题
     # 'mconf=params.mail:config_mail',  # 配置邮箱服务器
     # 'nkwg=nkwg:main',  # 内控违规
 ]
@@ -60,7 +62,7 @@ setup(
     description='work platform',
     long_description='work platform',
     entry_points={
-        'consoles': consoles,
+        'console_scripts': consoles,
     },
     url='https://github.com/huangtao-sh/mongo.git',
     license='GPL',
