@@ -8,9 +8,9 @@
 
 from orange.xlsx import Header
 from orange import Path, HOME, R, extract
-from gmongo import db_config, fetch, fetchone, fetchvalue, executescript, transaction, execute,\
-    loadcheck, executemany
-from orange.utils.sqlite import insert, tran, fprint
+from orange.utils.sqlite import db_config, fetch, fetchone, fetchvalue, executescript, execute,\
+    executemany, tran, fprint
+from gmongo import loadcheck
 from orange import Data
 from hashlib import md5
 

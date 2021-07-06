@@ -1,5 +1,5 @@
-from gmongo.lzwt import main
+from gmongo.lzbg import lzbg, fhlz
 
 import sys
-sys.argv=['','-l']
-main()
+sys.argv = ['', '-i']
+lzbg()

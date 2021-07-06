@@ -6,7 +6,8 @@
 # 创建：2019-01-23 20:14
 from orange import now
 import json
-from gmongo import execute, R, HOME, loadcheck, transaction
+from orange.utils.sqlite import execute
+from gmongo import R, HOME, loadcheck
 
 ROOT = HOME/'OneDrive/工作/工作档案/分行履职报告'
 

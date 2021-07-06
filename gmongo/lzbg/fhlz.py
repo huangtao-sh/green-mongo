@@ -6,11 +6,10 @@
 # 创建：2019-01-23 10:16
 
 from orange.xlsx import Header
-# from yaml import load, CLoader
 import json
-from gmongo import executemany, procdata, HOME, R, execute, loadcheck,\
-    fetch, transaction, fetchvalue
-from orange import extract, Path
+from orange.utils.sqlite import executemany, execute, fetch, fetchvalue
+from gmongo import procdata, loadcheck
+from orange import extract, Path, HOME, R
 SAVEPATH = HOME/'OneDrive/工作/工作档案/分行履职报告'
 
 

@@ -10,7 +10,7 @@
 from .lzbg import ROOT
 from orange import Path, extract
 import json
-from gmongo import find, findone, procdata, R
+from gmongo import fetch, fetchone, procdata, R
 
 FORMATS = {       # 预定义格式
     'h1': {'font_name': '黑体', 'text_wrap': True, 'font_size': 18,
@@ -50,7 +50,7 @@ def export_ylb(qc=None, fn=None):
             return
     print(f'生成文件：{fn}')
     wt_data, zh_data, sb_data = [], [], []
-    db = find(
+    db = fetch(
         'select br,name,zhjj,sbmc,ycnr,content from report where period=?', [qc])
     for br, name, zhjj, sbmc, ycnr, content in db:
         for zl, zyx, content in json.loads(content):

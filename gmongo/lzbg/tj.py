@@ -5,14 +5,14 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-18 20:39
 
-from orange.utils.sqlite import findone, findvalue, find, execute, executemany, trans, fetchvalue,\
+from orange.utils.sqlite import fetchone, execute, executemany, trans, fetchvalue,\
     fprint, fprintf, fetch, Path
 from orange import cstr, R
 from orange.xlsx import Header
 
 
 def fetch_period() -> str:
-    d = findvalue('select period from report order by date desc limit 1')
+    d = fetchvalue('select period from report order by date desc limit 1')
     if not d:
         raise Exception('无数据记录')
     return d

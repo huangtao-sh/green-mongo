@@ -6,7 +6,7 @@
 # 创建：2018/07/20
 
 from orange import Path, arg, HOME
-from orange.utils.sqlite import db_config, execute, executefile, trans, fetch, fprint
+from orange.utils.sqlite import db_config, fprint
 from gmongo import checkload
 from .db import init_db, drop_tables
 
