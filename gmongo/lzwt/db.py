@@ -28,6 +28,6 @@ create table if not exists lzwt(
     ldyj    text,   -- 领导意见
     zt      text,   -- 处理状态：待提交需求，已提交需求，待投产，待解决，待研究
     ywxq    text,   -- 业务需求
-    jyw     text,   -- 校验位：从问题分类到状态的校验位
+    jyw     text    -- 校验位：从问题分类到状态的校验位
 )
 ''')

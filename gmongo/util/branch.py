@@ -23,6 +23,7 @@ def get_branches():
         branches = dict(map(convert, d.fetch(sql)))
         branches['331000000'] = '总行清算中心'
         branches['331000808'] = '总行营业中心'
+        branches['331000888'] = '总行营业部'
         return branches
 
 
