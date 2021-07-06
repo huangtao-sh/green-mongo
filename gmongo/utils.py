@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-19 08:46
 
-from orange.utils.sqlite import executescript, fetchvalue, execute, trans
+from orange.utils.sqlite import executescript, fetchvalue, execute, trans, tran
 from orange import Path
 from functools import wraps
 
@@ -23,7 +23,7 @@ def createtable():
     need_create = False
 
 
-def checkload(filename: str, loadfile: "function", *args, **kw)->bool:  # 检查文件是否已经导入
+def checkload(filename: str, loadfile: "function", *args, **kw) -> bool:  # 检查文件是否已经导入
     '''
     检查指定的文件是否已经导入数据库，如未导入执行 loadfile 函数
     filename: 待导入的文件
@@ -45,7 +45,7 @@ def checkload(filename: str, loadfile: "function", *args, **kw)->bool:  # 检查
 
 
 def loadcheck(func):
-    @transaction
+    @tran
     def _(filename, *args, **kw):
         need_create and createtable()       # 第一次执行本函数时建表
         file = Path(filename)
@@ -69,7 +69,7 @@ def procdata(data, header: list = None, converter: dict = None, mapper: dict = N
         converter = {}
     if mapper:
         mapper = mapper.copy()
-    if isinstance(mapper, dict)and mapper:
+    if isinstance(mapper, dict) and mapper:
         header = list(mapper.keys())
         for i, v in enumerate(mapper.values()):
             if v:
