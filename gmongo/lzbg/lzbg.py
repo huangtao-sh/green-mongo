@@ -9,7 +9,7 @@
 
 from collections import defaultdict
 from orange import Path, R, arg, cstr, datetime, now, extract
-from orange.utils.sqlite import connect, execute, executemany, find, findone,\
+from orange.utils.sqlite import connect, execute, executemany, fetch, fetchone,\
     executescript, trans, Values, fprint
 import json
 
