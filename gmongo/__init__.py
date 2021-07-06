@@ -9,14 +9,11 @@ from .__version__ import version as __version__
 from orange import R, Path, HOME
 from .utils import checkload, procdata, loadcheck
 from orange.utils.sqlite import db_config, execute, executemany, executescript, executefile,\
-    find, findone, findvalue, trans, transaction, insert
-
-executetrans = transaction
-
+    fetch, fetchone, fetchvalue, trans
 WORKPATH = Path('~/Documents/工作')
 
-__all__ = '__version__', 'R', 'Path', "WORKPATH", "checkload", "HOME", 'executetrans', 'insert'
+__all__ = '__version__', 'R', 'Path', "WORKPATH", "checkload", "HOME"
 
-fetchone = findone
-fetch = find
-fetchvalue = findvalue
+fetchone = fetchone
+fetch = fetch
+fetchvalue = fetchvalue

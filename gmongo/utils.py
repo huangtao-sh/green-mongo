@@ -5,7 +5,7 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2019-01-19 08:46
 
-from orange.utils.sqlite import executescript, fetchvalue, execute, transaction, trans
+from orange.utils.sqlite import executescript, fetchvalue, execute, trans
 from orange import Path
 from functools import wraps
 

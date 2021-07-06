@@ -22,8 +22,8 @@ def get_branches():
     with db('~/.data/params.db') as d:
         branches = dict(map(convert, d.fetch(sql)))
         branches['331000000'] = '总行清算中心'
-        branches['331000808'] = '总行营业中心'
-        branches['331000888'] = '总行营业部'
+        branches['331000808'] = '总行结算服务中心'
+        branches['331000888'] = '总行业务处理中心'
         return branches
 
 
