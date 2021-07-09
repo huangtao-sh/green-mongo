@@ -6,8 +6,8 @@
 # 创建：2019-05-14 11:36
 # 修订：2020-06-15 19:22 和 grape 共享数据库
 
-from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, insert, execute,\
-    fetch, fetchone, fetchvalue, transaction, loadfile, executescript
+from orange.utils.sqlite import executefile, fetch, db_config, loadcheck, execute,\
+    fetch, fetchone, fetchvalue, loadfile, executescript
 from orange import HOME, Path, now
 from functools import wraps
 from gmongo.util.branch import get_branches
