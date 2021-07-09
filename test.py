@@ -1,5 +1,5 @@
-from gmongo.lzbg import lzbg, fhlz
+from gmongo.params.pa import main
 
-
-from gmongo.lzbg.fhlz import export_ylb
-export_ylb('2019-3')
+import sys
+sys.argv = ['', '--show', 'teller']
+main()
