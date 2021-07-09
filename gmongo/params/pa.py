@@ -34,7 +34,4 @@ def main(**options):
         with connect():
             r = execute('delete from LoadFile where name=?',
                         [options['reset_name']])
-            if r.rowcount == 1:
-                print(f"重置 {options['reset_name']} 成功")
-            else:
-                print(f"重置 {options['reset_name']} 失败")
+            print(f"重置 {options['reset_name']}", '成功' if r.rowcount else '失败')
