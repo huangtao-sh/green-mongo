@@ -19,5 +19,6 @@ create table if not exists teller(
     jybz        text,   -- 交易币种
     fqjyz       text,   -- 发起交易组
     zjlx        text,   -- 证件类型
-    zjhm        text    -- 证件号码
+    zjhm        text,   -- 证件号码
+    sfyy        text    -- 是否运营人员
 )

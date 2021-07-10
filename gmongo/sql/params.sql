@@ -17,49 +17,10 @@ create table if not exists ggjgm (
     --16 开办日期
     hzjgm text --17 汇总机构码
 );--内部账户开立模板
-create table if not exists ggnbzhmb (
-    jglx text,
-    -- 机构类型，00-总行清算中心，01-总行营业部，10-分行清算中心，11-分行营业部，12-支行营业部
-    whrq date,
-    -- 维护日期
-    km text,
-    -- 科目
-    bz text,
-    -- 币种  00-所有币种，B1-常用币种
-    xh int,
-    -- 账户序号
-    hmgz int,
-    -- 户名规则 0-按科目，1-指定名称
-    hm text,
-    -- 指定户名
-    tzed real,
-    -- 透支额度
-    zhzt text,
-    -- 账户状态 第1位：0-开户，1-销户；第二位：0-正常，1-借冻，2-贷冻，3-双冻；第三位：0-不可收付现，1-可收付现
-    jxbz text,
-    -- 计息标志 第1位：0-不计息，1-按月，2-按季，3-按年；第2位：0-计息不入账，1-入收息，2-入付息
-    zt text default 0,
-    -- 0 正常，1-修改，2-删除
-    memo text default "",
-    primary key (jglx, km, bz, xh)
+
+
+create table if not exists xxbm(
+	bm		text 	primary key,  -- 编码
+	name	text,	-- 名称
+	km		text	-- 科目
 );
--- 参数期次
-create table if not exists param_period(
-    name text primary key,
-    -- 参数名称、表名
-    period text,
-    -- 期次
-    time text -- 导入时间
-);
-/*
-create table 
-if not EXISTS ggbzb 
--- 公共币种表
-(
-    bzh   text primary key , -- 币种号
-    gbh     text,       -- 国标号
-    bzmc    text,       -- 币种名称
-    ywsx    text,       -- 英文缩写
-    hltzcs  
-)
-*/

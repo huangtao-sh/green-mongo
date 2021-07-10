@@ -12,9 +12,9 @@ from orange import HOME, Path, now
 from functools import wraps
 from gmongo.util.branch import get_branches
 
-db_config('~/.data/params.db')
+db_config('params')
 
-ROOT = HOME / 'OneDrive/工作/参数备份'
+ROOT = HOME / 'Documents/参数备份'
 ParamRoot = ROOT.find('运营管理*')
 DefaultPeriod = str(ParamRoot)[-7:]
 
