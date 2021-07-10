@@ -29,6 +29,11 @@ def show_teller(sql, arg):
         '，')
     for tlr in fetch(sql, arg):
         tlr = list(tlr)
+        tlr[3] = {
+            '0': '0-经办',
+            '1': '1-主办',
+            '2': '2-主管'
+        }.get(tlr[3])
         tlr[-11] = {'0': '0-密码', '1': '1-指纹'}.get(tlr[-11])
         tlr[-8] = {
             '0': '0-非管库员',
