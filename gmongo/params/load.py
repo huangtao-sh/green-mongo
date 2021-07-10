@@ -53,7 +53,7 @@ loads = [
 
 
 def loadall():
-    # loadzip()
+    loadzip()
     for load in loads:
         try:
             load()
