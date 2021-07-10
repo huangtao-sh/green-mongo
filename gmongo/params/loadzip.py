@@ -22,25 +22,8 @@ def null2none(row: list) -> list:
     return [None if x == 'null' else x for x in row]
 
 
-''' 
-copy(d[:3], s[:3])
-	copy(d[3:7], s[4:8])
-	d[7] = strings.Join(s[8:length-26], ",")
-	d[8] = s[length-26]
-	copy(d[9:12], s[length-24:length-21])
-	copy(d[12:19], s[length-11:length-4])
-	copy(d[19:], s[length-3:])
-	if len(d[15]) == 8  {
-		d[15] = fmt.Sprintf("%s-%s-%s", d[15][:4], d[15][4:6], d[15][6:])
-	}
-    if len(d[16]) == 8  {
-		d[16] = fmt.Sprintf("%s-%s-%s", d[16][:4], d[16][4:6], d[16][6:])
-	}
-
-'''
-
-
-def teller_converter(row: list) -> list:
+@mapper
+def teller_conv(row: list) -> list:
     nrow = [""]*22
     nrow[:3] = row[:3]
     nrow[3:7] = row[4:8]
@@ -52,22 +35,10 @@ def teller_converter(row: list) -> list:
     return nrow
 
 
-teller_loader = Loader('teller', 22, stripper, converter=teller_converter)
-
-
-# 机构码导入
-
-
 @mapper
 def jg_conv(row: list) -> list:
     row[5] = row[5][:10]
     return row
-
-
-jgm_loader = Loader('ggjgm', 7,
-                    includer(0, 1, 3-43, 7-43, 15-43, 16-43, 17-43), stripper, jg_conv)
-
-# 交易码
 
 
 @mapper
@@ -76,21 +47,12 @@ def jy_conv(row: list) -> list:
     return row[:22]
 
 
-jym_loader = Loader('jym', 22, stripper, jy_conv)
-
-# 内部账户
-
-
 @mapper
 def nbzh_conv(row: list) -> list:
     for i in range(14, 18):
         if len(row[i]) > 10:
             row[i] = row[i][:10]
     return row
-
-
-nbzh_loader = Loader('nbzh', 25, stripper, nbzh_conv)
-# 内部账户模板
 
 
 @mapper
@@ -104,6 +66,11 @@ def cdjyfilter(row):
     return row[1] == '8'
 
 
+jgm_loader = Loader('ggjgm', 7, includer(
+    0, 1, 3-43, 7-43, 15-43, 16-43, 17-43), stripper, jg_conv)
+jym_loader = Loader('jym', 22, stripper, jy_conv)
+nbzh_loader = Loader('nbzh', 25, stripper, nbzh_conv)
+teller_loader = Loader('teller', 22, stripper, teller_conv)
 zhmb_loader = Loader('nbzhmb', 10, stripper, nbzhmb_conv)
 zzzz_loader = Loader('zzzz', 11, stripper)
 dzzz_loader = Loader('dzzz', 17, stripper, null2none)
