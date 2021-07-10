@@ -44,7 +44,8 @@ def teller_converter(row: list) -> list:
     nrow = [""]*22
     nrow[:3] = row[:3]
     nrow[3:7] = row[4:8]
-    nrow[8] = ",".join(row[8:-26])
+    nrow[7] = ",".join(row[8:-26])
+    nrow[8] = row[-26]
     nrow[9:12] = row[-24:-21]
     nrow[12:19] = row[-11:-4]
     nrow[19:] = row[-3:]
@@ -170,8 +171,8 @@ def loadzip():
                 loader = filelist.get(name)
                 loader.data = read(fileinfo, name)
                 loader.test()
-        #test('YUNGUAN_MONTH_STG_ZSRUN_GGXXBMDZB')
-        #exit()
+        # test('YUNGUAN_MONTH_STG_ZSRUN_GGXXBMDZB')
+        # exit()
         for name, loader in filelist.items():
             try:
                 load(name, loader)
