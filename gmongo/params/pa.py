@@ -6,7 +6,7 @@
 # 创建：2021-07-09 22:24
 
 from orange import arg, info
-from orange.utils.sqlite import db_config, fprintf, fprint, execute, connect
+from orange.utils.sqlite import db_config, fprintf, fprint, execute, connect, executefile
 
 
 @arg('-s', '--show', metavar='name', nargs='?', help='显示数据库表的创建语句')
@@ -15,6 +15,7 @@ from orange.utils.sqlite import db_config, fprintf, fprint, execute, connect
 @arg('-e', '--execute', metavar='sql', dest='esql', nargs='*', help='执行命令语句并显示执行结果')
 @arg('-l', '--load', action='store_true', help='导入参数数据')
 @arg('-r', '--reset', metavar='name', dest='reset_name', nargs='?', help='重置某表，重置后可以重新导入数据')
+@arg('-i', '--init', action='store_true', help='初始化数据库')
 def main(**options):
     db_config('params')
     info(f'set db param')
@@ -40,3 +41,6 @@ def main(**options):
         with connect():
             r = execute('delete from LoadFile where name=?', [name])
             print(f"重置 {name}", '成功' if r.rowcount else '失败')
+    if options['init']:
+        for name in ('jqb', 'jym', 'nbzh', 'nk', 'params', 'teller', 'yyzg'):
+            executefile('gmongo', f'sql/{name}.sql')
