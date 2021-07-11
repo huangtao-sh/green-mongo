@@ -34,11 +34,12 @@ def load_yyzg():
 @tran
 def load_nkwg():
     path = Downloads.find('resultReg*.xls*')
-    ver = ""
+    ver = datetime(path.mtime) % '%F'
     loadcheck('nkwg', path.name, path.mtime, ver)
     loader = Loader('nkwg', 29, includer(*range(29)))
     loader.data = path.sheets(0)
     loader.load()
+
 
 @tran
 def load_kemu():
@@ -69,7 +70,8 @@ def load_kemu():
             yield row
     loader.data = read()
     loader.load()
-    
+
+
 @tran
 def load_djr():
     path = (Canshu/'考核记录人').find('考核记录人.xls*')
@@ -78,6 +80,7 @@ def load_djr():
     loader = Loader('djr', 2)
     loader.data = path.sheets(0)[1:]
     loader.load()
+
 
 loads = [
     load_yyzg,

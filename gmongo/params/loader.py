@@ -18,7 +18,7 @@ def loadcheck(name: str, path: str, mtime: datetime, ver: str):
     checkSQL = "select count(name) from loadfile where name=? and path=? and mtime>=datetime(?)"
     doneSQL = "insert or replace into loadfile values(?,?,datetime(?),?)"
     if value := fetchvalue(checkSQL, [name, path, mtime]):
-        raise Exception(f'文件：{path} 已导入')
+        raise Exception(f'文件已导入：{path}')
     else:
         execute(doneSQL, [name, path, mtime, ver])
 
