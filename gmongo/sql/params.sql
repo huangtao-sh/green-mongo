@@ -31,7 +31,7 @@ create table if not exists branch(
     brorder text
 );
 
-creat table if not exists bzb(
+create table if not exists bzb(
     bz      text primary key,-- 币种号
     gbh     text, -- 国标号
     bzmc    text, -- 币种名称
