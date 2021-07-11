@@ -44,5 +44,6 @@ def main(**options):
             print(f"重置 {name}", '成功' if r.rowcount else '失败')
     if options['init']:
         for name in ('jqb', 'jym', 'nbzh', 'nk', 'params', 'teller', 'yyzg'):
-            print(f'执行 sql/{name}.sql')
+            print(f'执行 sql/{name}.sql', end='')
             executefile('gmongo', f'sql/{name}.sql')
+            print('成功')
