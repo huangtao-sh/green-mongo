@@ -25,8 +25,30 @@ create table if not exists xxbm(
 	km		text	-- 科目
 );
 
-create table branch(
+create table if not exists branch(
     jgm     text  primary key,  --机构码
     mc      text,
     brorder text
-)
+);
+
+creat table if not exists bzb(
+    bz      text primary key,-- 币种号
+    gbh     text, -- 国标号
+    bzmc    text, -- 币种名称
+    ywsx    text, -- 英文缩写
+    hltzcs  text, -- 汇率调整参数
+    hltzrq  text,   --汇率调整日期
+    ws      real,   -- 尾数
+    qybz    text,   -- 启用标志 0: 未用，1:启用，2:止用 
+    qyrq    text,   -- 启用日期
+    zyrq    text,   --止用日期
+    dgqygz  text    --对公启用标志
+/*
+第一位: 结算
+第二位: 同城
+第三位: 联行
+第4--8: 待定
+0: 未用
+1: 启用
+2: 止用*/
+);

@@ -7,7 +7,7 @@
 
 from .loader import Loader, loadcheck
 from zipfile import ZipFile
-from orange import Path, info, fatal, includer, decode, mapper, filterer
+from orange import Path, info, fatal, includer, decode, mapper, filterer, excluder
 from orange.utils.sqlite import tran
 Root = Path('~/Documents/参数备份')
 
@@ -58,6 +58,13 @@ def cdjyfilter(row):
     return row[1] == '8'
 
 
+@mapper
+def bz_conv(row: list) -> list:
+    for i in (5, 8, 9):
+        row[i] = row[i][:10]
+    return row
+
+
 jgm_loader = Loader('ggjgm', 7, includer(
     0, 1, 3-43, 7-43, 15-43, 16-43, 17-43), stripper, jg_conv)
 jym_loader = Loader('jym', 22, stripper, jy_conv)
@@ -70,6 +77,7 @@ shbs_loader = Loader('shbs', 1, includer(0))
 cdjy_loader = Loader('cdjy', 1, cdjyfilter, includer(0))
 xxbm_loader = Loader('xxbm', 3, includer(0, 1, 2), stripper)
 kmzd_loader = Loader('kmzd', 9, includer(2, 1, 3, 4, 5, 6, 7), stripper)
+bzb_loader = Loader('bzb', 11, excluder(-1), stripper, bz_conv)
 
 filelist = {
     'users_output': teller_loader,
@@ -83,6 +91,7 @@ filelist = {
     'YUNGUAN_MONTH_STG_TELLER_TRANSCONTROLS': cdjy_loader,
     'YUNGUAN_MONTH_STG_ZSRUN_GGXXBMDZB': xxbm_loader,
     'YUNGUAN_MONTH_STG_ZSRUN_GGKMZD': kmzd_loader,
+    'YUNGUAN_MONTH_STG_ZSRUN_GGBZB': bzb_loader,
 }
 
 
@@ -126,8 +135,8 @@ def loadzip():
                 loader = filelist.get(name)
                 loader.data = read(fileinfo, name)
                 loader.test()
-        # test('YUNGUAN_MONTH_STG_ZSRUN_GGXXBMDZB')
-        # exit()
+        #test('YUNGUAN_MONTH_STG_ZSRUN_GGBZB')
+        #exit()
         for name, loader in filelist.items():
             try:
                 load(name, loader)

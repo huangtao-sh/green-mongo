@@ -21,4 +21,11 @@ create table if not exists teller(
     zjlx        text,   -- 证件类型
     zjhm        text,   -- 证件号码
     sfyy        text    -- 是否运营人员
+);
+
+create table if not exists eddj(
+	code	text	primary key,	-- 等级代码
+	name	text,	--	等级名称
+	ed		text,	--	额度
+	memo	text	-- 备注
 )
