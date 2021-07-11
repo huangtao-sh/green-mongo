@@ -122,14 +122,10 @@ def loadzip():
         def load(fname: str, loader: Loader):
             if fileinfo := files.get(fname):
                 path = Path(fileinfo.filename)
-                mtime = datetime(*fileinfo.date_time) % '%F %H:%M:%S'
+                mtime = fileinfo.date_time
                 loadcheck(loader.table, path.name, mtime, ver)
                 loader.data = read(fileinfo, fname)
-                r = loader.load()
-                if r:
-                    print(f'导入文件 {fname} 成功，行数：{r.rowcount}')
-                else:
-                    raise Exception('执行SQL错误')
+                loader.load()
             else:
                 Warning(f'没有在压缩包中找到：{name}')
 

@@ -10,6 +10,11 @@ from orange.utils.sqlite import fetchvalue, execute, load
 
 
 def loadcheck(name: str, path: str, mtime: datetime, ver: str):
+    fmt = '%F %H:%M:%S'
+    if isinstance(mtime, (tuple, list)):
+        mtime = datetime(*mtime) % fmt
+    else:
+        mtime = datetime(mtime) % fmt
     checkSQL = "select count(name) from loadfile where name=? and path=? and mtime>=datetime(?)"
     doneSQL = "insert or replace into loadfile values(?,?,datetime(?),?)"
     if value := fetchvalue(checkSQL, [name, path, mtime]):
@@ -40,4 +45,9 @@ class Loader():
     def load(self):
         if self.data:
             data = Data(self.data, *self.converters, **self.kwargs)
-            return load(data, self.table, self.method, self.fields, self.clear)
+            r = load(data, self.table, self.method, self.fields, self.clear)
+            if r:
+                print(f'导入 {self.table} 完成，行数：{r.rowcount:,d}')
+            else:
+                raise Exception('导入数据失败')
+            return r
