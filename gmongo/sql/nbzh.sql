@@ -1,5 +1,3 @@
-
-const initNbzhSQL = `
 create table if not exists nbzh(
 	zh text primary key,    --  账号
 	jgm text,               --  机构码

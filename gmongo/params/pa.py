@@ -32,7 +32,7 @@ def main(**options):
             sql = ' '.join(sql)
             info(f'execute:{sql}')
             r = execute(sql)
-            print(f'{r.rowcount} 行数据受到影响')
+            print(f'{r.rowcount:,d} 行数据受到影响')
     if options['load']:
         from .load import loadall
         info('开始导入参数')
@@ -44,4 +44,5 @@ def main(**options):
             print(f"重置 {name}", '成功' if r.rowcount else '失败')
     if options['init']:
         for name in ('jqb', 'jym', 'nbzh', 'nk', 'params', 'teller', 'yyzg'):
+            print(f'执行 sql/{name}.sql')
             executefile('gmongo', f'sql/{name}.sql')
