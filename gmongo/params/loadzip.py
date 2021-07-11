@@ -7,7 +7,7 @@
 
 from .loader import Loader, loadcheck
 from zipfile import ZipFile
-from orange import Path, info, fatal, decode, Data, limit, datetime, includer, decode, mapper, filterer
+from orange import Path, info, fatal, includer, decode, mapper, filterer
 from orange.utils.sqlite import tran
 Root = Path('~/Documents/参数备份')
 
@@ -24,16 +24,6 @@ def null2none(row: list) -> list:
 
 @mapper
 def teller_conv(row: list) -> list:
-    ''' 
-    nrow = [""]*22
-    nrow[:3] = row[:3]
-    nrow[3:7] = row[4:8]
-    nrow[7] = ",".join(row[8:-26])
-    nrow[8] = row[-26]
-    nrow[9:12] = row[-24:-21]
-    nrow[12:19] = row[-11:-4]
-    nrow[19:] = row[-3:]
-    '''
     return [*row[:3], *row[4:8], ",".join(row[8:-26]), row[-26], *row[-24:-21], *row[-11:-4], *row[-3:]]
 
 

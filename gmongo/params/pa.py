@@ -5,10 +5,11 @@
 # Email:   huangtao.sh@icloud.com
 # 创建：2021-07-09 22:24
 
-from orange import arg, info
+from orange import arg, info, command
 from orange.utils.sqlite import db_config, fprintf, fprint, execute, connect, executefile
 
 
+@command(description='参数管理程序')
 @arg('-s', '--show', metavar='name', nargs='?', help='显示数据库表的创建语句')
 @arg('-L', '--list', action='store_true', help='显示数据库表')
 @arg('-q', '--query', metavar='sql', dest='qsql', nargs='*', help='执行查询语句并显示结果')
