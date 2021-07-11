@@ -24,6 +24,7 @@ def null2none(row: list) -> list:
 
 @mapper
 def teller_conv(row: list) -> list:
+    ''' 
     nrow = [""]*22
     nrow[:3] = row[:3]
     nrow[3:7] = row[4:8]
@@ -32,7 +33,8 @@ def teller_conv(row: list) -> list:
     nrow[9:12] = row[-24:-21]
     nrow[12:19] = row[-11:-4]
     nrow[19:] = row[-3:]
-    return nrow
+    '''
+    return [*row[:3], *row[4:8], ",".join(row[8:-26]), row[-26], *row[-24:-21], *row[-11:-4], *row[-3:]]
 
 
 @mapper

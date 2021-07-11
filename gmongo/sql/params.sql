@@ -24,3 +24,9 @@ create table if not exists xxbm(
 	name	text,	-- 名称
 	km		text	-- 科目
 );
+
+create table branch(
+    jgm     text  primary key,  --机构码
+    mc      text,
+    brorder text
+)
