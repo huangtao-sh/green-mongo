@@ -32,6 +32,7 @@ consoles = [
     'lzwt=gmongo.lzwt:main',  # 履职问题
     'pa=gmongo.params.pa:main',  # 参数管理主程序
     'jgm=gmongo.params.branch:main',  # 机构码查询主程序
+    'yyzg=gmongo.params.yyzg:main', # 营业主管查询程序
 ]
 
 setup(
