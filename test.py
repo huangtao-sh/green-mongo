@@ -1,6 +1,6 @@
-from gmongo.params.bz import main
+from gmongo.params.yyzg import main
 
 import sys
-cmd = 'cmd 13 新西兰 15 01'
+cmd = 'cmd -ta 汪 黄'
 sys.argv = cmd.split(' ')
 main()
