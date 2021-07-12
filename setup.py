@@ -20,7 +20,7 @@ def read_requires():
 
 consoles = [
     'lxr=gmongo.params.txl:main',  # 查找联系人
-    'bz=params.bz:GgBzb.main',  # 币种
+    'bz=gmongo.params.bz:main',  # 币种
     'jqb=gmongo.jqb:main',  # 假期表参数
     'wh=params.paijia:PaiJia.main',  # 外汇
     'xxbm=gmongo.params.zhxxbm:main',  # 性质编码
@@ -31,7 +31,7 @@ consoles = [
     'tlr=gmongo.params.teller:main',  # 柜员表
     'lzwt=gmongo.lzwt:main',  # 履职问题
     'pa=gmongo.params.pa:main',  # 参数管理主程序
-    'jgm=gmongo.params.branch:main', # 机构码查询主程序
+    'jgm=gmongo.params.branch:main',  # 机构码查询主程序
 ]
 
 setup(

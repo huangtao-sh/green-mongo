@@ -1,6 +1,6 @@
-from gmongo.params.pa import main
+from gmongo.params.bz import main
 
 import sys
-cmd='cmd --load'
+cmd = 'cmd --all'
 sys.argv = cmd.split(' ')
 main()
