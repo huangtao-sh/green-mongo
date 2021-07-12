@@ -14,7 +14,7 @@ from gmongo.params import get_ver
 
 
 @arg('query', nargs='?', help='查询条件')
-@arg('-o', '--order', nargs='*', metavar='branchs', dest='branchs', help='对指定的分行进行排序')
+@arg('-o', '--order', nargs='?', metavar='branchs', dest='branchs', help='对指定的分行进行排序')
 def main(**options):
     header = "  机构码   机构名称                                 简称        行号    类型   开立日期  分行"
     print(f'数据版本：{get_ver("ggjgm")}')
@@ -39,7 +39,7 @@ def main(**options):
                     2: '<10s',
                 })
         if brs := options.get('branchs'):
-            query=" or ".join(f"mc like '%{br}%' " for br in brs)
+            query=" or ".join(f"mc like '%{br}%' " for br in brs.split('、'))
             sql=(
                 'select group_concat(mc,"、") from '
                 f'(select mc,brorder from  branch where {query} order by brorder)'
