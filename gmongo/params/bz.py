@@ -26,7 +26,7 @@ def mapper(code):
 def main(**options):
     print(f'数据版本：{get_ver("bzb")}')
     print('代码  英文简称   币种名称')
-    fmt = '{}     {:<3}       {}'
+    fmt = '{}     {:3}       {}'
     if codes := options.get('codes'):
         fprintf(
             fmt, f'select bz,ywsx,bzmc from bzb where {combine(*codes, mapper=mapper)} order by bz')
