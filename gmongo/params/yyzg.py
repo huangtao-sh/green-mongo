@@ -29,5 +29,5 @@ def main(**options):
     q = combine(*query, mapper=lambda x: f'({x})', oper='and')
     print(f'数据版本：{get_ver("yyzg")}')
     print("工号   姓名       角色            联系电话           手机         机构")
-    fprintf("{:<6} {:<10} {:15} {:<15} {:11} {:<30}",
+    fprintf("{:<6} {:<10} {:15} {:<15} {:11}   {:<30}",
             f"select ygh,xm,js,lxdh,mobile,jgmc from yyzg where {q} order by jg,js")
