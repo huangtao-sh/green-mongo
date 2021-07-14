@@ -14,7 +14,7 @@ def mapper(q):
     if R/r'\d{4,9}' == q:
         return f'jg like "{q}%"'
     else:
-        return f'xm like "{q}%"'
+        return f'xm like "{q}%" or jgmc like "%{q}%"'
 
 
 @command(description='营业主管查询模块')
