@@ -31,4 +31,3 @@ def main(**options):
     print("工号   姓名       角色            联系电话           手机         机构")
     fprintf("{:<6} {:<10} {:15} {:<15} {:11}   {:<30}",
             f"select ygh,xm,js,lxdh,mobile,jgmc from yyzg where {q} order by jg,js")
-    fprintf('共 {:,d} 条记录',f"select count(ygh) from yyzg where {q}")
