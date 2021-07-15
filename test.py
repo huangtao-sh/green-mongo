@@ -1,6 +1,6 @@
-from gmongo.params.yyzg import main
+from gmongo.params.teller import main
 
 import sys
-cmd = 'cmd -ta 汪 黄'
+cmd = 'cmd -e 北京（大兴）'
 sys.argv = cmd.split(' ')
 main()

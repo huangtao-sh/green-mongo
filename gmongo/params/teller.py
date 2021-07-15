@@ -7,7 +7,7 @@
 # 修订：2019-12-13 16:51 更新个别字段的显示
 
 from orange.xlsx import Header
-from orange import Path, Data
+from orange import Path, Data, R
 from gmongo.params import get_ver
 from gmongo.params import load_file, ROOT, fetchone, fetch, show_version
 from orange import R, arg, tprint
@@ -128,10 +128,11 @@ def conv(row):
     return [*row, jn]
 
 
-def export_teller(branchs):
+def export_teller(branchs, filename: str = None):
     captial = ""
     Ver = fetchvalue('select ver from LoadFile where name="teller" ')
-    with Path(f'~/Documents/业务检查用柜员表（截至{Ver}）.xlsx').write_xlsx(force=True)as book:
+    filename = filename or '业务检查用柜员表（截至{Ver}）'
+    with Path(f'~/Documents/{filename}.xlsx').write_xlsx(force=True)as book:
         for br in branchs.split(','):
             if captial and len(br) < 9:
                 br = captial[:-len(br)]+br
@@ -167,12 +168,12 @@ def export_teller(branchs):
                 ]
             )
             captial = br
-        print('导出文件成功！')
+        print(f'导出文件 {filename} 成功！')
 
 
 @arg('query', nargs='?', help='查询条件')
 @arg('-c', '--check', action='store_true', help='柜员表校验')
-@arg('-e', '--export', nargs='?', dest='branchs', help='导出指定机构柜员，格式为')
+@arg('-e', '--export', nargs='*', dest='branchs', help='导出指定机构柜员，格式为')
 def main(query=None, check=False, branchs=None):
     print(f'数据版本：{get_ver("teller")}')
     if query:
@@ -187,4 +188,18 @@ def main(query=None, check=False, branchs=None):
     if check:
         teller_check()
     if branchs:
-        export_teller(branchs)
+        # export_teller(branchs)
+        pattern = R/r'(.*?)(?:分行)?（(.*?)）'
+        for branch in branchs:
+            if m := pattern.fullmatch(branch):
+                br, zhmc = m.groups()
+                one = fetchone(
+                    'select jgm,mc from branch where mc like ?', [f"%{br}%"])
+                if one:
+                    brno, name = one
+                    x = fetchvalue('select group_concat(jgm)from ggjgm where hzjgm=? and(mc like ? or mc like ?)',
+                                   [brno, f'%{name}营业部', f'%{zhmc}%'])
+                    brs = ",".join([brno, x])
+                    export_teller(brs, f'{name}全面检查数据')
+            else:
+                export_teller(branch)
